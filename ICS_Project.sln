@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICS_Project.DAL", "ICS_Project.DAL\ICS_Project.DAL.csproj", "{BE159EE7-9D44-4080-9804-F18EE005ACCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICS_Project.DAL.Tests", "ICS_Project.DAL.Tests\ICS_Project.DAL.Tests.csproj", "{0BB4A4A3-D9B4-43C0-9DE7-1AD10C25EDFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE159EE7-9D44-4080-9804-F18EE005ACCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE159EE7-9D44-4080-9804-F18EE005ACCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE159EE7-9D44-4080-9804-F18EE005ACCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE159EE7-9D44-4080-9804-F18EE005ACCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BB4A4A3-D9B4-43C0-9DE7-1AD10C25EDFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BB4A4A3-D9B4-43C0-9DE7-1AD10C25EDFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BB4A4A3-D9B4-43C0-9DE7-1AD10C25EDFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BB4A4A3-D9B4-43C0-9DE7-1AD10C25EDFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

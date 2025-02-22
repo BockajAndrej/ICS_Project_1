@@ -1,0 +1,43 @@
+riderModule.iml
+/_ReSharper.Caches/
+
+# IDE and editor specific files
+.idea/                   # Rider settings and cache
+*.sln.iml                # Rider projects metadata
+*.user                   # Visual Studio individual settings
+.vs/                     # Visual Studio cache
+*.suo                    # Solution User Options
+*.userosscache           # Rider user-specific nastavenia
+*.sln.DotSettings        # Rider formating settings 
+
+# Build outputs and tmp files
+bin/
+obj/
+out/
+*.exe
+*.dll
+*.pdb
+*.log
+*.tmp
+*.cache
+
+# NuGet and addictions
+*.nupkg
+/packages/
+project.lock.json
+project.assets.json
+.nuget/
+
+# Debug and profilling files
+*.pdb
+*.opendb
+*.pidb
+*.ilk
+*.exp
+*.ncb
+*.sdf
+*.log
+
+# Local scripts
+*.sh~
+*.bat~
