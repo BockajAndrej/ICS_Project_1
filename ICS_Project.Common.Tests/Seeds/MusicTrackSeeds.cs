@@ -8,11 +8,11 @@ public static class MusicTrackSeeds
     public static readonly MusicTrack EmptyMusicTrack = new()
     {
         Id = default,
-        Title = default,
-        Description = default,
+        Title = "Unknown Title", // Prevents Null issue in SQLite, instead of "default"
+        Description = "Unknown Description",
         Length = default,
         Size = default,
-        UrlAddress = default
+        UrlAddress = "default"
     };
 
     public static readonly MusicTrack NonEmptyMusicTrack1 = new()
@@ -44,10 +44,8 @@ public static class MusicTrackSeeds
     static MusicTrackSeeds()
     {
         NonEmptyMusicTrack1.Genres.Add(GenreSeeds.NonEmptyGenre);
-        NonEmptyMusicTrack1.Artists.Add(ArtistSeeds.Artist);
+        NonEmptyMusicTrack1.Genres.Add(GenreSeeds.GenreUpdate);
 
-        NonEmptyMusicTrack2.Artists.Add(ArtistSeeds.Artist);
-        
     }
 
     public static DbContext SeedMusicTracks(this DbContext dbx)

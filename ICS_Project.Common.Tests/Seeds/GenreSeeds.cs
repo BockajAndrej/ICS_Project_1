@@ -8,7 +8,7 @@ public static class GenreSeeds
     public static readonly Genre EmptyGenre = new()
     {
         Id = default,
-        GenreName = default!
+        GenreName = "Unknown Genre" // Prevents Null issue in SQLite, instead of "default"
     };
 
     public static readonly Genre NonEmptyGenre = new()

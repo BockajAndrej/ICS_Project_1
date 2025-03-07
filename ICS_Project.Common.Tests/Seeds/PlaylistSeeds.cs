@@ -8,8 +8,8 @@ public static class PlaylistSeeds
     public static readonly Playlist EmptyPlaylist = new()
     {
         Id = default,
-        Name = default!,
-        Description = default!,
+        Name = "Unknown Name", // Prevents Null issue in SQLite, instead of "default"
+        Description = "Unknown Description", 
         NumberOfMusicTracks = default,
         TotalPlayTime = default
     };
@@ -32,6 +32,8 @@ public static class PlaylistSeeds
     static PlaylistSeeds()
     {
         PlaylistDelete.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack1);
+
+        NonEmptyPlaylist.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack1);
 
     }
 

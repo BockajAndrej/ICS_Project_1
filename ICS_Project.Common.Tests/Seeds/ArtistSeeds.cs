@@ -8,7 +8,7 @@ public static class ArtistSeeds
     public static readonly Artist EmptyArtist = new()
     {
         Id = default,
-        ArtistName = default!
+        ArtistName = "Unknown Artist" // Prevents Null issue in SQLite, instead of "default"
     };
 
     public static readonly Artist Artist = new()
@@ -33,6 +33,9 @@ public static class ArtistSeeds
         Artist.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack2);
 
         ArtistUpdate.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack1);
+
+        MusicTrackSeeds.NonEmptyMusicTrack1.Artists.Add(Artist);
+        MusicTrackSeeds.NonEmptyMusicTrack2.Artists.Add(Artist);
     }
 
     public static DbContext SeedArtists(this DbContext context)
