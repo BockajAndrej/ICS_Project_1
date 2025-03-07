@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ICS_Project.Common.Tests\ICS_Project.Common.Tests.csproj" />
       <ProjectReference Include="..\ICS_Project.DAL\ICS_Project.DAL.csproj" />
     </ItemGroup>
 
