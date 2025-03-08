@@ -6,6 +6,7 @@ using Xunit.Abstractions;
 
 namespace ICS_Project.DAL.Tests;
 
+[Collection("Sequential")]
 public class DbContextGenreTests(ITestOutputHelper output) : DbContextTestsBase(output)
 {
     [Fact]

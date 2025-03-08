@@ -7,6 +7,7 @@ using Xunit.Sdk;
 
 namespace ICS_Project.DAL.Tests;
 
+[Collection("Sequential")]
 public class DbContextArtistsTests(ITestOutputHelper output) : DbContextTestsBase(output)
 {
     [Fact]

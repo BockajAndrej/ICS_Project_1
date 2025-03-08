@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 
 namespace ICS_Project.DAL.Tests
 {
+    [Collection("Sequential")]
     public class DbContextPlaylistTests(ITestOutputHelper output) : DbContextTestsBase(output)
     {
         [Fact]
