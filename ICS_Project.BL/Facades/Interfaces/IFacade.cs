@@ -1,7 +1,7 @@
+using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ICS_Project.BL.Facades.Interfaces;
+namespace ICS_Project.BL.Facades;
 
 public interface IFacade<TEntity, TListModel, TDetailModel>
     where TEntity : class, IEntity
