@@ -26,6 +26,11 @@ public static class ArtistSeeds
     public static readonly Artist ArtistDelete =
         Clone(Artist, "58D0C03C-C539-4A16-96B1-9A9527B1BA0F", "Delete me");
 
+    public static Artist ArtistClone(string id, string artistName)
+    {
+        return Clone(Artist, id, artistName);
+    }
+
 
     static ArtistSeeds()
     {

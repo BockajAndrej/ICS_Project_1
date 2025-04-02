@@ -55,7 +55,7 @@ public abstract class FacadeBase<TEntity, TListModel, TDetailModel, TEntityMappe
         //Find entity by id
         TEntity? entity = await query.SingleOrDefaultAsync(e => e.Id == id).ConfigureAwait(false);
         
-        //If intity was found make a conversion 
+        // - facades are the last section capable of using entities
         return entity is null
             ? null
             : ModelMapper.MapToDetailModel(entity);
@@ -68,7 +68,8 @@ public abstract class FacadeBase<TEntity, TListModel, TDetailModel, TEntityMappe
             .GetRepository<TEntity, TEntityMapper>()
             .Get()
             .ToListAsync().ConfigureAwait(false);
-
+        
+        // - facades are the last section capable of using entities
         return ModelMapper.MapToListModel(entities);
     }
 

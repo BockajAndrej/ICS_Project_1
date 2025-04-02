@@ -15,6 +15,10 @@ namespace ICS_Project.BL.Tests;
 public class FacadeTestsBase: IAsyncLifetime
 {
     protected ArtistModelMapper ArtistModelMapper { get; }
+    protected GenreModelMapper GenreModelMapper { get; }
+    protected MusicTrackModelMapper MusicTrackModelMapper { get; }
+    protected PlaylistModelMapper PlaylistModelMapper { get; }
+    
     protected UnitOfWorkFactory UnitOfWorkFactory { get; }
     protected IDbContextFactory<MusicDbContext> DbContextFactory { get; }
     
@@ -22,17 +26,14 @@ public class FacadeTestsBase: IAsyncLifetime
     {
         XUnitTestOutputConverter converter = new(output);
         Console.SetOut(converter);
-
-        // DbContextFactory = new DbContextTestingInMemoryFactory(GetType().Name, seedTestingData: true);
-        // DbContextFactory = new DbContextLocalDBTestingFactory(GetType().FullName!, seedTestingData: true);
+        
         DbContextFactory = new DbContextSqLiteTestingFactory(GetType().FullName!, seedTestingData: true);
-
-        /*IngredientModelMapper = new IngredientModelMapper();
-        IngredientAmountModelMapper = new IngredientAmountModelMapper();
-        RecipeModelMapper = new RecipeModelMapper(IngredientAmountModelMapper);*/
         
         ArtistModelMapper = new ArtistModelMapper();
-
+        GenreModelMapper = new GenreModelMapper();
+        MusicTrackModelMapper = new MusicTrackModelMapper();
+        PlaylistModelMapper = new PlaylistModelMapper();
+        
         UnitOfWorkFactory = new UnitOfWorkFactory(DbContextFactory);
     }
 
@@ -41,6 +42,8 @@ public class FacadeTestsBase: IAsyncLifetime
         await using var dbx = await DbContextFactory.CreateDbContextAsync();
         await dbx.Database.EnsureDeletedAsync();
         await dbx.Database.EnsureCreatedAsync();
+        
+        
     }
 
     public async Task DisposeAsync()
