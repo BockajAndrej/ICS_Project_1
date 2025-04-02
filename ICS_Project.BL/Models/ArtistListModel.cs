@@ -1,9 +1,6 @@
-using System.Collections.ObjectModel;
-using ICS_Project.BL.Facades;
-
 namespace ICS_Project.BL.Models;
 
-public class ArtistListModel : ModelBase, IModel
+public class ArtistListModel : ModelBase
 {
     public required string ArtistName { get; set; }
     
