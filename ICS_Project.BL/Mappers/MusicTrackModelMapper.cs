@@ -1,14 +1,24 @@
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class MusicTrackModelMapper : ModelMapperBase<MusicTrack, MusicTrackListModel, MusicTrackDetailModel>
+public class MusicTrackModelMapper : ModelMapperBase<MusicTrack, MusicTrackListModel, MusicTrackDetailModel>, IMusicTrackModelMapper
 {
-    // TODO: FIX THIS, somehow solve circular dependency
-    public ArtistModelMapper artistMapper { get; internal set; } = null!;
-    public GenreModelMapper genreMapper { get; internal set; } = null!;
-    public PlaylistModelMapper playlistMapper { get; internal set; } = null!;
+    private readonly Lazy<IArtistModelMapper> _artistMapperLazy;
+    private readonly Lazy<IGenreModelMapper> _genreMapperLazy;
+    private readonly Lazy<IPlaylistModelMapper> _playlistMapperLazy;
+
+    public MusicTrackModelMapper(
+        Lazy<IArtistModelMapper> artistMapperLazy,
+        Lazy<IGenreModelMapper> genreMapperLazy,
+        Lazy<IPlaylistModelMapper> playlistMapperLazy)
+    {
+        _artistMapperLazy = artistMapperLazy;
+        _genreMapperLazy = genreMapperLazy;
+        _playlistMapperLazy = playlistMapperLazy;
+    }
     
     public override MusicTrackListModel MapToListModel(MusicTrack? entity)
         => entity is null
@@ -34,11 +44,11 @@ public class MusicTrackModelMapper : ModelMapperBase<MusicTrack, MusicTrackListM
                 Length = entity.Length,
                 Size = entity.Size,
                 UrlAddress = entity.UrlAddress,
-                Artists = artistMapper.MapToListModel(entity.Artists)
+                Artists = _artistMapperLazy.Value.MapToListModel(entity.Artists)
                     .ToObservableCollection(),
-                Genres = genreMapper.MapToListModel(entity.Genres)
+                Genres = _genreMapperLazy.Value.MapToListModel(entity.Genres)
                     .ToObservableCollection(),
-                Playlists = playlistMapper.MapToListModel(entity.Playlists)
+                Playlists = _playlistMapperLazy.Value.MapToListModel(entity.Playlists)
                     .ToObservableCollection(),  
             };
 

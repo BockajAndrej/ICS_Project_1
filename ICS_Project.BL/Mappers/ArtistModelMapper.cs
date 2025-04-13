@@ -1,10 +1,18 @@
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class ArtistModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Artist, ArtistListModel, ArtistDetailModel>
+public class ArtistModelMapper : ModelMapperBase<Artist, ArtistListModel, ArtistDetailModel>, IArtistModelMapper
 {
+    private readonly Lazy<IMusicTrackModelMapper> _musicTrackMapperLazy;
+
+    public ArtistModelMapper(Lazy<IMusicTrackModelMapper> musicTrackMapperLazy)
+    {
+        _musicTrackMapperLazy = musicTrackMapperLazy;
+    }
+    
     public override ArtistListModel MapToListModel(Artist? entity)
         => entity is null
             ? ArtistListModel.Empty
@@ -21,7 +29,7 @@ public class ArtistModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMa
             {
                 Id = entity.Id,
                 ArtistName = entity.ArtistName,
-                MusicTrack = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                MusicTrack = _musicTrackMapperLazy.Value.MapToListModel(entity.MusicTracks)
                     .ToObservableCollection()
             };
 

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Mappers;
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.Common.Tests;
 using ICS_Project.Common.Tests.Seeds;
@@ -8,6 +9,7 @@ using ICS_Project.DAL.Entities;
 using ICS_Project.DAL.Mappers;
 using ICS_Project.DAL.Repositories;
 using ICS_Project.DAL.UnitOfWork;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 namespace ICS_Project.BL.Tests;
@@ -15,10 +17,14 @@ namespace ICS_Project.BL.Tests;
 public class ArtistFacadeTests : FacadeTestsBase
 {
     private readonly IArtistFacade _facadeSUT;
+    private readonly IArtistModelMapper _artistModelMapper;
+    private readonly IMusicTrackModelMapper _musicTrackModelMapper;
 
     public ArtistFacadeTests(ITestOutputHelper output) : base(output)
     {
-        _facadeSUT = new ArtistFacade(UnitOfWorkFactory, ArtistModelMapper);
+        _facadeSUT = ServiceProvider.GetRequiredService<IArtistFacade>();
+        _artistModelMapper = ServiceProvider.GetRequiredService<IArtistModelMapper>();
+        _musicTrackModelMapper = ServiceProvider.GetRequiredService<IMusicTrackModelMapper>();
     }
     
     [Fact]
@@ -53,7 +59,7 @@ public class ArtistFacadeTests : FacadeTestsBase
     [Fact]
     public async Task Save_Test()
     {
-        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.ArtistWOutTracks);
+        var detailModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.ArtistWOutTracks);
 
         var returnedModel = await _facadeSUT.SaveAsync(detailModel);
 
@@ -67,7 +73,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         //As is noted in FacadeBase.GuardCollectionsAreNotSet: Inserting or updating models with adjacent collections is baned
         
         //Arrange
-        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+        var detailModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
         
         //Act && Assert
         await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _facadeSUT.SaveAsync(detailModel));
@@ -95,7 +101,7 @@ public class ArtistFacadeTests : FacadeTestsBase
                     UrlAddress = string.Empty,
                 },
             
-                MusicTrackModelMapper.MapToListModel(MusicTrackSeeds.NonEmptyMusicTrack1)
+                _musicTrackModelMapper.MapToListModel(MusicTrackSeeds.NonEmptyMusicTrack1)
             ],
         };
         
@@ -113,7 +119,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         repository.Insert(ArtistSeeds.Artist);
         uow.CommitAsync();
         
-        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+        var detailModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
 
         var returnedModel = await _facadeSUT.GetAsync(detailModel.Id);
 
@@ -129,7 +135,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         int numOfArtists = 5;
         var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var detailModel = ArtistModelMapper.MapToDetailModel(lastArtist.Pop());
+        var detailModel = _artistModelMapper.MapToDetailModel(lastArtist.Pop());
 
         var returnedModel = await _facadeSUT.GetAsync(detailModel.Id);
 
@@ -149,8 +155,8 @@ public class ArtistFacadeTests : FacadeTestsBase
         foreach (var artist in ArtistList)
         {
             numOfArtists--;
-            var currentModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
-            var databaseModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+            var currentModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+            var databaseModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
             DeepAssert.Equal(currentModel, databaseModel);
         }
         //Check that number of inserted artist is correct 
@@ -166,7 +172,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         int numOfArtists = 1;
         var currArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var derailModel = ArtistModelMapper.MapToDetailModel(currArtist.Pop());
+        var derailModel = _artistModelMapper.MapToDetailModel(currArtist.Pop());
 
         await _facadeSUT.DeleteAsync(derailModel.Id);
         
@@ -185,7 +191,7 @@ public class ArtistFacadeTests : FacadeTestsBase
 
         for (int i = 0; i < numOfArtists; i++)
         {
-            var detailModel = ArtistModelMapper.MapToDetailModel(currArtist.Pop());
+            var detailModel = _artistModelMapper.MapToDetailModel(currArtist.Pop());
             await _facadeSUT.DeleteAsync(detailModel.Id);
         }
 
@@ -202,7 +208,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         int numOfArtists = 5;
         var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var derailModel = ArtistModelMapper.MapToDetailModel(lastArtist.Peek());
+        var derailModel = _artistModelMapper.MapToDetailModel(lastArtist.Peek());
 
         await _facadeSUT.DeleteAsync(derailModel.Id);
         

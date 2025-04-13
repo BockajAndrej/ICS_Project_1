@@ -1,5 +1,6 @@
 using System.Xml;
 using ICS_Project.BL.Mappers;
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 using ICS_Project.DAL.Mappers;
@@ -9,7 +10,7 @@ namespace ICS_Project.BL.Facades;
 
 public class ArtistFacade(
     IUnitOfWorkFactory unitOfWorkFactory,
-    ArtistModelMapper modelMapper)
+    IArtistModelMapper modelMapper)
     : FacadeBase<Artist, ArtistListModel, ArtistDetailModel, ArtistEntityMapper>(unitOfWorkFactory, modelMapper),
         IArtistFacade
 {

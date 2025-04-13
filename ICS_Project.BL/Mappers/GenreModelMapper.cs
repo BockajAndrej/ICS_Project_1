@@ -1,10 +1,18 @@
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class GenreModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Genre, GenreListModel, GenreDetailModel>
+public class GenreModelMapper 
+    : ModelMapperBase<Genre, GenreListModel, GenreDetailModel>, IGenreModelMapper
 {
+    private readonly Lazy<IMusicTrackModelMapper> _musicTrackMapperLazy;
+
+    public GenreModelMapper(Lazy<IMusicTrackModelMapper> musicTrackMapperLazy)
+    {
+        _musicTrackMapperLazy = musicTrackMapperLazy;
+    }
     public override GenreListModel MapToListModel(Genre? entity)
         => entity is null
             ? GenreListModel.Empty
@@ -21,7 +29,7 @@ public class GenreModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMap
             {
                 Id = entity.Id,
                 GenreName = entity.GenreName,
-                MusicTracks = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                MusicTracks = _musicTrackMapperLazy.Value.MapToListModel(entity.MusicTracks)
                     .ToObservableCollection()
             };
 

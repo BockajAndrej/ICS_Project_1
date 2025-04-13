@@ -1,10 +1,19 @@
+using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class PlaylistModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Playlist, PlaylistListModel, PlaylistDetailModel>
+public class PlaylistModelMapper 
+    : ModelMapperBase<Playlist, PlaylistListModel, PlaylistDetailModel>, IPlaylistModelMapper
 {
+    private readonly Lazy<IMusicTrackModelMapper> _musicTrackMapperLazy;
+
+    public PlaylistModelMapper(Lazy<IMusicTrackModelMapper> musicTrackMapperLazy)
+    {
+        _musicTrackMapperLazy = musicTrackMapperLazy;
+    }
+    
     public override PlaylistListModel MapToListModel(Playlist? entity)
         => entity is null
             ? PlaylistListModel.Empty
@@ -27,7 +36,7 @@ public class PlaylistModelMapper(MusicTrackModelMapper musicTrackMapper) : Model
                 Description = entity.Description,
                 NumberOfMusicTracks = entity.NumberOfMusicTracks,
                 TotalPlayTime = entity.TotalPlayTime,
-                MusicTracks = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                MusicTracks = _musicTrackMapperLazy.Value.MapToListModel(entity.MusicTracks)
                     .ToObservableCollection()
             };
 
