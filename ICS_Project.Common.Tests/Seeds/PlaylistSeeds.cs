@@ -29,6 +29,11 @@ public static class PlaylistSeeds
     public static readonly Playlist PlaylistDelete = Clone(NonEmptyPlaylist, "183D822D-7E48-4DC7-8F06-0DC50816D07B",
         "To Be Deleted", "Playlist meant for deletion tests");
 
+    public static Playlist PlaylistClone(string id, string playlistName, string description)
+    {
+        return Clone(NonEmptyPlaylist, id, playlistName, description);
+    }
+    
     static PlaylistSeeds()
     {
         PlaylistDelete.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack1);

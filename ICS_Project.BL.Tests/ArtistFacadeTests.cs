@@ -135,7 +135,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         int numOfArtists = 5;
         var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var detailModel = _artistModelMapper.MapToDetailModel(lastArtist.Pop());
+        var detailModel = _artistModelMapper.MapToDetailModel(lastArtist.Dequeue());
 
         var returnedModel = await _facadeSUT.GetAsync(detailModel.Id);
 
@@ -149,15 +149,14 @@ public class ArtistFacadeTests : FacadeTestsBase
         IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
         
         int numOfArtists = 5;
-        FillArtistDatabase(numOfArtists, repository, uow);
+        var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
         var ArtistList = await _facadeSUT.GetAsync();
         foreach (var artist in ArtistList)
         {
             numOfArtists--;
-            var currentModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
-            var databaseModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
-            DeepAssert.Equal(currentModel, databaseModel);
+            var currentModel = _artistModelMapper.MapToListModel(lastArtist.Dequeue());
+            DeepAssert.Equal(currentModel, artist);
         }
         //Check that number of inserted artist is correct 
         Assert.Equal(0, numOfArtists);
@@ -172,7 +171,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         int numOfArtists = 1;
         var currArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var derailModel = _artistModelMapper.MapToDetailModel(currArtist.Pop());
+        var derailModel = _artistModelMapper.MapToDetailModel(currArtist.Dequeue());
 
         await _facadeSUT.DeleteAsync(derailModel.Id);
         
@@ -191,7 +190,7 @@ public class ArtistFacadeTests : FacadeTestsBase
 
         for (int i = 0; i < numOfArtists; i++)
         {
-            var detailModel = _artistModelMapper.MapToDetailModel(currArtist.Pop());
+            var detailModel = _artistModelMapper.MapToDetailModel(currArtist.Dequeue());
             await _facadeSUT.DeleteAsync(detailModel.Id);
         }
 
@@ -206,9 +205,9 @@ public class ArtistFacadeTests : FacadeTestsBase
         IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
         
         int numOfArtists = 5;
-        var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
+        var firstArtist = FillArtistDatabase(numOfArtists, repository, uow);
         
-        var derailModel = _artistModelMapper.MapToDetailModel(lastArtist.Peek());
+        var derailModel = _artistModelMapper.MapToDetailModel(firstArtist.Peek());
 
         await _facadeSUT.DeleteAsync(derailModel.Id);
         
@@ -218,13 +217,14 @@ public class ArtistFacadeTests : FacadeTestsBase
     }
     
     
-    private static Stack<Artist> FillArtistDatabase(int numOfArtists, IRepository<Artist> repository, IUnitOfWork uow)
+    private static Queue<Artist> FillArtistDatabase(int numOfArtists, IRepository<Artist> repository, IUnitOfWork uow)
     {
-        Stack<Artist> artists = new();
+        Queue<Artist> artists = new();
         for (int i = 0; i < numOfArtists; i++)
         {
-            artists.Push(ArtistSeeds.ArtistClone($"58D0C03C-C539-4A16-96B1-9A95AAAAAAA{i}", $"Name= {i}{i}"));
-            repository.Insert(artists.Peek());
+            var artistToSave = ArtistSeeds.ArtistClone($"58D0C03C-C539-4A16-96B1-9A95AAAAAAA{i}", $"Name= {i}{i}");
+            artists.Enqueue(artistToSave);
+            repository.Insert(artistToSave);
             uow.CommitAsync();
         }
         return artists;

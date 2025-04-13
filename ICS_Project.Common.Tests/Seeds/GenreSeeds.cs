@@ -29,6 +29,11 @@ public static class GenreSeeds
     public static readonly Genre GenreDelete =
         Clone(NonEmptyGenre, "0E18CDB4-619B-4835-8602-3321A8A82AFA", "Country");
 
+    public static Genre GenreClone(string id, string name)
+    {
+        return Clone(NonEmptyGenre, id, name);
+    }
+    
     static GenreSeeds()
     {
         NonEmptyGenre.MusicTracks.Add(MusicTrackSeeds.NonEmptyMusicTrack1);
