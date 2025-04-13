@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 namespace ICS_Project.Common.Tests;
 
 public class MusicTestingDbContext(DbContextOptions contextOptions, bool seedTestingData = false)
-    : MusicDbContext(contextOptions)
+    : MusicDbContext(contextOptions, seedTestingData)
 {
     protected void OnModelCreating(MusicDbContext modelBuilder)
     {
-        //base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder);
 
         if (seedTestingData)
         {
