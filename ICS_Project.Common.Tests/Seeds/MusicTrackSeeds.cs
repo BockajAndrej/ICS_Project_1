@@ -45,7 +45,12 @@ public static class MusicTrackSeeds
     {
         NonEmptyMusicTrack1.Genres.Add(GenreSeeds.NonEmptyGenre);
         NonEmptyMusicTrack1.Genres.Add(GenreSeeds.GenreUpdate);
-
+        
+        NonEmptyMusicTrack1.Artists.Add(ArtistSeeds.Artist);
+        NonEmptyMusicTrack2.Artists.Add(ArtistSeeds.Artist);
+        
+        NonEmptyMusicTrack1.Playlists.Add(PlaylistSeeds.NonEmptyPlaylist);
+        NonEmptyMusicTrack2.Playlists.Add(PlaylistSeeds.NonEmptyPlaylist);
     }
 
     public static DbContext SeedMusicTracks(this DbContext dbx)
