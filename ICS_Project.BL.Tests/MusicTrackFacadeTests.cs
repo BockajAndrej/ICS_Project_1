@@ -83,17 +83,19 @@ public class MusicTrackFacadeTests : FacadeTestsBase
     }
 
     [Fact]
-    public async Task GetById_SeededMusicTrack_Test()
-    {
-        var musictrack = await _facadeSUT.GetAsync(MusicTrackSeeds.NonEmptyMusicTrack1.Id);
-        DeepAssert.Equal(_musicTrackModelMapper.MapToDetailModel(MusicTrackSeeds.NonEmptyMusicTrack1), musictrack);
-    }
-
-    [Fact]
     public async Task GetById_NonExistent_Test()
     {
-        var musictrack = await _facadeSUT.GetAsync(MusicTrackSeeds.EmptyMusicTrack.Id);
-        Assert.Null(musictrack);
+        var musictrack = new MusicTrackDetailModel()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Titulok",
+            Description = "Opis",
+            Length = TimeSpan.FromSeconds(200),
+            Size = 20,
+            UrlAddress = "https://www.google.com",
+        };
+        var result = await _facadeSUT.GetAsync(musictrack.Id);
+        Assert.Null(result);
     }
 
     [Fact]

@@ -29,14 +29,7 @@ namespace ICS_Project.DAL
                 .HasMany(p => p.MusicTracks)
                 .WithMany(m => m.Playlists)
                 .UsingEntity(j => j.ToTable("PlaylistMusicTrack"));
-
-            /*if (seedDemoData)
-            {
-                ArtistsSeeds.SeedArtists(modelBuilder);
-                GenreSeeds.SeedArtists(modelBuilder);
-                MusisTrackSeeds.SeedMusicTracks(modelBuilder);
-                PlaylistSeeds.Seed(modelBuilder);
-            }*/
+            
         }
     }
 }

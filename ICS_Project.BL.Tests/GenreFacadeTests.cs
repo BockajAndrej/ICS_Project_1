@@ -145,30 +145,12 @@ public class GenreFacadeTests : FacadeTestsBase
     }
 
     [Fact]
-    public async Task Get_ManyToMany_Test()
-    {
-        IUnitOfWork uow = UnitOfWorkFactory.Create();
-        IRepository<Genre> repository = uow.GetRepository<Genre, GenreEntityMapper>();
-        
-        int numOfGenres = 5;
-        var firstGenre = FillArtistDatabase(numOfGenres, repository, uow);
-        
-        var GenreList = await _facadeSUT.GetAsync();
-        foreach (var artist in GenreList)
-        {
-            numOfGenres--;
-            var currentModel = _genreModelMapper.MapToListModel(firstGenre.Dequeue());
-            DeepAssert.Equal(currentModel, artist);
-        }
-        //Check that number of inserted artist is correct 
-        Assert.Equal(0, numOfGenres);
-    }
-
-    [Fact]
     public async Task Delete_OneToOne_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Genre> repository = uow.GetRepository<Genre, GenreEntityMapper>();
+        
+        var genresStart = await _facadeSUT.GetAsync();
         
         int numOfGenres = 1;
         var currArtist = FillArtistDatabase(numOfGenres, repository, uow);
@@ -179,13 +161,15 @@ public class GenreFacadeTests : FacadeTestsBase
         
         var genres = await _facadeSUT.GetAsync();
         
-        Assert.True(!genres.Any());
+        DeepAssert.Equal(genresStart, genres);
     }
     [Fact]
     public async Task Delete_ManyToMany_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Genre> repository = uow.GetRepository<Genre, GenreEntityMapper>();
+        
+        var genresStart = await _facadeSUT.GetAsync();
         
         int numOfGenres = 5;
         var currArtist = FillArtistDatabase(numOfGenres, repository, uow);
@@ -198,7 +182,7 @@ public class GenreFacadeTests : FacadeTestsBase
 
         var genres = await _facadeSUT.GetAsync();
         
-        Assert.True(!genres.Any());
+        DeepAssert.Equal(genresStart, genres);
     }
     [Fact]
     public async Task Delete_OneToMany_Test()

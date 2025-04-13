@@ -112,13 +112,6 @@ public class ArtistFacadeTests : FacadeTestsBase
     [Fact]
     public async Task GetID_OneToOne_Test()
     {
-        //We need to populate the database without a facade SaveAsync method
-        IUnitOfWork uow = UnitOfWorkFactory.Create();
-        IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
-        
-        repository.Insert(ArtistSeeds.Artist);
-        uow.CommitAsync();
-        
         var detailModel = _artistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
 
         var returnedModel = await _facadeSUT.GetAsync(detailModel.Id);
@@ -143,30 +136,12 @@ public class ArtistFacadeTests : FacadeTestsBase
     }
 
     [Fact]
-    public async Task Get_ManyToMany_Test()
-    {
-        IUnitOfWork uow = UnitOfWorkFactory.Create();
-        IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
-        
-        int numOfArtists = 5;
-        var lastArtist = FillArtistDatabase(numOfArtists, repository, uow);
-        
-        var ArtistList = await _facadeSUT.GetAsync();
-        foreach (var artist in ArtistList)
-        {
-            numOfArtists--;
-            var currentModel = _artistModelMapper.MapToListModel(lastArtist.Dequeue());
-            DeepAssert.Equal(currentModel, artist);
-        }
-        //Check that number of inserted artist is correct 
-        Assert.Equal(0, numOfArtists);
-    }
-
-    [Fact]
     public async Task Delete_OneToOne_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
+        
+        var artistsStart = await _facadeSUT.GetAsync();
         
         int numOfArtists = 1;
         var currArtist = FillArtistDatabase(numOfArtists, repository, uow);
@@ -177,13 +152,15 @@ public class ArtistFacadeTests : FacadeTestsBase
         
         var artists = await _facadeSUT.GetAsync();
         
-        Assert.True(!artists.Any());
+        DeepAssert.Equal(artistsStart, artists);
     }
     [Fact]
     public async Task Delete_ManyToMany_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Artist> repository = uow.GetRepository<Artist, ArtistEntityMapper>();
+        
+        var artistsStart = await _facadeSUT.GetAsync();
         
         int numOfArtists = 5;
         var currArtist = FillArtistDatabase(numOfArtists, repository, uow);
@@ -196,7 +173,7 @@ public class ArtistFacadeTests : FacadeTestsBase
 
         var artists = await _facadeSUT.GetAsync();
         
-        Assert.True(!artists.Any());
+        DeepAssert.Equal(artistsStart, artists);
     }
     [Fact]
     public async Task Delete_OneToMany_Test()

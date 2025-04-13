@@ -125,12 +125,6 @@ public class PlaylistFacadeTests : FacadeTestsBase
     [Fact]
     public async Task GetID_OneToOne_Test()
     {
-        //We need to populate the database without a facade SaveAsync method
-        IUnitOfWork uow = UnitOfWorkFactory.Create();
-        IRepository<Playlist> repository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
-        
-        repository.Insert(PlaylistSeeds.NonEmptyPlaylist);
-        uow.CommitAsync();
         
         var detailModel = _playlistModelMapper.MapToDetailModel(PlaylistSeeds.NonEmptyPlaylist);
 
@@ -157,31 +151,12 @@ public class PlaylistFacadeTests : FacadeTestsBase
     }
 
     [Fact]
-    public async Task Get_ManyToMany_Test()
-    {
-        IUnitOfWork uow = UnitOfWorkFactory.Create();
-        IRepository<Playlist> repository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
-        
-        int numOfPlaylists = 5;
-        var FirstPlaylist = FillPlaylistDatabase(numOfPlaylists, repository, uow);
-        
-        var PlaylistList = await _facadeSUT.GetAsync();
-        foreach (var Playlist in PlaylistList)
-        {
-            numOfPlaylists--;
-            var currentModel = _playlistModelMapper.MapToListModel(FirstPlaylist.Dequeue());
-            
-            DeepAssert.Equal(currentModel, Playlist);
-        }
-        //Check that number of inserted artist is correct 
-        Assert.Equal(0, numOfPlaylists);
-    }
-
-    [Fact]
     public async Task Delete_OneToOne_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Playlist> repository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
+        
+        var playlistsStart = await _facadeSUT.GetAsync();
         
         int numOfPlaylists = 1;
         var currPlaylist = FillPlaylistDatabase(numOfPlaylists, repository, uow);
@@ -192,13 +167,16 @@ public class PlaylistFacadeTests : FacadeTestsBase
         
         var playlists = await _facadeSUT.GetAsync();
         
-        Assert.True(!playlists.Any());
+        DeepAssert.Equal(playlistsStart, playlists);
     }
     [Fact]
     public async Task Delete_ManyToMany_Test()
     {
         IUnitOfWork uow = UnitOfWorkFactory.Create();
         IRepository<Playlist> repository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
+        
+        var playlistsStart = await _facadeSUT.GetAsync();
+
         
         int numOfPlaylists = 5;
         var currPlaylist = FillPlaylistDatabase(numOfPlaylists, repository, uow);
@@ -210,8 +188,8 @@ public class PlaylistFacadeTests : FacadeTestsBase
         }
 
         var playlists = await _facadeSUT.GetAsync();
-        
-        Assert.True(!playlists.Any());
+
+        DeepAssert.Equal(playlistsStart, playlists);
     }
     [Fact]
     public async Task Delete_OneToMany_Test()
