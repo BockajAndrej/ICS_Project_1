@@ -14,6 +14,9 @@ public class MusicTestingDbContext(DbContextOptions contextOptions, bool seedTes
         if (seedTestingData)
         {
             ArtistSeeds.SeedArtists(modelBuilder);
+            MusicTrackSeeds.SeedMusicTracks(modelBuilder);
+            GenreSeeds.SeedGenres(modelBuilder);
+            PlaylistSeeds.SeedPlaylists(modelBuilder);
         }
     }
 }

@@ -230,8 +230,23 @@ public class ArtistFacadeTests : FacadeTestsBase
         return artists;
     }
     
+    //Check if is 
     private static void FixIds(ArtistDetailModel expectedModel, ArtistDetailModel returnedModel) //TODO: Delete this, as it has no usage? <Vitan_, AKA xkolosv00>
     {
         returnedModel.Id = expectedModel.Id;
+        foreach (var musicTrackModel in returnedModel.MusicTrack)
+        {
+            var musicTrackDetailModel = expectedModel.MusicTrack.FirstOrDefault(i =>
+                i.Title == musicTrackModel.Title
+                && i.Description == musicTrackModel.Description
+                && i.Length == musicTrackModel.Length
+                && Math.Abs(i.Size - musicTrackModel.Size) < 0.00001
+                && i.UrlAddress == musicTrackModel.UrlAddress);
+
+            if (musicTrackDetailModel != null)
+            {
+                musicTrackModel.Id = musicTrackDetailModel.Id;
+            }
+        }
     }
 }
