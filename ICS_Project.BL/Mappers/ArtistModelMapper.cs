@@ -3,7 +3,7 @@ using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class ArtistModelMapper() : ModelMapperBase<Artist, ArtistListModel, ArtistDetailModel>
+public class ArtistModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Artist, ArtistListModel, ArtistDetailModel>
 {
     public override ArtistListModel MapToListModel(Artist? entity)
         => entity is null
@@ -21,6 +21,8 @@ public class ArtistModelMapper() : ModelMapperBase<Artist, ArtistListModel, Arti
             {
                 Id = entity.Id,
                 ArtistName = entity.ArtistName,
+                MusicTrack = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                    .ToObservableCollection()
             };
 
     public override Artist MapToEntity(ArtistDetailModel model)

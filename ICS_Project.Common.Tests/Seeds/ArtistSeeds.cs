@@ -25,6 +25,9 @@ public static class ArtistSeeds
 
     public static readonly Artist ArtistDelete =
         Clone(Artist, "58D0C03C-C539-4A16-96B1-9A9527B1BA0F", "Delete me");
+    
+    public static readonly Artist ArtistWOutTracks =
+        Clone(Artist, "1c2cb57c-3f7f-485d-8e4e-b78228644581", "I cannot Sing");
 
     public static Artist ArtistClone(string id, string artistName)
     {
@@ -50,7 +53,8 @@ public static class ArtistSeeds
             Artist,
             EmptyArtistName,
             ArtistUpdate,
-            ArtistDelete);
+            ArtistDelete,
+            ArtistWOutTracks);
         return context;
     }
 

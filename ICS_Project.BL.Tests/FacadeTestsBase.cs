@@ -26,13 +26,13 @@ public class FacadeTestsBase: IAsyncLifetime
     {
         XUnitTestOutputConverter converter = new(output);
         Console.SetOut(converter);
-        
+
         DbContextFactory = new DbContextSqLiteTestingFactory(GetType().FullName!, seedTestingData: true);
-        
-        ArtistModelMapper = new ArtistModelMapper();
-        GenreModelMapper = new GenreModelMapper();
+            
         MusicTrackModelMapper = new MusicTrackModelMapper();
-        PlaylistModelMapper = new PlaylistModelMapper();
+        GenreModelMapper = new GenreModelMapper(MusicTrackModelMapper);
+        PlaylistModelMapper = new PlaylistModelMapper(MusicTrackModelMapper);
+        ArtistModelMapper = new ArtistModelMapper(MusicTrackModelMapper);
         
         UnitOfWorkFactory = new UnitOfWorkFactory(DbContextFactory);
     }

@@ -13,5 +13,6 @@ public class PlaylistFacade(
     : FacadeBase<Playlist, PlaylistListModel, PlaylistDetailModel, PlaylistEntityMapper>(uowf, modelMapper),
         IPlaylistFacade
 {
-    
+    protected override ICollection<string> IncludesNavigationPathDetail =>
+        new[] { nameof(Playlist.MusicTracks) };
 }

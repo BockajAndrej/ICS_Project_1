@@ -3,7 +3,7 @@ using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class PlaylistModelMapper : ModelMapperBase<Playlist, PlaylistListModel, PlaylistDetailModel>
+public class PlaylistModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Playlist, PlaylistListModel, PlaylistDetailModel>
 {
     public override PlaylistListModel MapToListModel(Playlist? entity)
         => entity is null
@@ -27,6 +27,8 @@ public class PlaylistModelMapper : ModelMapperBase<Playlist, PlaylistListModel, 
                 Description = entity.Description,
                 NumberOfMusicTracks = entity.NumberOfMusicTracks,
                 TotalPlayTime = entity.TotalPlayTime,
+                MusicTracks = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                    .ToObservableCollection()
             };
 
     public override Playlist MapToEntity(PlaylistDetailModel model)

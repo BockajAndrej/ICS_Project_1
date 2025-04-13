@@ -13,5 +13,6 @@ public class ArtistFacade(
     : FacadeBase<Artist, ArtistListModel, ArtistDetailModel, ArtistEntityMapper>(unitOfWorkFactory, modelMapper),
         IArtistFacade
 {
-    
+    protected override ICollection<string> IncludesNavigationPathDetail =>
+        new[] { nameof(Artist.MusicTracks) };
 }

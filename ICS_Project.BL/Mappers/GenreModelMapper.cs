@@ -3,7 +3,7 @@ using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Mappers;
 
-public class GenreModelMapper : ModelMapperBase<Genre, GenreListModel, GenreDetailModel>
+public class GenreModelMapper(MusicTrackModelMapper musicTrackMapper) : ModelMapperBase<Genre, GenreListModel, GenreDetailModel>
 {
     public override GenreListModel MapToListModel(Genre? entity)
         => entity is null
@@ -20,7 +20,9 @@ public class GenreModelMapper : ModelMapperBase<Genre, GenreListModel, GenreDeta
             : new GenreDetailModel
             {
                 Id = entity.Id,
-                GenreName = entity.GenreName
+                GenreName = entity.GenreName,
+                MusicTracks = musicTrackMapper.MapToListModel(entity.MusicTracks)
+                    .ToObservableCollection()
             };
 
     public override Genre MapToEntity(GenreDetailModel model)

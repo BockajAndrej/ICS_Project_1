@@ -12,5 +12,6 @@ public class GenreFacade(
     : FacadeBase<Genre, GenreListModel, GenreDetailModel, GenreEntityMapper>(unitOfWorkFactory, modelMapper),
         IGenreFacade
 {
-    
+    protected override ICollection<string> IncludesNavigationPathDetail =>
+        new[] { nameof(Genre.MusicTracks) };
 }

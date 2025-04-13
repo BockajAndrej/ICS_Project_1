@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Mappers;
 using ICS_Project.BL.Models;
@@ -20,16 +21,86 @@ public class ArtistFacadeTests : FacadeTestsBase
         _facadeSUT = new ArtistFacade(UnitOfWorkFactory, ArtistModelMapper);
     }
     
+    [Fact]
+    public async Task Create_WithNonExistingMusicTrack_Throws_Test()
+    {
+        //As is noted in FacadeBase.GuardCollectionsAreNotSet: Inserting or updating models with adjacent collections is baned
+        
+        //Arrange
+        var detailModel = new ArtistDetailModel()
+        {
+            Id = Guid.NewGuid(),
+            ArtistName = "Brumbex",
+            MusicTrack = new ObservableCollection<MusicTrackListModel>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = string.Empty,
+                    Length = TimeSpan.Zero,
+                    Size = 0,
+                    Title = "Honba za pramenem okeny",
+                    UrlAddress = string.Empty,
+                }
+            },
+        };
+        
+        //Act && Assert
+        await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _facadeSUT.SaveAsync(detailModel));
+    }
+    
     //Seeded tests
     [Fact]
     public async Task Save_Test()
     {
-        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.ArtistWOutTracks);
 
         var returnedModel = await _facadeSUT.SaveAsync(detailModel);
 
-        FixIds(detailModel, returnedModel);
+        FixIds(detailModel, returnedModel); // What is this good for? <Vitan_, AKA xkolosv00>
         DeepAssert.Equal(detailModel, returnedModel);
+    }
+    
+    [Fact]
+    public async Task Create_WithExistingMusicTrack_Throws_Test()
+    {
+        //As is noted in FacadeBase.GuardCollectionsAreNotSet: Inserting or updating models with adjacent collections is baned
+        
+        //Arrange
+        var detailModel = ArtistModelMapper.MapToDetailModel(ArtistSeeds.Artist);
+        
+        //Act && Assert
+        await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _facadeSUT.SaveAsync(detailModel));
+    }
+    
+    [Fact]
+    public async Task Create_WithAndWoutExistingMusicTrack_Throws_Test()
+    {
+        //As is noted in FacadeBase.GuardCollectionsAreNotSet: Inserting or updating models with adjacent collections is baned
+        
+        //Arrange
+        var detailModel = new ArtistDetailModel()
+        {
+            Id = Guid.NewGuid(),
+            ArtistName = "Horacio Junior",
+            MusicTrack =
+            [
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = string.Empty,
+                    Length = TimeSpan.Zero,
+                    Size = 0,
+                    Title = "Bradavicky zlodej",
+                    UrlAddress = string.Empty,
+                },
+            
+                MusicTrackModelMapper.MapToListModel(MusicTrackSeeds.NonEmptyMusicTrack1)
+            ],
+        };
+        
+        //Act && Assert
+        await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _facadeSUT.SaveAsync(detailModel));
     }
     
     [Fact]
@@ -153,7 +224,7 @@ public class ArtistFacadeTests : FacadeTestsBase
         return artists;
     }
     
-    private static void FixIds(ArtistDetailModel expectedModel, ArtistDetailModel returnedModel)
+    private static void FixIds(ArtistDetailModel expectedModel, ArtistDetailModel returnedModel) //TODO: Delete this, as it has no usage? <Vitan_, AKA xkolosv00>
     {
         returnedModel.Id = expectedModel.Id;
     }

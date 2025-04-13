@@ -5,6 +5,11 @@ namespace ICS_Project.BL.Mappers;
 
 public class MusicTrackModelMapper : ModelMapperBase<MusicTrack, MusicTrackListModel, MusicTrackDetailModel>
 {
+    // TODO: FIX THIS, somehow solve circular dependency
+    public ArtistModelMapper artistMapper { get; internal set; } = null!;
+    public GenreModelMapper genreMapper { get; internal set; } = null!;
+    public PlaylistModelMapper playlistMapper { get; internal set; } = null!;
+    
     public override MusicTrackListModel MapToListModel(MusicTrack? entity)
         => entity is null
             ? MusicTrackListModel.Empty
@@ -29,6 +34,12 @@ public class MusicTrackModelMapper : ModelMapperBase<MusicTrack, MusicTrackListM
                 Length = entity.Length,
                 Size = entity.Size,
                 UrlAddress = entity.UrlAddress,
+                Artists = artistMapper.MapToListModel(entity.Artists)
+                    .ToObservableCollection(),
+                Genres = genreMapper.MapToListModel(entity.Genres)
+                    .ToObservableCollection(),
+                Playlists = playlistMapper.MapToListModel(entity.Playlists)
+                    .ToObservableCollection(),  
             };
 
     public override MusicTrack MapToEntity(MusicTrackDetailModel model)
