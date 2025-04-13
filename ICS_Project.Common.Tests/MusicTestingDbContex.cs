@@ -9,7 +9,7 @@ public class MusicTestingDbContext(DbContextOptions contextOptions, bool seedTes
 {
     protected void OnModelCreating(MusicDbContext modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        //base.OnModelCreating(modelBuilder);
 
         if (seedTestingData)
         {
