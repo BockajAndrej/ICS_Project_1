@@ -16,10 +16,10 @@ public static class ArtistsSeeds
         ArtistName = "Ramirez",
     };
 
-    public static readonly Artist TamaImpala = new()
+    public static readonly Artist TameImpala = new()
     {
         Id = Guid.Parse("cf658738-0c80-4f15-b5ec-55401b4d589c"),
-        ArtistName = "TamaImpala",
+        ArtistName = "TameImpala",
     };
 
     public static MusicDbContext SeedArtists(this MusicDbContext db)
@@ -27,7 +27,7 @@ public static class ArtistsSeeds
         db.Set<Artist>().AddRange(
             Chetta,
             Ramirez,
-            TamaImpala
+            TameImpala
         );
         return db;
     }

@@ -1,48 +1,48 @@
 using ICS_Project.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace ICS_Project.DAL.Seeds;
 
 public static class MusisTrackSeeds
 {
-    public static readonly MusicTrack MidnightDrive = new()
+    // Track associated with Ramirez
+    public static readonly MusicTrack TheMysticalWarlock= new()
     {
-        Id = Guid.Parse("e1f2a3b4-c5d6-7890-1234-abcdef123456"),
-        Title = "Midnight Drive",
-        Description = "A late-night driving track.",
-        Length = TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(15),
-        Size = 8.5, // Example size in MB
-        UrlAddress = "http://example.audio/midnight_drive.mp3"
+        Id = Guid.Parse("53430515-7252-44ae-90af-c8940dd88118"),
+        Title = "The Mystical Warlock",
+        Description = "Classic track by Ramirez.",
+        Length = TimeSpan.FromMinutes(2) + TimeSpan.FromSeconds(28), 
+        Size = 5.5, 
+        UrlAddress = "http://example.audio/ramirez_grey_gorilla.mp3"
     };
 
-    public static readonly MusicTrack SunriseGroove = new()
+    public static readonly MusicTrack KnockKnock = new()
     {
-        Id = Guid.Parse("f2a3b4c5-d6e7-8901-2345-bcdef1234567"),
-        Title = "Sunrise Groove",
-        Description = "An upbeat morning vibe.",
-        Length = TimeSpan.Parse("00:03:30"),
-        Size = 6.2,
-        UrlAddress = "http://example.audio/sunrise_groove.mp3"
+        Id = Guid.Parse("9cc0d994-aa0d-4c7c-8ed2-3eb4f8c17a25"),
+        Title = "KnockKnock",
+        Description = "Popular track by Chetta.",
+        Length = TimeSpan.FromMinutes(3) + TimeSpan.FromSeconds(11),
+        Size = 6.8,
+        UrlAddress = "http://example.audio/chetta_bleach.mp3"
     };
 
-    public static readonly MusicTrack DesertEchoes = new()
+    public static readonly MusicTrack IKnow = new()
     {
-        Id = Guid.Parse("a3b4c5d6-e7f8-9012-3456-cdef12345678"),
-        Title = "Desert Echoes",
-        Description = "Ambient soundscape.",
-        Length = new TimeSpan(0, 5, 55),
-        Size = 10.1,
-        UrlAddress = "http://example.audio/desert_echoes.mp3"
+        Id = Guid.Parse("a4c692a0-6091-4cc7-a0a9-a039dd330221"),
+        Title = "The Less I Know The Better",
+        Description = "Iconic hit by Tame Impala.",
+        Length = TimeSpan.FromMinutes(3) + TimeSpan.FromSeconds(36),
+        Size = 7.5,
+        UrlAddress = "http://example.audio/tameimpala_lessiknow.mp3"
     };
 
     public static MusicDbContext SeedMusicTracks(this MusicDbContext db)
     {
         db.Set<MusicTrack>().AddRange(
-            MidnightDrive,
-            SunriseGroove,
-            DesertEchoes
+            TheMysticalWarlock,
+            KnockKnock,
+            IKnow
         );
 
-        return db; // Return the context for chaining
+        return db;
     }
 }

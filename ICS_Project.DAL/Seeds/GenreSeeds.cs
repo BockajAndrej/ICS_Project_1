@@ -23,7 +23,7 @@ public static class GenreSeeds
         GenreName = "Hip Hop"
     };
 
-    public static MusicDbContext SeedArtists(this MusicDbContext db)
+    public static MusicDbContext SeedGenre(this MusicDbContext db)
     {
         db.Set<Genre>().AddRange(
             Pop,

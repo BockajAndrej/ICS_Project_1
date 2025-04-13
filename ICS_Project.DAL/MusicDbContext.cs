@@ -1,6 +1,5 @@
 using ICS_Project.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using ICS_Project.DAL;
 using ICS_Project.DAL.Seeds;
 
 namespace ICS_Project.DAL
@@ -31,16 +30,13 @@ namespace ICS_Project.DAL
                 .WithMany(m => m.Playlists)
                 .UsingEntity(j => j.ToTable("PlaylistMusicTrack"));
 
-            if (seedDemoData)
+            /*if (seedDemoData)
             {
-                ArtistsSeeds.Seed(modelBuilder);
-                GenreSeeds.Seed(modelBuilder);
-                MusisTrackSeeds.Seed(modelBuilder);
-                
-                IngredientSeeds.Seed(modelBuilder);
-                RecipeSeeds.Seed(modelBuilder);
-                IngredientAmountSeeds.Seed(modelBuilder);
-            }
+                ArtistsSeeds.SeedArtists(modelBuilder);
+                GenreSeeds.SeedArtists(modelBuilder);
+                MusisTrackSeeds.SeedMusicTracks(modelBuilder);
+                PlaylistSeeds.Seed(modelBuilder);
+            }*/
         }
     }
 }
