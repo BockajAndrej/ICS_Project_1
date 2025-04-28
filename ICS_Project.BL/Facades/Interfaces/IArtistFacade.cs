@@ -6,5 +6,5 @@ namespace ICS_Project.BL.Facades;
 
 public interface IArtistFacade : IFacade<Artist, ArtistListModel, ArtistDetailModel>
 {
-    
+    public Task<IEnumerable<ArtistListModel>> GetAsync(string searchTerm);
 }
