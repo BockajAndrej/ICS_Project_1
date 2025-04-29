@@ -329,12 +329,9 @@ public class PlaylistFacadeTests : FacadeTestsBase
     public async Task AddMusicTrackToPlaylist_ExistingPlaylistAndTrack_CreatesJoinEntityAndUpdatesPlaylist()
     {
         // Arrange
-        // Použijeme playlist, ktorý NEOBSAHUJE MusicTrackSeeds.NonEmptyMusicTrack1.
-        // Napr. PlaylistSeeds.PlaylistWOutTracks, alebo vytvoríme nový.
         var playlistId = PlaylistSeeds.EmptyPlaylist.Id;
         var trackIdToAdd = MusicTrackSeeds.NonEmptyMusicTrack1.Id;
 
-        // Overíme, že playlist existuje a neobsahuje danú skladbu pred pridaním
         await using (var dbxBefore = await DbContextFactory.CreateDbContextAsync())
         {
             var playlistBefore = await dbxBefore.Playlists
@@ -344,11 +341,11 @@ public class PlaylistFacadeTests : FacadeTestsBase
             Assert.False(playlistBefore.MusicTracks.Any(pmt => pmt.Id == trackIdToAdd),
                 "Playlist by nemal obsahovať skladbu pred testom.");
         }
-
-
-        // Assert
-        // Overíme, že spojovacia entita bola vytvorená a playlist má teraz skladbu
+        
+        await _facadeSUT.AddMusicTrackToPlaylistAsync(playlistId, trackIdToAdd);
+        
         await using var dbxAfter = await DbContextFactory.CreateDbContextAsync();
+        
         var playlistAfter = await dbxAfter.Playlists
             .Include(p => p.MusicTracks)
             .SingleOrDefaultAsync(p => p.Id == playlistId);
@@ -357,14 +354,52 @@ public class PlaylistFacadeTests : FacadeTestsBase
         Assert.True(playlistAfter.MusicTracks.Any(pmt => pmt.Id == trackIdToAdd),
             "Skladba by mala byť pridaná k playlistu cez spojovaciu tabuľku.");
 
-        // Overíme aj vrátený DetailModel z fasády, či má aktualizovanú kolekciu skladieb
-        // Ak vaša fasáda metóda vráti aktualizovaný DetailModel, môžete overiť aj ten.
         var returnedPlaylistModel = await _facadeSUT.GetAsync(playlistId);
         Assert.NotNull(returnedPlaylistModel);
         Assert.True(returnedPlaylistModel.MusicTracks.Any(mt => mt.Id == trackIdToAdd),
              "Vrátený DetailModel by mal obsahovať pridanú skladbu.");
-        // Overte aj NumberOfMusicTracks a TotalPlayTime ak ich fasáda pri pridávaní skladby aktualizuje
+        
         // Assert.Equal(expectedTrackCount, returnedPlaylistModel.MusicTracks.Count);
+    }
+    
+    [Fact]
+    public async Task RemoveMusicTrackFromPlaylist_ExistingPlaylistAndTrack_RemovesJoinEntity()
+    {
+        // Arrange
+        var playlistId = PlaylistSeeds.NonEmptyPlaylist.Id; 
+        var trackIdToRemove = MusicTrackSeeds.NonEmptyMusicTrack1.Id;
+
+        await using (var dbxBefore = await DbContextFactory.CreateDbContextAsync())
+        {
+            var playlistBefore = await dbxBefore.Playlists
+                .Include(p => p.MusicTracks)
+                .SingleOrDefaultAsync(p => p.Id == playlistId);
+
+            Assert.NotNull(playlistBefore);
+            Assert.True(playlistBefore.MusicTracks.Any(mt => mt.Id == trackIdToRemove),
+                "PRE-CONDICIA ZLYHALA: Playlist by mal pred testom na odstránenie obsahovať danú skladbu.");
+            // var initialTrackCount = playlistBefore.MusicTracks.Count;
+        }
+
+        await _facadeSUT.RemoveMusicTrackFromPlaylistAsync(playlistId, trackIdToRemove);
+
+        await using var dbxAfter = await DbContextFactory.CreateDbContextAsync();
+
+        var playlistAfter = await dbxAfter.Playlists
+            .Include(p => p.MusicTracks)
+            .SingleOrDefaultAsync(p => p.Id == playlistId);
+
+        Assert.NotNull(playlistAfter);
+        Assert.False(playlistAfter.MusicTracks.Any(mt => mt.Id == trackIdToRemove),
+            "Skladba by mala byť úspešne odstránená z playlistu (prepojenie v spojovacej tabuľke by malo zmiznúť).");
+
+        // Assert.Equal(initialTrackCount - 1, playlistAfter.MusicTracks.Count);
+
+        var returnedPlaylistModel = await _facadeSUT.GetAsync(playlistId); // Predpokladá, že GetAsync funguje a načítava skladby
+        Assert.NotNull(returnedPlaylistModel);
+        Assert.False(returnedPlaylistModel.MusicTracks.Any(mt => mt.Id == trackIdToRemove),
+             "Vrátený DetailModel po odstránení by nemal obsahovať odstránenú skladbu.");
+         // Assert.Equal(initialTrackCount - 1, returnedPlaylistModel.MusicTracks.Count);
     }
      
     //-------------
@@ -373,8 +408,6 @@ public class PlaylistFacadeTests : FacadeTestsBase
     [Fact]
     public async Task Create_WithNonExistingMusicTrack_Throws_Test()
     {
-        //As is noted in FacadeBase.GuardCollectionsAreNotSet: Inserting or updating models with adjacent collections is baned
-        
         //Arrange
         var detailModel = new PlaylistDetailModel()
         {

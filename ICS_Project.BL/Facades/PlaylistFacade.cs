@@ -5,7 +5,9 @@ using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Models;
 using ICS_Project.DAL.Entities;
 using ICS_Project.DAL.Mappers;
+using ICS_Project.DAL.Repositories;
 using ICS_Project.DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace ICS_Project.BL;
 
@@ -31,32 +33,66 @@ public class PlaylistFacade(
         return await GetListAsync(predicate).ConfigureAwait(false);
     }
     
-    public async Task AddToPlaylist(Guid playlistId, PlaylistDetailModel musicTrack)
+    public async Task AddMusicTrackToPlaylistAsync(Guid playlistId, Guid musicTrackId)
     {
-        await using var uow = _uowf.Create();
+        await using IUnitOfWork uow = _uowf.Create();
         
-        var playlist = await base.GetAsync(playlistId).ConfigureAwait(false);
-        if (playlist == null)
-        {
+        IRepository<Playlist> repository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
+        var playListEntity = await repository.Get().SingleOrDefaultAsync(e => e.Id == playlistId).ConfigureAwait(false);
+        
+        if (playListEntity == null)
             throw new ArgumentException("Playlist not found.", nameof(playlistId));
+        
+        var playlist = await repository.UpdateAsync(playListEntity).ConfigureAwait(false);
+        
+        IRepository<MusicTrack> musicTrackrepository = uow.GetRepository<MusicTrack, MusicTrackEntityMapper>();
+        var musicTrackEntity = await musicTrackrepository.Get().SingleOrDefaultAsync(e => e.Id == musicTrackId).ConfigureAwait(false);
+        
+        if (musicTrackEntity == null)
+            throw new ArgumentException("Music track not found.", nameof(musicTrackId));
+        
+        var musicTrack = await musicTrackrepository.UpdateAsync(musicTrackEntity).ConfigureAwait(false);
+
+        playlist.MusicTracks.Add(musicTrack);
+        musicTrack.Playlists.Add(playlist);
+        
+        await uow.CommitAsync().ConfigureAwait(false);
+    }
+
+    public async Task RemoveMusicTrackFromPlaylistAsync(Guid playlistId, Guid musicTrackId)
+    {
+        await using IUnitOfWork uow = _uowf.Create();
+
+        IRepository<Playlist> playlistRepository = uow.GetRepository<Playlist, PlaylistEntityMapper>();
+        IRepository<MusicTrack> musicTrackRepository = uow.GetRepository<MusicTrack, MusicTrackEntityMapper>();
+
+        var playlistEntity = await playlistRepository.Get()
+            .Include(p => p.MusicTracks)
+            .SingleOrDefaultAsync(p => p.Id == playlistId)
+            .ConfigureAwait(false);
+
+        if (playlistEntity == null)
+            throw new ArgumentException("Playlist not found.", nameof(playlistId));
+
+        var musicTrackEntity = await musicTrackRepository.Get()
+            .SingleOrDefaultAsync(e => e.Id == musicTrackId)
+            .ConfigureAwait(false);
+
+        if (musicTrackEntity == null)
+            throw new ArgumentException("Music track not found.", nameof(musicTrackId));
+
+        var trackToRemove = playlistEntity.MusicTracks.SingleOrDefault(mt => mt.Id == musicTrackId);
+
+        if (trackToRemove == null)
+        {
+            throw new InvalidOperationException($"Music track with id {musicTrackId} was not found in the playlist with id {playlistId}'s collection.");
         }
 
-        await SaveAsync(musicTrack).ConfigureAwait(false);
-    }
-    
-    public async Task RemoveFromPlaylist(Guid playlistId, Guid musicTrackId)
-    {
-        await using var uow = _uowf.Create();
-        
-        var playlist = await base.GetAsync(playlistId).ConfigureAwait(false);
-        if (playlist == null)
-        {
-            throw new ArgumentException("Playlist not found.", nameof(playlistId));
-        }
+        playlistEntity.MusicTracks.Remove(trackToRemove);
+        musicTrackEntity.Playlists.Remove(playlistEntity);
 
-        await DeleteAsync(musicTrackId).ConfigureAwait(false);
+        await uow.CommitAsync().ConfigureAwait(false);
     }
-
     
     protected override ICollection<string> IncludesNavigationPathDetail =>
         new[] { nameof(Playlist.MusicTracks) };
