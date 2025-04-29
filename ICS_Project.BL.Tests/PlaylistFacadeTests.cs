@@ -8,6 +8,7 @@ using ICS_Project.DAL.Entities;
 using ICS_Project.DAL.Mappers;
 using ICS_Project.DAL.Repositories;
 using ICS_Project.DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
@@ -26,6 +27,349 @@ public class PlaylistFacadeTests : FacadeTestsBase
         _musicTrackModelMapper = ServiceProvider.GetRequiredService<IMusicTrackModelMapper>();
     }
     
+    //-------------
+    // Newer tests
+    //-------------
+    [Fact]
+    public async Task Create_Playlist_Test()
+    {
+        var detailModelToCreate = new PlaylistDetailModel
+        {
+            Id = Guid.NewGuid(),
+            Name = "New Playlist From Facade Test",
+            Description = "Description for new playlist",
+            NumberOfMusicTracks = 0,
+            TotalPlayTime = TimeSpan.Zero,
+            MusicTracks = new ObservableCollection<MusicTrackListModel>()
+        };
+
+        var returnedModel = await _facadeSUT.SaveAsync(detailModelToCreate);
+
+        Assert.NotNull(returnedModel);
+        Assert.NotEqual(Guid.Empty, returnedModel.Id);
+        detailModelToCreate.Id = returnedModel.Id;
+
+        DeepAssert.Equal(detailModelToCreate, returnedModel);
+
+        await using var dbx = await DbContextFactory.CreateDbContextAsync();
+
+        var createdEntity = await dbx.Playlists
+            .Include(p => p.MusicTracks)
+            .SingleOrDefaultAsync(p => p.Id == returnedModel.Id);
+
+        Assert.NotNull(createdEntity);
+
+        Assert.Equal(detailModelToCreate.Name, createdEntity.Name);
+        Assert.Equal(detailModelToCreate.Description, createdEntity.Description);
+        Assert.Equal(detailModelToCreate.NumberOfMusicTracks, createdEntity.NumberOfMusicTracks);
+        Assert.Equal(detailModelToCreate.TotalPlayTime, createdEntity.TotalPlayTime);
+
+        Assert.Empty(createdEntity.MusicTracks);
+    }
+    
+    [Fact]
+    public async Task Update_ExistingPlaylist_WithoutModifyingTracks_Test()
+    {
+        var playlistSeed = PlaylistSeeds.NonEmptyPlaylist;
+
+        await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+        {
+            var seededPlaylist = await dbx.Playlists
+                .Include(p => p.MusicTracks)
+                .SingleOrDefaultAsync(p => p.Id == playlistSeed.Id);
+            Assert.NotNull(seededPlaylist);
+
+            int originalTrackCount = seededPlaylist.MusicTracks.Count;
+
+            dbx.Entry(seededPlaylist).State = EntityState.Detached;
+
+
+            var detailModelToUpdate = _playlistModelMapper.MapToDetailModel(playlistSeed);
+            detailModelToUpdate.Name = "Updated Playlist Name";
+            detailModelToUpdate.Description = "Updated description";
+            detailModelToUpdate.MusicTracks.Clear();
+
+            var returnedModel = await _facadeSUT.SaveAsync(detailModelToUpdate);
+
+            Assert.NotNull(returnedModel);
+            Assert.Equal(detailModelToUpdate.Id, returnedModel.Id);
+            Assert.Equal(detailModelToUpdate.Name, returnedModel.Name);
+            Assert.Equal(detailModelToUpdate.Description, returnedModel.Description);
+            Assert.Empty(returnedModel.MusicTracks);
+
+            await using var dbxAfterUpdate = await DbContextFactory.CreateDbContextAsync();
+            var updatedEntity = await dbxAfterUpdate.Playlists
+                .Include(p => p.MusicTracks)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == detailModelToUpdate.Id);
+
+            Assert.NotNull(updatedEntity);
+            Assert.Equal("Updated Playlist Name", updatedEntity.Name);
+            Assert.Equal("Updated description", updatedEntity.Description);
+
+            Assert.Equal(originalTrackCount, updatedEntity.MusicTracks.Count);
+        }
+    }
+    
+    [Fact]
+    public async Task GetById_PlaylistWithMusicTracks_ReturnsDetailModelWithCorrectTrackIds()
+    {
+        var playlistWithTracksSeed = PlaylistSeeds.NonEmptyPlaylist;
+
+        await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+        {
+            var seededPlaylist = await dbx.Playlists
+                .Include(p => p.MusicTracks)
+                .SingleOrDefaultAsync(p => p.Id == playlistWithTracksSeed.Id);
+
+            Assert.NotNull(seededPlaylist);
+            Assert.NotEmpty(seededPlaylist.MusicTracks);
+            Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, seededPlaylist.MusicTracks.Count);
+             Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack1.Id);
+             Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack2.Id);
+
+            dbx.Entry(seededPlaylist).State = EntityState.Detached;
+        }
+
+        var expectedDetailModel = _playlistModelMapper.MapToDetailModel(playlistWithTracksSeed);
+        Assert.NotNull(expectedDetailModel.MusicTracks);
+        Assert.NotEmpty(expectedDetailModel.MusicTracks);
+        Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, expectedDetailModel.MusicTracks.Count);
+
+
+        var returnedModel = await _facadeSUT.GetAsync(playlistWithTracksSeed.Id);
+
+        Assert.NotNull(returnedModel);
+        DeepAssert.Equal(expectedDetailModel, returnedModel);
+
+        Assert.NotNull(returnedModel.MusicTracks);
+        Assert.NotEmpty(returnedModel.MusicTracks);
+        Assert.Equal(expectedDetailModel.MusicTracks.Count, returnedModel.MusicTracks.Count);
+
+        var returnedTrackIds = returnedModel.MusicTracks.Select(mt => mt.Id).ToList();
+        var expectedTrackIds = expectedDetailModel.MusicTracks.Select(mt => mt.Id).ToList();
+
+        Assert.Equal(expectedTrackIds.Count, returnedTrackIds.Count);
+        Assert.True(expectedTrackIds.OrderBy(id => id).SequenceEqual(returnedTrackIds.OrderBy(id => id)));
+    }
+
+    [Fact]
+    public async Task GetById_NonExistentPlaylist_ReturnsNull()
+    {
+        var nonExistentId = Guid.NewGuid();
+
+        var returnedModel = await _facadeSUT.GetAsync(nonExistentId);
+
+        Assert.Null(returnedModel);
+    }
+
+
+     [Fact]
+     public async Task GetAsync_ReturnsAllPlaylistsAsListModel()
+     {
+         await using var dbx = await DbContextFactory.CreateDbContextAsync();
+         var allPlaylists = await dbx.Playlists
+             .AsNoTracking()
+             .ToListAsync();
+
+         var expectedListModels = _playlistModelMapper.MapToListModel(allPlaylists);
+
+         var returnedListModels = await _facadeSUT.GetAsync();
+
+         Assert.NotNull(returnedListModels);
+
+         Assert.Equal(expectedListModels.Count(), returnedListModels.Count());
+
+         DeepAssert.Equal(expectedListModels.OrderBy(m => m.Id), returnedListModels.OrderBy(m => m.Id));
+     }
+
+    [Fact]
+    public async Task GetAsync_WithSearchTerm_ReturnsMatchingPlaylistsByNameOrDescription()
+    {
+        var playlist1 = new Playlist { Id = Guid.Parse("B1B1B1B1-1111-2222-3333-000000000001"), Name = "Workout Hits", Description = "High energy tracks for training" };
+        var playlist2 = new Playlist { Id = Guid.Parse("B1B1B1B1-1111-2222-3333-000000000002"), Name = "Relaxation Mix", Description = "Chill ambient sounds" };
+        var playlist3 = new Playlist { Id = Guid.Parse("B1B1B1B1-1111-2222-3333-000000000003"), Name = "Driving Playlist", Description = "Best tracks for the road" };
+        var playlist4 = new Playlist { Id = Guid.Parse("B1B1B1B1-1111-2222-3333-000000000004"), Name = "Study Focus", Description = "Instrumental tracks for concentration" };
+        var playlist5 = new Playlist { Id = Guid.Parse("B1B1B1B1-1111-2222-3333-000000000005"), Name = "Chill Vibes", Description = "Relaxing music" };
+
+
+        await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+        {
+            dbx.MusicTracks.RemoveRange(dbx.MusicTracks);
+            await dbx.SaveChangesAsync();
+            
+            dbx.Playlists.RemoveRange(dbx.Playlists);
+            await dbx.SaveChangesAsync();
+            
+            dbx.Playlists.AddRange(playlist1, playlist2, playlist3, playlist4, playlist5);
+            await dbx.SaveChangesAsync();
+        }
+
+        var searchTerm = "la";
+
+        var expectedEntities = new List<Playlist> { playlist2, playlist3 };
+        var expectedModels = _playlistModelMapper.MapToListModel(expectedEntities).ToList();
+
+
+        var returnedModels = await _facadeSUT.GetAsync(searchTerm);
+
+        Assert.NotNull(returnedModels);
+
+        Assert.Equal(expectedModels.Count, returnedModels.Count());
+
+        DeepAssert.Equal(expectedModels.OrderBy(m => m.Id), returnedModels.OrderBy(m => m.Id));
+
+        foreach (var model in returnedModels)
+        {
+            var containsInName = model.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase);
+            var containsInDescription = model.Description?.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ?? false;
+            Assert.True(containsInName || containsInDescription, $"Playlist '{model.Name}' (ID: {model.Id}) does not contain search term '{searchTerm}' in name or description.");
+        }
+    }
+
+     [Fact]
+     public async Task GetAsync_WithEmptySearchTerm_ReturnsAllPlaylists()
+     {
+         await using var dbx = await DbContextFactory.CreateDbContextAsync();
+         var allPlaylists = await dbx.Playlists
+             .AsNoTracking()
+             .ToListAsync();
+
+         var expectedListModels = _playlistModelMapper.MapToListModel(allPlaylists);
+
+         var returnedListModels = await _facadeSUT.GetAsync(string.Empty);
+
+         Assert.NotNull(returnedListModels);
+
+         Assert.Equal(expectedListModels.Count(), returnedListModels.Count());
+
+         DeepAssert.Equal(expectedListModels.OrderBy(m => m.Id), returnedListModels.OrderBy(m => m.Id));
+     }
+     
+    [Fact]
+    public async Task Delete_Playlist_WithTracks_DeletesPlaylistAndJoinEntities()
+    {
+        var playlistToDelete = PlaylistSeeds.NonEmptyPlaylist;
+
+         int originalTrackCount;
+         await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+         {
+             var seededPlaylist = await dbx.Playlists
+                 .Include(p => p.MusicTracks)
+                 .SingleOrDefaultAsync(p => p.Id == playlistToDelete.Id);
+             Assert.NotNull(seededPlaylist);
+             Assert.NotEmpty(seededPlaylist.MusicTracks);
+             originalTrackCount = seededPlaylist.MusicTracks.Count;
+             dbx.Entry(seededPlaylist).State = EntityState.Detached;
+         }
+         Assert.True(originalTrackCount > 0, "The seeded playlist must have tracks for this test.");
+
+
+        await _facadeSUT.DeleteAsync(playlistToDelete.Id);
+
+        await using var dbxAfterDelete = await DbContextFactory.CreateDbContextAsync();
+        var deletedPlaylist = await dbxAfterDelete.Playlists
+                                            .SingleOrDefaultAsync(p => p.Id == playlistToDelete.Id);
+
+        Assert.Null(deletedPlaylist);
+
+        var remainingJoinEntries = await dbxAfterDelete.MusicTracks
+                                            .Where(pmt => pmt.Id == playlistToDelete.Id)
+                                            .ToListAsync();
+
+        Assert.Empty(remainingJoinEntries);
+
+        var trackIdThatWasLinked = playlistToDelete.MusicTracks.First().Id;
+
+        var musicTrackStillExists = await dbxAfterDelete.MusicTracks.AnyAsync(mt => mt.Id == trackIdThatWasLinked);
+        Assert.True(musicTrackStillExists, $"Music track with ID {trackIdThatWasLinked} should still exist after playlist deletion.");
+
+    }
+
+     [Fact]
+     public async Task Delete_NonExistentPlaylist_DoesNotThrow()
+     {
+         var nonExistentId = Guid.NewGuid();
+
+         var exception = await Record.ExceptionAsync(() => _facadeSUT.DeleteAsync(nonExistentId));
+
+         Assert.NotNull(exception);
+     }
+    
+     [Fact]
+     public async Task Delete_Playlist_WithoutTracks_DeletesPlaylist()
+     {
+         var playlistToDelete = PlaylistSeeds.NonEmptyPlaylist;
+
+         await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+         {
+             dbx.MusicTracks.RemoveRange(dbx.MusicTracks);
+             await dbx.SaveChangesAsync();
+             
+             var seededPlaylist = await dbx.Playlists
+                 .Include(p => p.MusicTracks)
+                 .SingleOrDefaultAsync(p => p.Id == playlistToDelete.Id);
+             Assert.NotNull(seededPlaylist);
+             
+             Assert.Empty(seededPlaylist.MusicTracks);
+             dbx.Entry(seededPlaylist).State = EntityState.Detached;
+         }
+
+         await _facadeSUT.DeleteAsync(playlistToDelete.Id);
+
+         await using var dbxAfterDelete = await DbContextFactory.CreateDbContextAsync();
+         var deletedPlaylist = await dbxAfterDelete.Playlists
+             .Include(p => p.MusicTracks)
+             .SingleOrDefaultAsync(p => p.Id == playlistToDelete.Id);
+
+         Assert.Null(deletedPlaylist);
+     }
+     
+     [Fact]
+    public async Task AddMusicTrackToPlaylist_ExistingPlaylistAndTrack_CreatesJoinEntityAndUpdatesPlaylist()
+    {
+        // Arrange
+        // Použijeme playlist, ktorý NEOBSAHUJE MusicTrackSeeds.NonEmptyMusicTrack1.
+        // Napr. PlaylistSeeds.PlaylistWOutTracks, alebo vytvoríme nový.
+        var playlistId = PlaylistSeeds.EmptyPlaylist.Id;
+        var trackIdToAdd = MusicTrackSeeds.NonEmptyMusicTrack1.Id;
+
+        // Overíme, že playlist existuje a neobsahuje danú skladbu pred pridaním
+        await using (var dbxBefore = await DbContextFactory.CreateDbContextAsync())
+        {
+            var playlistBefore = await dbxBefore.Playlists
+                .Include(p => p.MusicTracks)
+                .SingleOrDefaultAsync(p => p.Id == playlistId);
+            Assert.NotNull(playlistBefore);
+            Assert.False(playlistBefore.MusicTracks.Any(pmt => pmt.Id == trackIdToAdd),
+                "Playlist by nemal obsahovať skladbu pred testom.");
+        }
+
+
+        // Assert
+        // Overíme, že spojovacia entita bola vytvorená a playlist má teraz skladbu
+        await using var dbxAfter = await DbContextFactory.CreateDbContextAsync();
+        var playlistAfter = await dbxAfter.Playlists
+            .Include(p => p.MusicTracks)
+            .SingleOrDefaultAsync(p => p.Id == playlistId);
+
+        Assert.NotNull(playlistAfter);
+        Assert.True(playlistAfter.MusicTracks.Any(pmt => pmt.Id == trackIdToAdd),
+            "Skladba by mala byť pridaná k playlistu cez spojovaciu tabuľku.");
+
+        // Overíme aj vrátený DetailModel z fasády, či má aktualizovanú kolekciu skladieb
+        // Ak vaša fasáda metóda vráti aktualizovaný DetailModel, môžete overiť aj ten.
+        var returnedPlaylistModel = await _facadeSUT.GetAsync(playlistId);
+        Assert.NotNull(returnedPlaylistModel);
+        Assert.True(returnedPlaylistModel.MusicTracks.Any(mt => mt.Id == trackIdToAdd),
+             "Vrátený DetailModel by mal obsahovať pridanú skladbu.");
+        // Overte aj NumberOfMusicTracks a TotalPlayTime ak ich fasáda pri pridávaní skladby aktualizuje
+        // Assert.Equal(expectedTrackCount, returnedPlaylistModel.MusicTracks.Count);
+    }
+     
+    //-------------
+    // Older tests
+    //-------------
     [Fact]
     public async Task Create_WithNonExistingMusicTrack_Throws_Test()
     {

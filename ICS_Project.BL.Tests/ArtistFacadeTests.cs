@@ -154,7 +154,7 @@ public class ArtistFacadeTests : FacadeTestsBase
     }
     
     [Fact]
-    public async Task GetID_OneToOne_Test_Refactored()
+    public async Task GetID_OneToOne_Test_New()
     {
         // Arrange
         var artistWOutTracksSeed = ArtistSeeds.ArtistWOutTracks;

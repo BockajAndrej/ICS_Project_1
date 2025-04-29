@@ -15,6 +15,8 @@ public class PlaylistFacade(
     : FacadeBase<Playlist, PlaylistListModel, PlaylistDetailModel, PlaylistEntityMapper>(uowf, modelMapper),
         IPlaylistFacade
 {
+    private readonly IUnitOfWorkFactory _uowf = uowf;
+
     public async Task<IEnumerable<PlaylistListModel>> GetAsync(string searchTerm)
     {
         // Null returns each artist in db
@@ -28,6 +30,33 @@ public class PlaylistFacade(
 
         return await GetListAsync(predicate).ConfigureAwait(false);
     }
+    
+    public async Task AddToPlaylist(Guid playlistId, PlaylistDetailModel musicTrack)
+    {
+        await using var uow = _uowf.Create();
+        
+        var playlist = await base.GetAsync(playlistId).ConfigureAwait(false);
+        if (playlist == null)
+        {
+            throw new ArgumentException("Playlist not found.", nameof(playlistId));
+        }
+
+        await SaveAsync(musicTrack).ConfigureAwait(false);
+    }
+    
+    public async Task RemoveFromPlaylist(Guid playlistId, Guid musicTrackId)
+    {
+        await using var uow = _uowf.Create();
+        
+        var playlist = await base.GetAsync(playlistId).ConfigureAwait(false);
+        if (playlist == null)
+        {
+            throw new ArgumentException("Playlist not found.", nameof(playlistId));
+        }
+
+        await DeleteAsync(musicTrackId).ConfigureAwait(false);
+    }
+
     
     protected override ICollection<string> IncludesNavigationPathDetail =>
         new[] { nameof(Playlist.MusicTracks) };

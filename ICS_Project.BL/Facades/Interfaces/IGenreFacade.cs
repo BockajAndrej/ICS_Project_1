@@ -5,5 +5,5 @@ namespace ICS_Project.BL.Facades;
 
 public interface IGenreFacade : IFacade<Genre, GenreListModel, GenreDetailModel>
 {
-    
+    public Task<IEnumerable<GenreListModel>> GetAsync(string searchTerm);
 }

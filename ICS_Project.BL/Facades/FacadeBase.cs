@@ -89,7 +89,7 @@ public abstract class FacadeBase<TEntity, TListModel, TDetailModel, TEntityMappe
 
         return result;
     }
-    
+
     private static void GuardCollectionsAreNotSet(TDetailModel model)
     {
         IEnumerable<PropertyInfo> collectionProperties = model
