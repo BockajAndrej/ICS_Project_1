@@ -41,3 +41,4 @@ project.assets.json
 # Local scripts
 *.sh~
 *.bat~
+/.vs
