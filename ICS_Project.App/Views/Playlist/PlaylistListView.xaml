@@ -5,7 +5,7 @@
              x:Class="ICS_Project.App.Views.PlaylistListView"
              Title="PlaylistListView">
 
-    
+
     <ContentPage.BindingContext>
         <playlist:PlaylistListViewModel />
     </ContentPage.BindingContext>
@@ -27,3 +27,4 @@
     </CollectionView>
 
 </ContentPage>
+    
