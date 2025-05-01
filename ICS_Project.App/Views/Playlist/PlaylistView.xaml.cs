@@ -1,0 +1,33 @@
+using ICS_Project.App.ViewModels.Playlist;
+
+namespace ICS_Project.App.Views.Playlist;
+
+public partial class PlaylistView : ContentPage
+{
+    public PlaylistView(PlaylistListViewModel playlistListViewModel)
+    {
+        InitializeComponent();
+
+        Grid mainGrid = this.Content as Grid;
+
+        if (mainGrid != null)
+        {
+            // 1. Vytvorenie inštancie UI elementu
+            // Použite správny názov triedy, napr. PlaylistListViewControl
+            var playlistListView = new PlaylistListView(playlistListViewModel); // Alebo new PlaylistListView() ak ste nemenili názov
+
+            // 2. Nastavenie pripojenej vlastnosti Grid.Column
+            // Metóda SetColumn je statická metóda triedy Grid
+            Grid.SetColumn(playlistListView, 0);
+
+            // 3. Pridanie elementu do kolekcie detí Gridu
+            mainGrid.Children.Add(playlistListView);
+        }
+        else
+        {
+            // Ak sa sem dostanete, znamená to, že sa nepodarilo získať referenciu na Grid
+            // Skontrolujte XAML a ako získavate referenciu na Grid.
+            System.Diagnostics.Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
+        }
+    }
+}

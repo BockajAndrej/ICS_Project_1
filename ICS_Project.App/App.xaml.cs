@@ -1,12 +1,16 @@
-﻿namespace ICS_Project.App
+using ICS_Project.App.Views.Playlist;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ICS_Project.App
 {
     public partial class App : Application
     {
-        public App()
+        public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            //MainPage = new AppShell();
+            MainPage = serviceProvider.GetRequiredService<PlaylistView>();
         }
     }
 }

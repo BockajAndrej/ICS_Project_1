@@ -1,16 +1,21 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
 namespace ICS_Project.BL.Models;
 
-public class PlaylistDetailModel : ModelBase
+public partial class PlaylistDetailModel : ModelBase
 {
-    public required string Name { get; set; }
-    public string Description  { get; set; }
-    public required int NumberOfMusicTracks { get; set; }
-    public required TimeSpan TotalPlayTime { get; set; }
-    
+    [ObservableProperty]
+    public partial string Name { get; set; }
+    [ObservableProperty]
+    public partial string Description { get; set; }
+    [ObservableProperty]
+    public partial int NumberOfMusicTracks { get; set; }
+    [ObservableProperty]
+    public partial TimeSpan TotalPlayTime { get; set; }
+
     public ObservableCollection<MusicTrackListModel> MusicTracks { get; init; } = new();
-    
+
     public static PlaylistDetailModel Empty = new()
     {
         Id = Guid.NewGuid(),
@@ -18,5 +23,5 @@ public class PlaylistDetailModel : ModelBase
         Description = string.Empty,
         NumberOfMusicTracks = 0,
         TotalPlayTime = TimeSpan.Zero
-    }; 
+    };
 }

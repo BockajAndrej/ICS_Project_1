@@ -1,9 +1,13 @@
-namespace ICS_Project.App.Views;
+using ICS_Project.App.ViewModels.Playlist;
 
-public partial class PlaylistListView : ContentPage
+namespace ICS_Project.App.Views.Playlist;
+
+public partial class PlaylistListView : ContentView
 {
-    public PlaylistListView()
+    public PlaylistListView(PlaylistListViewModel playlistListViewModel)
     {
         InitializeComponent();
+
+        this.BindingContext = playlistListViewModel;
     }
 }

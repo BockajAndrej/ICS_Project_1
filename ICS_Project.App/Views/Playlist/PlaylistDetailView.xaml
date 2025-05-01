@@ -1,12 +1,103 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistDetailView"
-             Title="PlaylistDetailView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist">
+
+    <ContentView.BindingContext>
+        <playlist:PlaylistDetailViewModel />
+    </ContentView.BindingContext>
+
+    <Grid RowDefinitions="Auto, Auto, *">
+        <!-- Detail, Filter, Zoznam skladieb -->
+
+        <!-- RIADOK 0: Detail playlistu/albumu (Horná sekcia) -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
+            <!-- Rozloženie: Obrázok | Texty | Tlačidlo -->
+
+            <Image Grid.Column="0" 
+                   Source="redhotchilli.png" 
+                   WidthRequest="150" 
+                   HeightRequest="150" 
+                   Aspect="AspectFill" 
+                   VerticalOptions="Start"/>
+
+            <StackLayout Grid.Column="1" Margin="10,0,10,0" VerticalOptions="Start">
+                <Label Text="{Binding playlistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
+                <HorizontalStackLayout Spacing="5">
+                    <Label Text="autor: " VerticalOptions="Center"/>
+                    <Label Text="Vlastny" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Label Text=" | " VerticalOptions="Center"/>
+                    <Label Text="{Binding playlistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
+                    <Label Text=" skladeb" VerticalOptions="Center"/>
+                    <Label Text=" | " VerticalOptions="Center"/>
+                    <Label Text="{Binding playlistDetail.TotalPlayTime}" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+                <Label Text="{Binding playlistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
+            </StackLayout>
+
+            <!-- Tlačidlo možností "..." (Stĺpec 2) -->
+            <Button Grid.Column="2" Text="..." WidthRequest="40" HeightRequest="40" VerticalOptions="Start" Command="{Binding ModifyTrackCommand}"/>
+        </Grid>
+
+        <!-- RIADOK 1: Vyhľadávanie/Filter skladieb -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
+            <!-- SearchBar (Stĺpec 0) -->
+            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist"
+                       Text="Vyhladavanie"/>
+            <!-- Tlačidlo Filter (Stĺpec 1) -->
+            <Button Grid.Column="1" Text="Filtry"/>
+        </Grid>
+
+        <!-- RIADOK 2: Zoznam skladieb -->
+        <StackLayout Grid.Row="2" Margin="10, 0, 10, 10">
+            <!-- Usporiada hlavičku a zoznam vertikálne -->
+
+            <!-- Hlavička zoznamu skladieb -->
+            <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                <!-- Rozloženie stĺpcov hlavičky -->
+                <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
+                <!-- Číslo -->
+                <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
+                <!-- Názov skladby -->
+                <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
+                <!-- Umělec -->
+                <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
+                <!-- Album -->
+                <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
+                <!-- Dĺžka -->
+                <Label Grid.Column="5" Text=""/>
+                <!-- Prázdne pre tlačidlo "..." -->
+            </Grid>
+
+            <!-- Samotný zoznam skladieb -->
+            <CollectionView ItemsSource="{Binding playlistDetail.MusicTracks}">
+                <CollectionView.ItemTemplate>
+                    <!-- Šablóna pre zobrazenie jednej skladby -->
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                            <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
+
+                            <!-- Názov skladby (Stĺpec 1) -->
+                            <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
+
+                            <!-- Umělec (Stĺpec 2) -->
+                            <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
+
+                            <!-- Album (Stĺpec 3) -->
+                            <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
+
+                            <!-- Dĺžka (Stĺpec 4) -->
+                            <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
+
+                            <!-- Tlačidlo možností "..." (Stĺpec 5) -->
+                            <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+
+    </Grid>
+</ContentView>

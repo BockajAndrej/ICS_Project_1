@@ -1,30 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:playlist="using:ICS_Project.App.ViewModels.Playlist"
-             x:Class="ICS_Project.App.Views.PlaylistListView"
-             Title="PlaylistListView">
+             x:Class="ICS_Project.App.Views.Playlist.PlaylistListView"
+             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
+             >
 
+    <Grid RowDefinitions="auto, *" ColumnDefinitions="auto, *">
 
-    <ContentPage.BindingContext>
-        <playlist:PlaylistListViewModel />
-    </ContentPage.BindingContext>
+        <!-- Vyhľadávací/Filter panel -->
+        <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
+            <SearchBar Text="Search" Grid.Column="0"/>
+            <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
+        </Grid>
 
-    <CollectionView ItemsSource="{Binding PlaylistList}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Grid ColumnDefinitions="Auto, *"
-                      ColumnSpacing="10">
-                    <Label Grid.Column="0"
-                           FontSize="20"
-                           TextColor="Blue"
-                           Text="{Binding Name}"></Label>
-                    <Label Grid.Column="1" 
-                           Text="{Binding Description}"></Label>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Values}">
+            <CollectionView.ItemTemplate>
+                <!-- Toto definuje, ako vyzerá jedna položka v zozname -->
+                <DataTemplate>
+                    <Border>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- Stĺpec pre obrázok -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- Stĺpec pre textové informácie -->
+                            </Grid.ColumnDefinitions>
 
-</ContentPage>
-    
+                            <!-- Obrázok albumu -->
+                            <Image Grid.Column="0" Source="redhotchilli.png" MaximumHeightRequest="50" MaximumWidthRequest="50"/>
+
+                            <!-- Textové informácie -->
+
+                            <StackLayout Grid.Column="1" Margin="10,0,0,0">
+                                <Label Text="{Binding Name}"/>
+                                <Label Text="{Binding Description}" FontSize="10" TextColor="Silver"/>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentView>

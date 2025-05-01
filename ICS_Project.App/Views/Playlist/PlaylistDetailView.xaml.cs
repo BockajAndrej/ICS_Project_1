@@ -1,6 +1,6 @@
 namespace ICS_Project.App.Views.Playlist;
 
-public partial class PlaylistDetailView : ContentPage
+public partial class PlaylistDetailView : ContentView
 {
 	public PlaylistDetailView()
 	{

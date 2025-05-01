@@ -1,14 +1,19 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Models;
 
-public class PlaylistListModel : ModelBase
+public partial class PlaylistListModel : ModelBase
 {
-    public required string Name { get; set; }
-    public string Description  { get; set; }
-    public required int NumberOfMusicTracks { get; set; }
-    public required TimeSpan TotalPlayTime { get; set; }
-    
+    [ObservableProperty]
+    public partial string Name { get; set; }
+    [ObservableProperty]
+    public partial string Description { get; set; }
+    [ObservableProperty]
+    public partial int NumberOfMusicTracks { get; set; }
+    [ObservableProperty]
+    public partial TimeSpan TotalPlayTime { get; set; }
+
     public static PlaylistListModel Empty = new()
     {
         Id = Guid.NewGuid(),
@@ -16,5 +21,5 @@ public class PlaylistListModel : ModelBase
         Description = string.Empty,
         NumberOfMusicTracks = 0,
         TotalPlayTime = TimeSpan.Zero
-    }; 
+    };
 }
