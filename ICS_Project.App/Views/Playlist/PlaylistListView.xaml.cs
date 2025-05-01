@@ -1,4 +1,4 @@
-namespace ICS_Project.App.Views;
+namespace ICS_Project.App.Views.Playlist;
 
 public partial class PlaylistListView : ContentPage
 {

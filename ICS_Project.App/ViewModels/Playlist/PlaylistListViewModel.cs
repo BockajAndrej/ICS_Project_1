@@ -1,3 +1,4 @@
+using ICS_Project.App.ViewModels.MusicTrack;
 using ICS_Project.BL.Models;
 
 namespace ICS_Project.App.ViewModels.Playlist
@@ -15,5 +16,8 @@ namespace ICS_Project.App.ViewModels.Playlist
                     TotalPlayTime = new TimeSpan(1, 12, 0) // 1 hour, 12 minutes
                 }
         };
+
+        public MusicTrackDetailViewModel SongDetailForDisplay { get; set; } = new MusicTrackDetailViewModel();
+
     }
 }

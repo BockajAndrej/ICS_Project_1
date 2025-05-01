@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:playlist="using:ICS_Project.App.ViewModels.Playlist"
-             x:Class="ICS_Project.App.Views.PlaylistListView"
-             Title="PlaylistListView">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+            xmlns:playlist="using:ICS_Project.App.ViewModels.Playlist"  
+            xmlns:musicTrack="using:ICS_Project.App.Views.MusicTrack"  
+            xmlns:musicTrackVm="using:ICS_Project.App.ViewModels.MusicTrack"  
+            x:Class="ICS_Project.App.Views.Playlist.PlaylistListView"  
+            Title="PlaylistListView">  
+
+   <ContentPage.BindingContext>  
+       <playlist:PlaylistListViewModel />  
+   </ContentPage.BindingContext>  
+
+   <VerticalStackLayout>  
+
+       <CollectionView ItemsSource="{Binding PlaylistList}" HeightRequest="300">  
+           <CollectionView.ItemTemplate>  
+               <DataTemplate>  
+                   <Grid ColumnDefinitions="Auto, auto" ColumnSpacing="10">  
+                       <Label Grid.Column="0" FontSize="20" TextColor="Blue" Text="{Binding Name}"></Label>  
+                       <Label Grid.Column="1" Text="{Binding Description}"></Label>  
+                   </Grid>  
+               </DataTemplate>  
+           </CollectionView.ItemTemplate>  
+       </CollectionView>  
+
+       
+
+       <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>  
+
+       <musicTrack:MusicTrackDetailView>  
+           <musicTrack:MusicTrackDetailView.BindingContext>  
+               <musicTrackVm:MusicTrackDetailViewModel />  
+           </musicTrack:MusicTrackDetailView.BindingContext>  
+       </musicTrack:MusicTrackDetailView>
 
 
-    <ContentPage.BindingContext>
-        <playlist:PlaylistListViewModel />
-    </ContentPage.BindingContext>
+        <BoxView HeightRequest="1" Color="red" Margin="0,10"/>
 
-    <CollectionView ItemsSource="{Binding PlaylistList}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Grid ColumnDefinitions="Auto, *"
-                      ColumnSpacing="10">
-                    <Label Grid.Column="0"
-                           FontSize="20"
-                           TextColor="Blue"
-                           Text="{Binding Name}"></Label>
-                    <Label Grid.Column="1" 
-                           Text="{Binding Description}"></Label>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+        <musicTrack:MusicTrackEditView>
+            <musicTrack:MusicTrackEditView.BindingContext>
+                <musicTrackVm:MusicTrackEditViewModel />
+            </musicTrack:MusicTrackEditView.BindingContext>
+        </musicTrack:MusicTrackEditView>
+
+
+
+    </VerticalStackLayout>  
 
 </ContentPage>
     
