@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView"
-             Title="MusicTrackListView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
+             x:DataType="vm:MusicTrackListViewModel">
+
+
+    <VerticalStackLayout Spacing="10">
+        <Grid ColumnDefinitions="Auto, *"
+              ColumnSpacing="10">
+
+            <Label
+                FontSize="15"
+                TextColor="Aqua"
+                Text="{Binding MusicTrackList[0].Title }"></Label>
+
+        </Grid>
+
     </VerticalStackLayout>
-</ContentPage>
+
+    
+</ContentView >

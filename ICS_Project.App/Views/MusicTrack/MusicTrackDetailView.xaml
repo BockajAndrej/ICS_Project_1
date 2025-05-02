@@ -1,12 +1,118 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackDetailView"
-             Title="MusicTrackDetailView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+            xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"  
+            x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackDetailView"
+            x:DataType="vm:MusicTrackDetailViewModel">
+
+
+   <Grid ColumnDefinitions="auto, *"
+         RowDefinitions="Auto, auto, auto, auto, auto, auto"
+         ColumnSpacing="10"
+         RowSpacing="5"
+         BackgroundColor="{StaticResource PageBackgroundColor}">
+
+
+
+        <Frame
+                Grid.Column="0"
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                CornerRadius="30"
+                IsClippedToBounds="True"
+                BorderColor="{StaticResource BordersColor}"
+                Padding="0"
+                WidthRequest="180"
+                HeightRequest="180"
+                Margin="10,10,5,5">
+            
+            <Image  
+                    Source="https://qodeinteractive.com/magazine/wp-content/uploads/2020/06/16-Tame-Impala.jpg"  
+                    Aspect="AspectFill"
+                    WidthRequest="180"
+                    HeightRequest="180" />
+        </Frame>
+
+
+
+        <Frame
+            Grid.Column="1"
+            Grid.Row="0"
+            Grid.RowSpan="5"
+            CornerRadius="30"
+            BackgroundColor="{StaticResource SecondaryCardBackgroundColor}"
+            Padding="10"
+            Margin="0,10,5,5">
+            <VerticalStackLayout Spacing="5">
+                <Label
+                   FontSize="25"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource PrimaryTextColor}"
+                   Text="{Binding TestMusicTrack.Title}">
+                </Label>
+
+                <Label
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource PrimaryTextColor}"
+                   Text="Autor: {Binding TestMusicTrack.Autor}">
+                </Label>
+
+                <Label
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    TextColor="{StaticResource PrimaryTextColor}"
+                    Text="Album: {Binding TestMusicTrack.Album}">
+                </Label>
+
+                <Label
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource PrimaryTextColor}"
+                   Text="Genre{Binding TestMusicTrack.Genres}">
+                </Label>
+
+                <Label
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource PrimaryTextColor}"
+                   Text="{Binding TestMusicTrack.Length}">
+                </Label>
+            </VerticalStackLayout>
+        </Frame>
+
+
+        <Frame
+           Grid.Column="0" Grid.ColumnSpan="2"
+           Grid.Row="5"
+           CornerRadius="15"
+           BackgroundColor="{StaticResource CardBackgroundColor}"
+           Padding="10"
+           Margin="10, 5, 5, 5">
+            <Label
+              FontSize="12"
+              FontAttributes="Bold"
+              TextColor="White"
+              Text="{Binding TestMusicTrack.Description}">
+            </Label>
+        </Frame>
+
+        <Button
+            Grid.Row="0" Grid.Column="1"
+            CornerRadius="16"
+            WidthRequest="40"
+            HeightRequest="40"
+            VerticalOptions="Start"
+            HorizontalOptions="End"
+            BorderWidth="2"
+            BackgroundColor="{StaticResource PrimaryButtonColor}"
+            TextColor="{StaticResource PrimaryTextColor}"
+            Margin="0, 15, 15, 10"
+            Padding="1"
+            FontSize="15"
+            Text="...">
+        </Button>
+
+    </Grid>  
+
+</ContentView>
