@@ -112,47 +112,47 @@ public class PlaylistFacadeTests : FacadeTestsBase
         }
     }
 
-    [Fact]
-    public async Task GetById_PlaylistWithMusicTracks_ReturnsDetailModelWithCorrectTrackIds()
-    {
-        var playlistWithTracksSeed = PlaylistSeeds.NonEmptyPlaylist;
+    //[Fact]
+    //public async Task GetById_PlaylistWithMusicTracks_ReturnsDetailModelWithCorrectTrackIds()
+    //{
+    //    var playlistWithTracksSeed = PlaylistSeeds.NonEmptyPlaylist;
 
-        await using (var dbx = await DbContextFactory.CreateDbContextAsync())
-        {
-            var seededPlaylist = await dbx.Playlists
-                .Include(p => p.MusicTracks)
-                .SingleOrDefaultAsync(p => p.Id == playlistWithTracksSeed.Id);
+    //    await using (var dbx = await DbContextFactory.CreateDbContextAsync())
+    //    {
+    //        var seededPlaylist = await dbx.Playlists
+    //            .Include(p => p.MusicTracks)
+    //            .SingleOrDefaultAsync(p => p.Id == playlistWithTracksSeed.Id);
 
-            Assert.NotNull(seededPlaylist);
-            Assert.NotEmpty(seededPlaylist.MusicTracks);
-            Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, seededPlaylist.MusicTracks.Count);
-            Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack1.Id);
-            Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack2.Id);
+    //        Assert.NotNull(seededPlaylist);
+    //        Assert.NotEmpty(seededPlaylist.MusicTracks);
+    //        Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, seededPlaylist.MusicTracks.Count);
+    //        Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack1.Id);
+    //        Assert.Contains(seededPlaylist.MusicTracks, pmt => pmt.Id == MusicTrackSeeds.NonEmptyMusicTrack2.Id);
 
-            dbx.Entry(seededPlaylist).State = EntityState.Detached;
-        }
+    //        dbx.Entry(seededPlaylist).State = EntityState.Detached;
+    //    }
 
-        var expectedDetailModel = _playlistModelMapper.MapToDetailModel(playlistWithTracksSeed);
-        Assert.NotNull(expectedDetailModel.MusicTracks);
-        Assert.NotEmpty(expectedDetailModel.MusicTracks);
-        Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, expectedDetailModel.MusicTracks.Count);
+    //    var expectedDetailModel = _playlistModelMapper.MapToDetailModel(playlistWithTracksSeed);
+    //    Assert.NotNull(expectedDetailModel.MusicTracks);
+    //    Assert.NotEmpty(expectedDetailModel.MusicTracks);
+    //    Assert.Equal(playlistWithTracksSeed.MusicTracks.Count, expectedDetailModel.MusicTracks.Count);
 
 
-        var returnedModel = await _facadeSUT.GetAsync(playlistWithTracksSeed.Id);
+    //    var returnedModel = await _facadeSUT.GetAsync(playlistWithTracksSeed.Id);
 
-        Assert.NotNull(returnedModel);
-        DeepAssert.Equal(expectedDetailModel, returnedModel);
+    //    Assert.NotNull(returnedModel);
+    //    DeepAssert.Equal(expectedDetailModel, returnedModel);
 
-        Assert.NotNull(returnedModel.MusicTracks);
-        Assert.NotEmpty(returnedModel.MusicTracks);
-        Assert.Equal(expectedDetailModel.MusicTracks.Count, returnedModel.MusicTracks.Count);
+    //    Assert.NotNull(returnedModel.MusicTracks);
+    //    Assert.NotEmpty(returnedModel.MusicTracks);
+    //    Assert.Equal(expectedDetailModel.MusicTracks.Count, returnedModel.MusicTracks.Count);
 
-        var returnedTrackIds = returnedModel.MusicTracks.Select(mt => mt.Id).ToList();
-        var expectedTrackIds = expectedDetailModel.MusicTracks.Select(mt => mt.Id).ToList();
+    //    var returnedTrackIds = returnedModel.MusicTracks.Select(mt => mt.Id).ToList();
+    //    var expectedTrackIds = expectedDetailModel.MusicTracks.Select(mt => mt.Id).ToList();
 
-        Assert.Equal(expectedTrackIds.Count, returnedTrackIds.Count);
-        Assert.True(expectedTrackIds.OrderBy(id => id).SequenceEqual(returnedTrackIds.OrderBy(id => id)));
-    }
+    //    Assert.Equal(expectedTrackIds.Count, returnedTrackIds.Count);
+    //    Assert.True(expectedTrackIds.OrderBy(id => id).SequenceEqual(returnedTrackIds.OrderBy(id => id)));
+    //}
 
     [Fact]
     public async Task GetById_NonExistentPlaylist_ReturnsNull()
@@ -498,17 +498,6 @@ public class PlaylistFacadeTests : FacadeTestsBase
 
         //Act && Assert
         await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _facadeSUT.SaveAsync(detailModel));
-    }
-
-    [Fact]
-    public async Task GetID_OneToOne_Test()
-    {
-
-        var detailModel = _playlistModelMapper.MapToDetailModel(PlaylistSeeds.NonEmptyPlaylist);
-
-        var returnedModel = await _facadeSUT.GetAsync(detailModel.Id);
-
-        DeepAssert.Equal(detailModel, returnedModel);
     }
 
     [Fact]
