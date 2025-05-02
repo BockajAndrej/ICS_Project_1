@@ -8,38 +8,83 @@
 
     <Grid RowDefinitions="auto, *" ColumnDefinitions="auto, *">
 
-        <!-- Vyhľadávací/Filter panel -->
+        <!-- Search/Filter panel -->
         <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
-            <SearchBar Text="Search" Grid.Column="0"/>
+            <SearchBar Text="{Binding SearchPlaylist}" SearchCommand="{Binding SearchPlaylistsCommand}" Placeholder="Zadajte názov pre vyhľadanie..." Grid.Column="0" />
             <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
         </Grid>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Values}">
+
+        <CollectionView Grid.Row="1"
+                ItemsSource="{Binding Playlists}"
+                SelectionMode="Single"
+                Margin="10">
+            <!-- We add a border around CollectionView -->
+
+            <!-- Spacing between items -->
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
-                <!-- Toto definuje, ako vyzerá jedna položka v zozname -->
                 <DataTemplate>
-                    <Border>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <!-- Stĺpec pre obrázok -->
-                                <ColumnDefinition Width="*"/>
-                                <!-- Stĺpec pre textové informácie -->
-                            </Grid.ColumnDefinitions>
 
-                            <!-- Obrázok albumu -->
-                            <Image Grid.Column="0" Source="redhotchilli.png" MaximumHeightRequest="50" MaximumWidthRequest="50"/>
+                    <Frame Padding="10"
+                   CornerRadius="8"
+                   HasShadow="{OnPlatform iOS=true, Android=true, Default=false}"
+                        BorderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray950}}">
 
-                            <!-- Textové informácie -->
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
 
-                            <StackLayout Grid.Column="1" Margin="10,0,0,0">
-                                <Label Text="{Binding Name}"/>
-                                <Label Text="{Binding Description}" FontSize="10" TextColor="Silver"/>
-                            </StackLayout>
+                            <!-- Image for playlist-->
+                            <Image Grid.Column="0"
+                           Source="{Binding ImageUrl, FallbackValue='redhotchilli.png'}"
+                                HeightRequest="60"
+                           WidthRequest="60"
+                           Aspect="AspectFill"
+                                VerticalOptions="Center">
+                                <!-- Image rounding -->
+                                <Image.Clip>
+                                    <RoundRectangleGeometry CornerRadius="4" Rect="0,0,60,60"/>
+                                </Image.Clip>
+                            </Image>
+
+                            <!-- Text info -->
+                            <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         Spacing="4">
+
+                                <!-- Name -->
+                                <Label Text="{Binding Name}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                               LineBreakMode="TailTruncation"
+                                    SemanticProperties.HeadingLevel="Level2"/>
+
+                                <!-- Description -->
+                                <Label Text="{Binding Description}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}"
+                                        LineBreakMode="TailTruncation"
+                               MaxLines="2"/>
+                            </VerticalStackLayout>
                         </Grid>
-                    </Border>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
+            <!-- Empty list -->
+            <CollectionView.EmptyView>
+                <ContentView Padding="20">
+                    <Label Text="Zatiaľ tu nie sú žiadne playlisty."
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   TextColor="{StaticResource Gray500}"/>
+                </ContentView>
+            </CollectionView.EmptyView>
+
         </CollectionView>
 
     </Grid>

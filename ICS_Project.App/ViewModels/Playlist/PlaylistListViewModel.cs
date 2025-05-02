@@ -13,28 +13,44 @@ namespace ICS_Project.App.ViewModels.Playlist
     public partial class PlaylistListViewModel : ObservableObject
     {
         private readonly IPlaylistFacade _facade;
+        string timestamp;
 
         [ObservableProperty]
-        private ObservableCollection<PlaylistListModel> _values = [];
+        private ObservableCollection<PlaylistListModel> _playlists = [];
 
-        public async Task InitializeAsync()
+        [ObservableProperty]
+        private string _searchPlaylist;
+
+
+        [RelayCommand]
+        private async Task SearchPlaylists()
         {
-            Values = (await _facade.GetAsync()).ToObservableCollection();
+            Playlists.Clear();
+            Playlists = (await _facade.GetAsync(SearchPlaylist)).ToObservableCollection();
+        }
+
+        [RelayCommand]
+        public async Task LoadAllPlaylistsAsync()
+        {
+            Playlists = (await _facade.GetAsync()).ToObservableCollection();
         }
 
         public PlaylistListViewModel(IPlaylistFacade playlistFacade)
         {
             _facade = playlistFacade;
-            InitializeAsync();
+            SearchPlaylist = string.Empty;
+            LoadAllPlaylistsAsync();
         }
 
         [RelayCommand]
         public async Task AddAlbum()
         {
+            timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+
             var detailModelToCreate = new PlaylistDetailModel
             {
                 Id = Guid.NewGuid(),
-                Name = "New Playlist From Facade Test",
+                Name = $"Name: {timestamp}",
                 Description = "Description for new playlist",
                 NumberOfMusicTracks = 0,
                 TotalPlayTime = TimeSpan.Zero,
@@ -50,27 +66,5 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
 
         }
-
-        //------------
-        public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>
-            {
-                new PlaylistListModel
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Music Track 1",
-                    Description = "A playlist for relaxing and unwinding.",
-                    NumberOfMusicTracks = 10,
-                    TotalPlayTime = new TimeSpan(1, 50, 0) // 1 hour, 12 minutes
-                },
-                new PlaylistListModel
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Music Track 2",
-                    Description = "A playlist for relaxing and unwinding.",
-                    NumberOfMusicTracks = 15,
-                    TotalPlayTime = new TimeSpan(1, 12, 0) // 1 hour, 12 minutes
-                }
-        };
-
     }
 }

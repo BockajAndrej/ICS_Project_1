@@ -1,16 +1,22 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.BL.Models;
 
-public class MusicTrackDetailModel : ModelBase
+public partial class MusicTrackDetailModel : ModelBase
 {
-    public required string Title { get; set; }
-    public string Description { get; set; }
-    public required TimeSpan Length { get; set; }
-    public required double Size { get; set; }
-    public required string UrlAddress { get; set; }
-    
+    [ObservableProperty]
+    public partial string Title { get; set; }
+    [ObservableProperty]
+    public partial string Description { get; set; }
+    [ObservableProperty]
+    public partial TimeSpan Length { get; set; }
+    [ObservableProperty]
+    public partial double Size { get; set; }
+    [ObservableProperty]
+    public partial string UrlAddress { get; set; }
+
     public ObservableCollection<PlaylistListModel> Playlists { get; init; } = new();
     public ObservableCollection<GenreListModel> Genres { get; init; } = new();
     public ObservableCollection<ArtistListModel> Artists { get; init; } = new();

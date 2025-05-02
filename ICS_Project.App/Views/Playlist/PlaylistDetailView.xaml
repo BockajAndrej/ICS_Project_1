@@ -7,11 +7,9 @@
              >
 
     <Grid RowDefinitions="Auto, Auto, *">
-        <!-- Detail, Filter, Zoznam skladieb -->
 
-        <!-- RIADOK 0: Detail playlistu/albumu (Horná sekcia) -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
-            <!-- Rozloženie: Obrázok | Texty | Tlačidlo -->
+            <!-- Image | Texty | Button -->
 
             <Image Grid.Column="0" 
                    Source="redhotchilli.png" 
@@ -34,61 +32,38 @@
                 <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
             </StackLayout>
 
-            <!-- Tlačidlo možností "..." (Stĺpec 2) -->
+            <!-- Option button  "..." -->
             <Button Grid.Column="2" Text="..." WidthRequest="40" HeightRequest="40" VerticalOptions="Start" Command="{Binding ModifyTrackCommand}"/>
         </Grid>
 
-        <!-- RIADOK 1: Vyhľadávanie/Filter skladieb -->
+        <!-- Search/Filter for musictracks-->
         <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-            <!-- SearchBar (Stĺpec 0) -->
-            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist"
-                       Text="Vyhladavanie"/>
-            <!-- Tlačidlo Filter (Stĺpec 1) -->
-            <Button Grid.Column="1" Text="Filtry"/>
+            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="Vyhladavanie"/>
+            <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
         </Grid>
 
-        <!-- RIADOK 2: Zoznam skladieb -->
+        <!-- Music tracks - Header -->
         <StackLayout Grid.Row="2" Margin="10, 0, 10, 10">
-            <!-- Usporiada hlavičku a zoznam vertikálne -->
-
-            <!-- Hlavička zoznamu skladieb -->
+            <!-- Header for MusicTracks -->
             <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
-                <!-- Rozloženie stĺpcov hlavičky -->
                 <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
-                <!-- Číslo -->
                 <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
-                <!-- Názov skladby -->
                 <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
-                <!-- Umělec -->
                 <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
-                <!-- Album -->
                 <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
-                <!-- Dĺžka -->
                 <Label Grid.Column="5" Text=""/>
-                <!-- Prázdne pre tlačidlo "..." -->
             </Grid>
 
-            <!-- Samotný zoznam skladieb -->
+            <!-- Music tracks - Content -->
             <CollectionView ItemsSource="{Binding PlaylistDetail.MusicTracks}">
                 <CollectionView.ItemTemplate>
-                    <!-- Šablóna pre zobrazenie jednej skladby -->
                     <DataTemplate>
                         <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
                             <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-
-                            <!-- Názov skladby (Stĺpec 1) -->
                             <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
-
-                            <!-- Umělec (Stĺpec 2) -->
                             <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
-
-                            <!-- Album (Stĺpec 3) -->
                             <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
-
-                            <!-- Dĺžka (Stĺpec 4) -->
                             <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
-
-                            <!-- Tlačidlo možností "..." (Stĺpec 5) -->
                             <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
                         </Grid>
                     </DataTemplate>
