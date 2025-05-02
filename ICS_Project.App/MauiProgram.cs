@@ -26,6 +26,7 @@ public static class MauiProgram
 
         builder.Services.AddTransient<PlaylistView>();
         builder.Services.AddTransient<PlaylistListViewModel>();
+        builder.Services.AddTransient<PlaylistDetailViewModel>();
 
         builder.Services
             .addDALServises()

@@ -4,7 +4,7 @@ namespace ICS_Project.App.Views.Playlist;
 
 public partial class PlaylistView : ContentPage
 {
-    public PlaylistView(PlaylistListViewModel playlistListViewModel)
+    public PlaylistView(PlaylistListViewModel playlistListViewModel, PlaylistDetailViewModel playlistDetailViewModel)
     {
         InitializeComponent();
 
@@ -14,14 +14,17 @@ public partial class PlaylistView : ContentPage
         {
             // 1. Vytvorenie inštancie UI elementu
             // Použite správny názov triedy, napr. PlaylistListViewControl
-            var playlistListView = new PlaylistListView(playlistListViewModel); // Alebo new PlaylistListView() ak ste nemenili názov
+            var playlistListView = new PlaylistListView(playlistListViewModel);
+            var playlistDetailView = new PlaylistDetailView(playlistDetailViewModel);
 
             // 2. Nastavenie pripojenej vlastnosti Grid.Column
             // Metóda SetColumn je statická metóda triedy Grid
             Grid.SetColumn(playlistListView, 0);
+            Grid.SetColumn(playlistDetailView, 1);
 
             // 3. Pridanie elementu do kolekcie detí Gridu
             mainGrid.Children.Add(playlistListView);
+            mainGrid.Children.Add(playlistDetailView);
         }
         else
         {

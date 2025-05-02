@@ -22,21 +22,6 @@ namespace ICS_Project.App.ViewModels.Playlist
             Values = (await _facade.GetAsync()).ToObservableCollection();
         }
 
-        public async Task InsertElement()
-        {
-            var detailModelToCreate = new PlaylistDetailModel
-            {
-                Id = Guid.NewGuid(),
-                Name = "New Playlist From Facade Test",
-                Description = "Description for new playlist",
-                NumberOfMusicTracks = 0,
-                TotalPlayTime = TimeSpan.Zero,
-                MusicTracks = new ObservableCollection<MusicTrackListModel>()
-            };
-
-            await _facade.SaveAsync(detailModelToCreate);
-        }
-
         public PlaylistListViewModel(IPlaylistFacade playlistFacade)
         {
             _facade = playlistFacade;

@@ -2,11 +2,9 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistDetailView"
-             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist">
-
-    <ContentView.BindingContext>
-        <playlist:PlaylistDetailViewModel />
-    </ContentView.BindingContext>
+             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
+             >
 
     <Grid RowDefinitions="Auto, Auto, *">
         <!-- Detail, Filter, Zoznam skladieb -->
@@ -23,17 +21,17 @@
                    VerticalOptions="Start"/>
 
             <StackLayout Grid.Column="1" Margin="10,0,10,0" VerticalOptions="Start">
-                <Label Text="{Binding playlistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
+                <Label Text="{Binding PlaylistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
                 <HorizontalStackLayout Spacing="5">
                     <Label Text="autor: " VerticalOptions="Center"/>
                     <Label Text="Vlastny" FontAttributes="Bold" VerticalOptions="Center"/>
                     <Label Text=" | " VerticalOptions="Center"/>
-                    <Label Text="{Binding playlistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
+                    <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
                     <Label Text=" skladeb" VerticalOptions="Center"/>
                     <Label Text=" | " VerticalOptions="Center"/>
-                    <Label Text="{Binding playlistDetail.TotalPlayTime}" VerticalOptions="Center"/>
+                    <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
-                <Label Text="{Binding playlistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
+                <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
             </StackLayout>
 
             <!-- Tlačidlo možností "..." (Stĺpec 2) -->
@@ -71,7 +69,7 @@
             </Grid>
 
             <!-- Samotný zoznam skladieb -->
-            <CollectionView ItemsSource="{Binding playlistDetail.MusicTracks}">
+            <CollectionView ItemsSource="{Binding PlaylistDetail.MusicTracks}">
                 <CollectionView.ItemTemplate>
                     <!-- Šablóna pre zobrazenie jednej skladby -->
                     <DataTemplate>
