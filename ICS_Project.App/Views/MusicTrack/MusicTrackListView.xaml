@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView"
              xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
-             x:DataType="vm:MusicTrackListViewModel">
+             >
 
 
     <VerticalStackLayout Spacing="10">
@@ -13,11 +13,11 @@
             <Label
                 FontSize="15"
                 TextColor="Aqua"
-                Text="{Binding MusicTrackList[0].Title }"></Label>
+                Text="MusictrackListView"></Label>
 
         </Grid>
 
     </VerticalStackLayout>
 
-    
+
 </ContentView >
