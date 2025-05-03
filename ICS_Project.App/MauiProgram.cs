@@ -8,6 +8,8 @@ using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Mappers;
 using ICS_Project.DAL.Seeds;
 using ICS_Project.DAL.Migrations;
+using ICS_Project.App.Views.MusicTrack;
+using ICS_Project.App.ViewModels.MusicTrack;
 
 namespace ICS_Project.App;
 
@@ -24,9 +26,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<PlaylistView>();
+        builder.Services.AddTransient<MusicTrackView>();
+
         builder.Services.AddTransient<PlaylistListViewModel>();
         builder.Services.AddTransient<PlaylistDetailViewModel>();
+        builder.Services.AddTransient<MusicTrackListViewModel>();
+        builder.Services.AddTransient<MusicTrackDetailViewModel>();
 
         builder.Services
             .addDALServises()

@@ -1,4 +1,4 @@
-﻿namespace ICS_Project.App
+namespace ICS_Project.App
 {
     public partial class AppShell : Shell
     {

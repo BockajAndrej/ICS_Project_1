@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ICS_Project.App.Views.Playlist.PlaylistView"
-             xmlns:playlist="clr-namespace:ICS_Project.App.Views.Playlist" 
-             Title="PlaylistView">
-
+             x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackView"
+             Title="MusicTrackView">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
-        <!--playlist:PlaylistListView Grid.Column="0"/-->
-        <!--playlist:PlaylistDetailView Grid.Column="1"/-->
     </Grid>
 </ContentPage>

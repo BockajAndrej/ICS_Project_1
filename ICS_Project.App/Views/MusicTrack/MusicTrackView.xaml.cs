@@ -1,10 +1,12 @@
+using ICS_Project.App.ViewModels.MusicTrack;
 using ICS_Project.App.ViewModels.Playlist;
+using ICS_Project.App.Views.Playlist;
 
-namespace ICS_Project.App.Views.Playlist;
+namespace ICS_Project.App.Views.MusicTrack;
 
-public partial class PlaylistView : ContentPage
+public partial class MusicTrackView : ContentPage
 {
-    public PlaylistView(PlaylistListViewModel playlistListViewModel, PlaylistDetailViewModel playlistDetailViewModel)
+    public MusicTrackView(PlaylistListViewModel playlist, MusicTrackListViewModel musicTrack)
     {
         InitializeComponent();
 
@@ -13,16 +15,16 @@ public partial class PlaylistView : ContentPage
         if (mainGrid != null)
         {
             // 1. Created instances of UI elements
-            var playlistListView = new PlaylistListView(playlistListViewModel);
-            var playlistDetailView = new PlaylistDetailView(playlistDetailViewModel);
+            var playlistListView = new PlaylistListView(playlist);
+            var musicTrackListView = new MusicTrackListView(musicTrack);
 
             // 2. Created connection with Grid.Column
             Grid.SetColumn(playlistListView, 0);
-            Grid.SetColumn(playlistDetailView, 1);
+            Grid.SetColumn(musicTrackListView, 1);
 
             // 3. Add elements into collection of grid childs
             mainGrid.Children.Add(playlistListView);
-            mainGrid.Children.Add(playlistDetailView);
+            mainGrid.Children.Add(musicTrackListView);
         }
         else
         {
