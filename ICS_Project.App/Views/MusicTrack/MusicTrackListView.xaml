@@ -6,18 +6,44 @@
              >
 
 
-    <VerticalStackLayout Spacing="10">
-        <Grid ColumnDefinitions="Auto, *"
-              ColumnSpacing="10">
+    <Grid RowDefinitions="Auto, *">
 
-            <Label
-                FontSize="15"
-                TextColor="Aqua"
-                Text="MusictrackListView"></Label>
-
+        <!-- Search/Filter for musictracks-->
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
+            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="{Binding SearchMusicTrackStr}" SearchCommand="{Binding SearchMusicTracksCommand}"/>
+            <Button Grid.Column="1" Text="Add track"/>
         </Grid>
 
-    </VerticalStackLayout>
+        <!-- Music tracks - Header -->
+        <StackLayout Grid.Row="1" Margin="10, 0, 10, 10">
+            <!-- Header for MusicTracks -->
+            <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
+                <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
+                <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
+                <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
+                <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
+                <Label Grid.Column="5" Text=""/>
+            </Grid>
+
+            <!-- Music tracks - Content -->
+            <CollectionView ItemsSource="{Binding MusicTracks}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                            <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
+                            <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
+                            <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
+                            <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+    </Grid>
 
 
 </ContentView >

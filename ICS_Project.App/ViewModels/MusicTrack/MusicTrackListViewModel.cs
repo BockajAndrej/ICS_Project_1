@@ -1,26 +1,38 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ICS_Project.BL;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
+using System.Collections.ObjectModel;
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
-public partial class MusicTrackListViewModel
+public partial class MusicTrackListViewModel : ObservableObject
 {
     private readonly IMusicTrackFacade _facade;
-    public List<MusicTrackListModel> MusicTrackList { get; set; } = new List<MusicTrackListModel>
+
+    [ObservableProperty]
+    private string _searchMusicTrackStr;
+
+    [ObservableProperty]
+    private ObservableCollection<MusicTrackListModel> _musicTracks = [];
+
+    [RelayCommand]
+    private async Task SearchMusicTracks()
     {
-        new MusicTrackListModel
-        {
-            Id = Guid.NewGuid(),
-            Title = "Take me with you",
-            Description = "A mellow track for relaxing.",
-            Length = new TimeSpan(0, 3, 45),
-            Size = 5.2,
-            UrlAddress = "https://example.com/music/take_me_with_you.mp3"
-        },
-    };
+        MusicTracks.Clear();
+        MusicTracks = (await _facade.GetAsync(_searchMusicTrackStr)).ToObservableCollection();
+    }
+
+    [RelayCommand]
+    public async Task LoadAllMusicTracksAsync()
+    {
+        MusicTracks = (await _facade.GetAsync()).ToObservableCollection();
+    }
 
     public MusicTrackListViewModel(IMusicTrackFacade MusicTrackFacade)
     {
         _facade = MusicTrackFacade;
+        LoadAllMusicTracksAsync();
     }
 }
