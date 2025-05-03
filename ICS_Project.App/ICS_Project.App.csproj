@@ -59,6 +59,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ICS_Project.BL\ICS_Project.BL.csproj" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
@@ -69,6 +70,12 @@
         <Folder Include="Converters\" />
         <Folder Include="Messages\" />
         <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\Playlist\PlaylistCreateNewPopup.xaml.cs">
+        <DependentUpon>PlaylistCreateNewPopup.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -98,6 +105,9 @@
         </MauiXaml>
         <MauiXaml Update="Views\MusicTrack\MusicTrackListView.xaml">
             <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\Playlist\PlaylistCreateNewPopup.xaml">
+          <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Playlist\PlaylistDetailView.xaml">
           <Generator>MSBuild:Compile</Generator>

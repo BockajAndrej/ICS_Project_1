@@ -4,17 +4,24 @@ namespace ICS_Project.App.Views.Playlist;
 
 public partial class PlaylistView : ContentPage
 {
-    public PlaylistView(PlaylistListViewModel playlistListViewModel, PlaylistDetailViewModel playlistDetailViewModel)
+    private readonly IServiceProvider _serviceProvider;
+
+    public PlaylistView(
+        PlaylistListViewModel playlistListViewModel,
+        PlaylistDetailViewModel playlistDetailViewModel,
+        IServiceProvider serviceProvider)
     {
         InitializeComponent();
+        _serviceProvider = serviceProvider;
 
+        // Attempt to find the Grid element in the page content
         Grid mainGrid = this.Content as Grid;
 
         if (mainGrid != null)
         {
             // 1. Vytvorenie inštancie UI elementu
             // Použite správny názov triedy, napr. PlaylistListViewControl
-            var playlistListView = new PlaylistListView(playlistListViewModel);
+            var playlistListView = new PlaylistListView(playlistListViewModel, _serviceProvider);
             var playlistDetailView = new PlaylistDetailView(playlistDetailViewModel);
 
             // 2. Nastavenie pripojenej vlastnosti Grid.Column

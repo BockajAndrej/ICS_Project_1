@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ICS_Project.App.Views.Playlist"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ICS_Project.App.Views.Playlist.PlaylistCreateNewPopup">
+
+    <Frame 
+        WidthRequest="600"
+        HeightRequest="500"
+        Padding="0"
+        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+        CornerRadius="12"
+        HasShadow="True"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+
+        <Grid RowDefinitions="Auto, Auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
+                <!-- Image | Texty | Button -->
+
+                <Image Grid.Column="0" 
+                   Source="redhotchilli.png" 
+                   WidthRequest="150" 
+                   HeightRequest="150" 
+                   Aspect="AspectFill" 
+                   VerticalOptions="Start"/>
+
+                <StackLayout Grid.Column="1" Margin="10,0,10,0" VerticalOptions="Start">
+                    <Label Text="{Binding PlaylistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="5">
+                        <Label Text="autor: " VerticalOptions="Center"/>
+                        <Label Text="Vlastny" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label Text=" | " VerticalOptions="Center"/>
+                        <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
+                        <Label Text=" skladeb" VerticalOptions="Center"/>
+                        <Label Text=" | " VerticalOptions="Center"/>
+                        <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
+                </StackLayout>
+
+                <!-- Option button  "..." -->
+                <Button Grid.Column="2" Text="..." WidthRequest="40" HeightRequest="40" VerticalOptions="Start" Command="{Binding ModifyTrackCommand}"/>
+            </Grid>
+
+            <!-- Search/Filter for musictracks-->
+            <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
+                <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="Vyhladavanie"/>
+                <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
+            </Grid>
+
+            <!-- Music tracks - Header -->
+            <StackLayout Grid.Row="2" Margin="10, 0, 10, 10">
+                <!-- Header for MusicTracks -->
+                <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                    <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
+                    <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
+                    <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
+                    <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
+                    <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
+                    <Label Grid.Column="5" Text=""/>
+                </Grid>
+
+                <!-- Music tracks - Content -->
+                <CollectionView ItemsSource="{Binding MusicTracks}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
+                                <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
+                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
+                                <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
+                                <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
+                                <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
+        </Grid>
+    </Frame>
+
+</toolkit:Popup>

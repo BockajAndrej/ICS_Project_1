@@ -9,6 +9,9 @@ using ICS_Project.BL.Mappers;
 using ICS_Project.DAL.Seeds;
 using ICS_Project.DAL.Migrations;
 
+using CommunityToolkit.Maui;
+using ICS_Project.DAL.Entities;
+
 namespace ICS_Project.App;
 
 public static class MauiProgram
@@ -18,6 +21,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -27,6 +31,8 @@ public static class MauiProgram
         builder.Services.AddTransient<PlaylistView>();
         builder.Services.AddTransient<PlaylistListViewModel>();
         builder.Services.AddTransient<PlaylistDetailViewModel>();
+        builder.Services.AddTransient<PlaylistCreateNewPopup>();
+        builder.Services.AddTransient<PlaylistCreateNewPopupModel>();
 
         builder.Services
             .addDALServises()

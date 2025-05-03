@@ -6,7 +6,7 @@
              xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
              >
 
-    <Grid RowDefinitions="auto, *" ColumnDefinitions="auto, *">
+    <Grid RowDefinitions="Auto, Auto, *" ColumnDefinitions="Auto, *">
 
         <!-- Search/Filter panel -->
         <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
@@ -14,8 +14,11 @@
             <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
         </Grid>
 
+        <Grid Grid.Row="1" Margin="5" ColumnDefinitions="*, Auto">
+            <Button Text="New Playlist" Grid.Column="0" Clicked="OnNewPlaylistClicked"/>
+        </Grid>
 
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                 ItemsSource="{Binding Playlists}"
                 SelectionMode="Single"
                 Margin="10">
