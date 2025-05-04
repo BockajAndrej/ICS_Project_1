@@ -7,10 +7,13 @@ using ICS_Project.BL.Models;
 using ICS_Project.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
+using ICS_Project.App.Messages;
+using ICS_Project.App.Services.Interfaces; // Needed for your custom message
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
-    public partial class PlaylistListViewModel : ObservableObject
+    public partial class PlaylistListViewModel : ViewModelBase
     {
         private readonly IPlaylistFacade _facade;
 
@@ -22,10 +25,13 @@ namespace ICS_Project.App.ViewModels.Playlist
             Values = (await _facade.GetAsync()).ToObservableCollection();
         }
 
-        public PlaylistListViewModel(IPlaylistFacade playlistFacade)
+        public PlaylistListViewModel(
+          IPlaylistFacade playlistFacade,
+          IMessengerService messengerService) // Needs IMessengerService
+          : base(messengerService) // Pass to base constructor
         {
             _facade = playlistFacade;
-            InitializeAsync();
+            // Remove InitializeAsync() call from constructor if base.OnAppearingAsync handles loading
         }
 
         [RelayCommand]
@@ -50,6 +56,8 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
 
         }
+
+
 
         //------------
         public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>

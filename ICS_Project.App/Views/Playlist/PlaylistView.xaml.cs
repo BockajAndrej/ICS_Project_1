@@ -1,36 +1,56 @@
+// Add necessary using statements
+using ICS_Project.App.ViewModels; // For ViewModelBase
 using ICS_Project.App.ViewModels.Playlist;
+using ICS_Project.App.Views; // For ContentPageBase (if needed, check namespace)
+using System.Diagnostics; // Keep for Debug.WriteLine if needed
+using Microsoft.Maui.Controls; // Make sure this using exists
 
 namespace ICS_Project.App.Views.Playlist;
 
-public partial class PlaylistView : ContentPage
+// 1. Inherit from ContentPageBase
+public partial class PlaylistView : ContentPageBase // <<< CORRECT INHERITANCE
 {
-    public PlaylistView(PlaylistListViewModel playlistListViewModel, PlaylistDetailViewModel playlistDetailViewModel)
+    // Store the Detail ViewModel needed for the child view
+    private readonly PlaylistDetailViewModel _playlistDetailViewModel;
+
+    // 2. Constructor now takes the PAGE's ViewModel and other needed ViewModels, matching base
+    public PlaylistView(
+        PlaylistListViewModel viewModel, // This is the ViewModel for THIS page
+        PlaylistDetailViewModel playlistDetailViewModel // Inject the other needed VM
+        )
+        : base(viewModel) // Pass the page's ViewModel to ContentPageBase constructor
     {
         InitializeComponent();
 
+        // Store the injected Detail ViewModel to pass to the child view
+        _playlistDetailViewModel = playlistDetailViewModel;
+
+        // --- Child View Setup ---
         Grid mainGrid = this.Content as Grid;
 
         if (mainGrid != null)
         {
-            // 1. Vytvorenie inštancie UI elementu
-            // Použite správny názov triedy, napr. PlaylistListViewControl
-            var playlistListView = new PlaylistListView(playlistListViewModel);
-            var playlistDetailView = new PlaylistDetailView(playlistDetailViewModel);
+            // Create child views using the correct ViewModels
+            // PlaylistListViewModel is available via the 'ViewModel' property from base class (or directly)
+            var playlistListView = new PlaylistListView(viewModel);
 
-            // 2. Nastavenie pripojenej vlastnosti Grid.Column
-            // Metóda SetColumn je statická metóda triedy Grid
+            // PlaylistDetailViewModel was injected and stored
+            var playlistDetailView = new PlaylistDetailView(_playlistDetailViewModel);
+
+            // Set columns (same as before)
             Grid.SetColumn(playlistListView, 0);
             Grid.SetColumn(playlistDetailView, 1);
 
-            // 3. Pridanie elementu do kolekcie detí Gridu
+            // Add children (same as before)
             mainGrid.Children.Add(playlistListView);
             mainGrid.Children.Add(playlistDetailView);
         }
         else
         {
-            // Ak sa sem dostanete, znamená to, že sa nepodarilo získať referenciu na Grid
-            // Skontrolujte XAML a ako získavate referenciu na Grid.
-            System.Diagnostics.Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
+            Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
         }
+        // --- End Child View Setup ---
     }
+
+    // Remove message handling logic if it was moved to AppShell
 }

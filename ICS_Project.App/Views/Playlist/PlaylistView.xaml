@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:ContentPageBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistView"
-             xmlns:playlist="clr-namespace:ICS_Project.App.Views.Playlist" 
+             xmlns:playlist="clr-namespace:ICS_Project.App.Views.Playlist"
+             xmlns:views="clr-namespace:ICS_Project.App.Views"
              Title="PlaylistView">
     <Grid>
         <!-- Definícia stĺpcov: ľavý (napr. 300px fixne) a pravý (zvyšok *) -->
@@ -11,10 +12,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+
         <!-- Vložíme PlaylistListViewControl do ľavého stĺpca -->
         <!--playlist:PlaylistListView Grid.Column="0"/-->
 
         <!-- Vložíme PlaylistDetailViewControl do pravého stĺpca -->
         <!--playlist:PlaylistDetailView Grid.Column="1"/-->
     </Grid>
-</ContentPage>
+</views:ContentPageBase>

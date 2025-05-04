@@ -8,6 +8,10 @@ using ICS_Project.BL.Mappers.Interfaces;
 using ICS_Project.BL.Mappers;
 using ICS_Project.DAL.Seeds;
 using ICS_Project.DAL.Migrations;
+using CommunityToolkit.Maui;
+using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger
+using ICS_Project.App.Services;        // Needed for your services
+using ICS_Project.App.Services.Interfaces; // Needed for your interfaces
 
 namespace ICS_Project.App;
 
@@ -18,15 +22,16 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddTransient<PlaylistView>();
-        builder.Services.AddTransient<PlaylistListViewModel>();
-        builder.Services.AddTransient<PlaylistDetailViewModel>();
+        //builder.Services.AddTransient<PlaylistView>();
+        //builder.Services.AddTransient<PlaylistListViewModel>();
+        //builder.Services.AddTransient<PlaylistDetailViewModel>();
 
         builder.Services
             .addDALServises()

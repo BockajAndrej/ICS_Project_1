@@ -10,7 +10,8 @@ namespace ICS_Project.App
             InitializeComponent();
 
             //MainPage = new AppShell();
-            MainPage = serviceProvider.GetRequiredService<PlaylistView>();
+            MainPage = serviceProvider.GetRequiredService<AppShell>();
+            //MainPage = serviceProvider.GetRequiredService<PlaylistView>();
         }
     }
 }

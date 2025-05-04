@@ -6,15 +6,21 @@ using ICS_Project.BL.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
+using ICS_Project.App.Messages;
+using ICS_Project.App.Services.Interfaces; // Needed for your custom message
+
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
-    public partial class PlaylistDetailViewModel : ObservableObject
+    public partial class PlaylistDetailViewModel : ViewModelBase
     {
         private readonly IPlaylistFacade _facade;
+        private readonly IMessenger _messenger; // Inject the messenger
 
         [ObservableProperty]
         private PlaylistDetailModel _playlistDetail;
@@ -22,48 +28,20 @@ namespace ICS_Project.App.ViewModels.Playlist
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
-            //PlaylistDetail = new PlaylistDetailModel
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Name = "Album 1",
-            //    Description = "Opis playlistu",
-            //    NumberOfMusicTracks = 5,
-            //    TotalPlayTime = new TimeSpan(1, 11, 0),
-            //    MusicTracks = {
-            //     new MusicTrackListModel { Title = "Musictrack 1", Description = "Je fajn", Length = new TimeSpan(0, 5, 0), Size = 50, UrlAddress = "https" },
-            //     new MusicTrackListModel { Title = "Musictrack 2", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-            //     new MusicTrackListModel { Title = "Musictrack 3", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-            //     new MusicTrackListModel { Title = "Musictrack 4", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-            //     new MusicTrackListModel { Title = "Musictrack 5", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-            //     new MusicTrackListModel { Title = "Musictrack 6", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" }
-            //    }
-            //};
         }
 
 
-        public PlaylistDetailViewModel(IPlaylistFacade playlistFacade)
+        // Constructor matching the base class
+        public PlaylistDetailViewModel(
+            IPlaylistFacade playlistFacade,
+            IMessengerService messengerService) // Required by ViewModelBase
+            : base(messengerService) // Pass messengerService to base
         {
             _facade = playlistFacade;
+            _messenger = messengerService.Messenger; // Assign the messenger
+            // _messengerService is available via the base class property 'MessengerService'
         }
 
-        //------------------
-        //[ObservableProperty]
-        //public partial PlaylistDetailModel playlistDetail { get; set; } = new PlaylistDetailModel
-        //{
-        //    Id = Guid.NewGuid(),
-        //    Name = "Album 1",
-        //    Description = "Opis playlistu",
-        //    NumberOfMusicTracks = 5,
-        //    TotalPlayTime = new TimeSpan(1, 11, 0),
-        //    MusicTracks = {
-        //         new MusicTrackListModel { Title = "Musictrack 1", Description = "Je fajn", Length = new TimeSpan(0, 5, 0), Size = 50, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 2", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 3", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 4", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 5", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 6", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" }
-        //     }
-        //};
 
         [RelayCommand]
         public async Task ModifyTrack()
@@ -74,6 +52,25 @@ namespace ICS_Project.App.ViewModels.Playlist
             InitializeAsync(tmp.First().Id);
         }
 
+        // Command now accepts a parameter
+        [RelayCommand]
+        private void ShowOptions(object? parameter)
+        {
+            Debug.WriteLine("--- ShowOptions Command Executed ---"); // Use Debug.WriteLine
+            // Ensure the parameter is a VisualElement (the Button)
+            var anchor = parameter as VisualElement;
+
+            // Send the message with the anchor and this ViewModel instance
+            _messenger.Send(new PlaylistShowOptions(anchor, this));
+        }
+        
+        // Dummy LoadDataAsync override (if needed by base logic)
+        protected override async Task LoadDataAsync()
+        {
+            // TODO: Implement logic to load PlaylistDetail data
+            // e.g., PlaylistDetail = await _playlistFacade.GetAsync(someId);
+            await Task.CompletedTask; // Placeholder
+        }
 
     }
 }
