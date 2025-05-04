@@ -108,8 +108,8 @@
                 </RadialGradientBrush>
             </Border.Background>
 
-            <StackLayout>
-                <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto" Margin="0,0,0,5">
+            <Grid RowDefinitions="auto, *">
+                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, *, *, Auto, Auto" Margin="0,0,0,5">
                     <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
                     <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
                     <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
@@ -118,7 +118,7 @@
                     <Label Grid.Column="5" Text=""/>
                 </Grid>
 
-                <CollectionView ItemsSource="{Binding PlaylistDetail.MusicTracks}">
+                <CollectionView Grid.Row="1" ItemsSource="{Binding PlaylistDetail.MusicTracks}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto" Padding="0,3">
@@ -132,7 +132,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </StackLayout>
+            </Grid>
         </Border>
 
     </Grid>

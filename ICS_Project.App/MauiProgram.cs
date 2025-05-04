@@ -11,7 +11,9 @@ using ICS_Project.DAL.Migrations;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger
 using ICS_Project.App.Services;        // Needed for your services
-using ICS_Project.App.Services.Interfaces; // Needed for your interfaces
+using ICS_Project.App.Services.Interfaces;
+using ICS_Project.App.Views.MusicTrack;
+using ICS_Project.App.ViewModels.MusicTrack; // Needed for your interfaces
 
 namespace ICS_Project.App;
 
@@ -29,9 +31,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        //builder.Services.AddTransient<PlaylistView>();
-        //builder.Services.AddTransient<PlaylistListViewModel>();
-        //builder.Services.AddTransient<PlaylistDetailViewModel>();
+        builder.Services.AddTransient<PlaylistView>();
+        builder.Services.AddTransient<MusicTrackView>();
+
+        builder.Services.AddTransient<PlaylistListViewModel>();
+        builder.Services.AddTransient<PlaylistDetailViewModel>();
+
+        builder.Services.AddTransient<MusicTrackListViewModel>();
+        builder.Services.AddTransient<MusicTrackDetailViewModel>();
 
         builder.Services
             .addDALServises()

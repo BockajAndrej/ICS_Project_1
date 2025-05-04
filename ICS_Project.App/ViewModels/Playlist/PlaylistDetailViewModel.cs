@@ -42,15 +42,6 @@ namespace ICS_Project.App.ViewModels.Playlist
             // _messengerService is available via the base class property 'MessengerService'
         }
 
-
-        //[ObservableProperty]
-        //public partial PlaylistDetailModel playlistDetail { get; set; } = new PlaylistDetailModel
-        //{
-        //    Id = Guid.NewGuid(),
-        //    Name = "Album 1",
-        //    Description = "Opis playlistu",
-        //    NumberOfMusicTracks = 5,
-        //    TotalPlayTime = new TimeSpan(1, 11, 0),
         // Command now accepts a parameter
         [RelayCommand]
         private void ShowOptions(object? parameter)
@@ -62,7 +53,7 @@ namespace ICS_Project.App.ViewModels.Playlist
             // Send the message with the anchor and this ViewModel instance
             _messenger.Send(new PlaylistShowOptions(anchor, this));
         }
-        
+
         // Dummy LoadDataAsync override (if needed by base logic)
         protected override async Task LoadDataAsync()
         {
@@ -70,15 +61,6 @@ namespace ICS_Project.App.ViewModels.Playlist
             // e.g., PlaylistDetail = await _playlistFacade.GetAsync(someId);
             await Task.CompletedTask; // Placeholder
         }
-        //    MusicTracks = {
-        //         new MusicTrackListModel { Title = "Musictrack 1", Description = "Je fajn", Length = new TimeSpan(0, 5, 0), Size = 50, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 2", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 3", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 4", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 5", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" },
-        //         new MusicTrackListModel { Title = "Musictrack 6", Description = "Super track", Length = new TimeSpan(0, 6, 0), Size = 70, UrlAddress = "https" }
-        //     }
-        //};
 
         [RelayCommand]
         public async Task ModifyTrack()
