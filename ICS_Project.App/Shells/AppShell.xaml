@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:playlistViews="clr-namespace:ICS_Project.App.Views.Playlist"
-    xmlns:musicTrackViews="clr-namespace:ICS_Project.App.Views.MusicTrack"
-    Shell.FlyoutBehavior="Flyout"
+    xmlns:local="clr-namespace:ICS_Project.App"
+    Shell.FlyoutBehavior="Disabled"
     Title="ICS_Project.App">
 
     <Shell.FlyoutHeader>
@@ -33,11 +33,11 @@
             Route="PlaylistListPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Music Tracks"
-                  Icon="music.png">
-        <ShellContent
-            ContentTemplate="{DataTemplate musicTrackViews:MusicTrackView}"
-            Route="MusicTrackListPage" />
-    </FlyoutItem>
+    <ShellContent
+        Title="Playlists"
+        ContentTemplate="{DataTemplate playlistViews:PlaylistView}"
+        Route="PlaylistViewRoute" />
+    <!-- Give it a route name -->
+
 
 </Shell>

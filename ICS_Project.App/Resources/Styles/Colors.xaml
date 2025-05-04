@@ -26,6 +26,14 @@
     <Color x:Key="PlaceholderTextColor">#8888AA</Color>
     <Color x:Key="LinkTextColor">#A020F0</Color>
 
+    <Color x:Key="Gradient1">#A020F0</Color>
+    <Color x:Key="Gradient2">#2f0b52</Color>
+    <Color x:Key="Gradient3">#500d80</Color>
+    <Color x:Key="Gradient4">#3a0f6b</Color>
+    <Color x:Key="Gradient5">#5d19b0</Color>
+    <Color x:Key="Gradient6">#49096e</Color>
+
+
     <Color x:Key="SuccessColor">#28A745</Color>
     <Color x:Key="WarningColor">#FFC107</Color>
     <Color x:Key="DangerColor">#DC3545</Color>
