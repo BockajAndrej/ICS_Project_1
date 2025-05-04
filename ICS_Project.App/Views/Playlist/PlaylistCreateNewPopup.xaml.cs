@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using ICS_Project.App.Messages;
@@ -11,8 +12,12 @@ namespace ICS_Project.App.Views.Playlist
         {
             InitializeComponent();
             BindingContext = playlistCreateNewPopupModel;
-        }
 
+            WeakReferenceMessenger.Default.Register<PopupClosedMessage>(this, (r, m) =>
+            {
+                Close(); // closes the popup
+            });
+        }
         private void PlaylistCreateNewPopup_Opened(object sender, EventArgs e)
         {
             WeakReferenceMessenger.Default.Send(new PopupOpenedMessage(true));

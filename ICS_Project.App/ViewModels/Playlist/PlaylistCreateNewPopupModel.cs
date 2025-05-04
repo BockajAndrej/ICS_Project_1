@@ -27,6 +27,12 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty]
         private ObservableCollection<MusicTrackListModel> _musicTracks = [];
 
+        [ObservableProperty] 
+        private string _name;
+
+        [ObservableProperty] 
+        private string _description;
+
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
@@ -76,30 +82,34 @@ namespace ICS_Project.App.ViewModels.Playlist
             MusicTracks = tracks.ToObservableCollection();
 
             // Print the contents of the Songs collection to the output for debugging
-            Debug.WriteLine("Loaded Songs:");
-            foreach (var track in MusicTracks)
-            {
-                // Assuming each song has a 'Title' and 'Artist' or similar properties, you can adjust this to match the actual properties of your 'MusicTrackListModel'
-                Debug.WriteLine($"- {track.Title}");
-            }
+            // Debug.WriteLine("Loaded Songs:");
+            // foreach (var track in MusicTracks)
+            // {
+            //     // Assuming each song has a 'Title' and 'Artist' or similar properties, you can adjust this to match the actual properties of your 'MusicTrackListModel'
+            //     Debug.WriteLine($"- {track.Title}");
+            // }
         }
 
-
+        // Command for saving the playlist
         [RelayCommand]
-        public async Task CreateNewPlaylist()
+        public async void SaveChanges()
         {
-            var playlist = new PlaylistDetailModel()
+            if (Name != null)
             {
-                Id = Guid.NewGuid(),
-                Name = "Name",
-                Description = "Description",
-                NumberOfMusicTracks = 20,
-                TotalPlayTime = TimeSpan.Zero
-            };
+                PlaylistDetail.Name = Name;
+                PlaylistDetail.Description = Description;
 
-            var savedTrack = await _facade.SaveAsync(playlist);
+                var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
+            }
 
-            await InitializeAsync(PlaylistDetail.Id);
+            WeakReferenceMessenger.Default.Send(new PopupClosedMessage());
+        }
+
+        // Command for reverting the changes
+        [RelayCommand]
+        public void RevertChanges()
+        {
+            Debug.WriteLine("Revert button pressed");
         }
     }
 }

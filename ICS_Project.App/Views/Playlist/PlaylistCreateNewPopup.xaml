@@ -31,28 +31,27 @@
                 <StackLayout Grid.Column="1" 
                              Margin="10,0,10,0" 
                              VerticalOptions="Start">
-                    <Entry Text="{Binding PlaylistDetail.Name}" 
+                    <Entry Text="{Binding Name}" 
                            Placeholder="Název playlistu" 
                            FontSize="Large" 
                            FontAttributes="Bold"/>
-                    <Entry Text="{Binding PlaylistDetail.Description}" 
+                    <Entry Text="{Binding Description}" 
                            Placeholder="Popis playlistu" 
                            FontSize="Large" 
                            FontAttributes="Bold"/>
                     <HorizontalStackLayout Spacing="5">
-                        <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
+                        <Label Text="{Binding Name}" VerticalOptions="Center"/>
                         <Label Text=" skladeb" VerticalOptions="Center"/>
                         <Label Text=" | " VerticalOptions="Center"/>
                         <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
                 </StackLayout>
 
                 <!-- Option button  "..." -->
-                <StackLayout Grid.Column="2" Margin="10, 0, 10, 10" Spacing="20">
-                    <Button Text="Uložit" Command="{Binding SaveNewPlaylist}"/>
-                    <Button Text="Zrušit změny" Command="{Binding RevertChanges}"/>
-                </StackLayout>
+                    <StackLayout Grid.Column="2" Margin="10, 0, 10, 10" Spacing="20">
+                        <Button x:Name="SaveButton" Text="Uložit" Command="{Binding SaveChangesCommand}"/>
+                        <Button x:Name="RevertButton" Text="Zrušit změny" Command="{Binding RevertChangesCommand}"/>
+                    </StackLayout>
             </Grid>
 
             <!-- Search/Filter for musictracks-->
