@@ -1,3 +1,4 @@
+using ICS_Project.App.Views.MusicTrack;
 using ICS_Project.App.Views.Playlist;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +11,8 @@ namespace ICS_Project.App
             InitializeComponent();
 
             //MainPage = new AppShell();
-            MainPage = serviceProvider.GetRequiredService<PlaylistView>();
+            MainPage = serviceProvider.GetRequiredService<AppShell>();
+            //MainPage = serviceProvider.GetRequiredService<PlaylistView>();
         }
     }
 }

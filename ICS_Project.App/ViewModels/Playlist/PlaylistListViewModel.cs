@@ -7,10 +7,13 @@ using ICS_Project.BL.Models;
 using ICS_Project.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
+using ICS_Project.App.Messages;
+using ICS_Project.App.Services.Interfaces; // Needed for your custom message
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
-    public partial class PlaylistListViewModel : ObservableObject
+    public partial class PlaylistListViewModel : ViewModelBase
     {
         private readonly IPlaylistFacade _facade;
         string timestamp;
@@ -35,11 +38,15 @@ namespace ICS_Project.App.ViewModels.Playlist
             Playlists = (await _facade.GetAsync()).ToObservableCollection();
         }
 
-        public PlaylistListViewModel(IPlaylistFacade playlistFacade)
+        public PlaylistListViewModel(
+          IPlaylistFacade playlistFacade,
+          IMessengerService messengerService) // Needs IMessengerService
+          : base(messengerService) // Pass to base constructor
         {
             _facade = playlistFacade;
             SearchPlaylist = string.Empty;
             LoadAllPlaylistsAsync();
+
         }
 
         [RelayCommand]
@@ -66,5 +73,29 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
 
         }
+
+
+
+        //------------
+        public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>
+            {
+                new PlaylistListModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Music Track 1",
+                    Description = "A playlist for relaxing and unwinding.",
+                    NumberOfMusicTracks = 10,
+                    TotalPlayTime = new TimeSpan(1, 50, 0) // 1 hour, 12 minutes
+                },
+                new PlaylistListModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Music Track 2",
+                    Description = "A playlist for relaxing and unwinding.",
+                    NumberOfMusicTracks = 15,
+                    TotalPlayTime = new TimeSpan(1, 12, 0) // 1 hour, 12 minutes
+                }
+        };
+
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ICS_Project.App.Views.Playlist.Popups.PlaylistOptionsView"
+             CanBeDismissedByTappingOutsideOfPopup="False" 
+             Color="Transparent"
+            >
+
+    <Frame Padding="1"
+           Margin="0,0,0,0"
+           CornerRadius="10"
+           HeightRequest="90"
+           WidthRequest="114"
+           BorderColor="{StaticResource SecondaryDarkText}"
+           BackgroundColor="{StaticResource SecondaryCardBackgroundColor}"
+           HasShadow="True">
+        <Grid 
+            RowSpacing="0"
+            ColumnSpacing="0"
+            Margin="2"
+            RowDefinitions="auto, auto"
+            ColumnDefinitions="auto">
+
+
+            <Button x:Name="EditButton"
+                    Grid.Row="0"
+                    FontSize="11"
+                    Text="Edit Playlist" 
+                    Clicked="EditButton_Clicked"
+                    HeightRequest="40"
+                    BorderColor="{StaticResource PrimaryButtonColor}"
+                    CornerRadius="10" 
+                    BorderWidth="3" 
+                    TextColor="{StaticResource  PrimaryDarkText}"
+                    />
+
+            <Button x:Name="DeleteButton"
+                    Grid.Row="1"
+                    FontSize="11"
+                    Text="Delete Playlist" 
+                    Clicked="DeleteButton_Clicked" 
+                    HeightRequest="40"
+                    BorderColor="{StaticResource PrimaryButtonColor}"
+                    CornerRadius="10" 
+                    BorderWidth="3" 
+                    TextColor="Red"
+                     />
+        </Grid>
+    </Frame>
+</toolkit:Popup>
