@@ -87,9 +87,5 @@ namespace ICS_Project.App.ViewModels.Playlist
 
             await InitializeAsync(tmp.First().Id);
         }
-
-
-            await InitializeAsync(PlaylistDetail.Id);
-        }
     }
 }

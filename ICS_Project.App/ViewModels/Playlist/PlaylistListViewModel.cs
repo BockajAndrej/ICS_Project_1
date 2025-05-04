@@ -32,6 +32,12 @@ namespace ICS_Project.App.ViewModels.Playlist
             Playlists = (await _facade.GetAsync(SearchPlaylist)).ToObservableCollection();
         }
 
+        [RelayCommand]
+        public async Task LoadAllPlaylistsAsync()
+        {
+            Playlists = (await _facade.GetAsync()).ToObservableCollection();
+        }
+
         public PlaylistListViewModel(
           IPlaylistFacade playlistFacade,
           IMessengerService messengerService) // Needs IMessengerService
@@ -40,6 +46,7 @@ namespace ICS_Project.App.ViewModels.Playlist
             _facade = playlistFacade;
             SearchPlaylist = string.Empty;
             LoadAllPlaylistsAsync();
+
         }
 
         [RelayCommand]

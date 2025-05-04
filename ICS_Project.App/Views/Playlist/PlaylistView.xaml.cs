@@ -1,14 +1,13 @@
-// Add necessary using statements
-using ICS_Project.App.ViewModels; // For ViewModelBase
+using ICS_Project.App.ViewModels; 
 using ICS_Project.App.ViewModels.Playlist;
-using ICS_Project.App.Views; // For ContentPageBase (if needed, check namespace)
-using System.Diagnostics; // Keep for Debug.WriteLine if needed
-using Microsoft.Maui.Controls; // Make sure this using exists
+using ICS_Project.App.Views; 
+using System.Diagnostics; 
+using Microsoft.Maui.Controls; 
 
 namespace ICS_Project.App.Views.Playlist;
 
-// 1. Inherit from ContentPageBase
-public partial class PlaylistView : ContentPageBase // <<< CORRECT INHERITANCE
+
+public partial class PlaylistView : ContentPageBase 
 {
     // Store the Detail ViewModel needed for the child view
     private readonly PlaylistDetailViewModel _playlistDetailViewModel;
@@ -48,12 +47,8 @@ public partial class PlaylistView : ContentPageBase // <<< CORRECT INHERITANCE
         }
         else
             Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
-            // Ak sa sem dostanete, znamená to, že sa nepodarilo získať referenciu na Grid
-            // Skontrolujte XAML a ako získavate referenciu na Grid.
-            System.Diagnostics.Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
-        }
-        // --- End Child View Setup ---
+        // Ak sa sem dostanete, znamená to, že sa nepodarilo získať referenciu na Grid
+        // Skontrolujte XAML a ako získavate referenciu na Grid.
+        System.Diagnostics.Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
     }
-
-    // Remove message handling logic if it was moved to AppShell
 }
