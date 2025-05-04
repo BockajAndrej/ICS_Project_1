@@ -68,7 +68,7 @@
 
     <ItemGroup>
         <Folder Include="Converters\" />
-        <Folder Include="Messages\" />
+        <Folder Include="NewFolder\" />
         <Folder Include="Services\" />
     </ItemGroup>
 

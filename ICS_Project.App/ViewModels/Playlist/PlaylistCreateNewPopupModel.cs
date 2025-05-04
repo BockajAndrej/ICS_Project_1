@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ICS_Project.BL;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
@@ -10,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ICS_Project.App.Messages;
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -18,13 +20,12 @@ namespace ICS_Project.App.ViewModels.Playlist
         private readonly IPlaylistFacade _facade;
         private readonly IMusicTrackFacade _musicTrackFacade;
 
-        public ObservableCollection<MusicTrackListModel> MusicTracks { get; set; }
 
         [ObservableProperty]
         private PlaylistDetailModel _playlistDetail;
 
         [ObservableProperty]
-        private ObservableCollection<MusicTrackListModel> _songs = [];
+        private ObservableCollection<MusicTrackListModel> _musicTracks = [];
 
         public async Task InitializeAsync(Guid id)
         {
@@ -37,23 +38,49 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             _facade = playlistFacade;
             _musicTrackFacade = musicTrackFacade;
+
+            PlaylistDetail = new PlaylistDetailModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "",
+                Description = "",
+                TotalPlayTime = TimeSpan.Zero,
+                NumberOfMusicTracks = 0,
+                MusicTracks = new ObservableCollection<MusicTrackListModel>(),
+            };
+
+            // Register to listen for PopupOpenedMessage
+            WeakReferenceMessenger.Default.Register<PopupOpenedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine("PopupOpenedMessage received in PlaylistCreateNewPopupModel.");
+
+                if (m.Value)
+                {
+                    Debug.WriteLine("Message value was TRUE — calling LoadSongsAsync.");
+                    await LoadSongsAsync();
+                }
+                else
+                {
+                    Debug.WriteLine("Message value was FALSE — skipping LoadSongsAsync.");
+                }
+            });
         }
 
 
         public async Task LoadSongsAsync()
         {
             // Fetch songs asynchronously
-            var songs = await _musicTrackFacade.GetAsync();
+            var tracks = await _musicTrackFacade.GetAsync();
 
             // Convert the result to an ObservableCollection
-            Songs = songs.ToObservableCollection();
+            MusicTracks = tracks.ToObservableCollection();
 
             // Print the contents of the Songs collection to the output for debugging
             Debug.WriteLine("Loaded Songs:");
-            foreach (var song in Songs)
+            foreach (var track in MusicTracks)
             {
                 // Assuming each song has a 'Title' and 'Artist' or similar properties, you can adjust this to match the actual properties of your 'MusicTrackListModel'
-                Debug.WriteLine($"- {song.Title}");
+                Debug.WriteLine($"- {track.Title}");
             }
         }
 
