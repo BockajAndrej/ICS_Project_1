@@ -6,16 +6,20 @@ namespace ICS_Project.App.Views.MusicTrack;
 
 public partial class MusicTrackView : ContentPage
 {
-    public MusicTrackView(PlaylistListViewModel playlist, MusicTrackListViewModel musicTrack)
+    private readonly IServiceProvider _serviceProvider;
+
+    public MusicTrackView(PlaylistListViewModel playlist, MusicTrackListViewModel musicTrack, IServiceProvider serviceProvider)
     {
         InitializeComponent();
+
+        _serviceProvider = serviceProvider;
 
         Grid mainGrid = this.Content as Grid;
 
         if (mainGrid != null)
         {
             // 1. Created instances of UI elements
-            var playlistListView = new PlaylistListView(playlist);
+            var playlistListView = new PlaylistListView(playlist, serviceProvider);
             var musicTrackListView = new MusicTrackListView(musicTrack);
 
             // 2. Created connection with Grid.Column
@@ -30,5 +34,7 @@ public partial class MusicTrackView : ContentPage
         {
             System.Diagnostics.Debug.WriteLine("Chyba: Root element nie je Grid alebo sa nenašiel Grid.");
         }
+
+        _serviceProvider = serviceProvider;
     }
 }

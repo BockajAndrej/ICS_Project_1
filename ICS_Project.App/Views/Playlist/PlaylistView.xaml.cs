@@ -12,18 +12,15 @@ public partial class PlaylistView : ContentPageBase
     // Store the Detail ViewModel needed for the child view
     private readonly PlaylistDetailViewModel _playlistDetailViewModel;
 
+    private readonly IServiceProvider _serviceProvider;
+
     // 2. Constructor now takes the PAGE's ViewModel and other needed ViewModels, matching base
     public PlaylistView(
         PlaylistListViewModel viewModel, // This is the ViewModel for THIS page
-        PlaylistDetailViewModel playlistDetailViewModel // Inject the other needed VM
+        PlaylistDetailViewModel playlistDetailViewModel, // Inject the other needed VM
+        IServiceProvider serviceProvider
         )
         : base(viewModel) // Pass the page's ViewModel to ContentPageBase constructor
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlaylistView(
-        PlaylistListViewModel playlistListViewModel,
-        PlaylistDetailViewModel playlistDetailViewModel,
-        IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _serviceProvider = serviceProvider;
@@ -38,7 +35,7 @@ public partial class PlaylistView : ContentPageBase
         {
             // Create child views using the correct ViewModels
             // PlaylistListViewModel is available via the 'ViewModel' property from base class (or directly)
-            var playlistListView = new PlaylistListView(viewModel);
+            var playlistListView = new PlaylistListView(viewModel, serviceProvider);
 
             // PlaylistDetailViewModel was injected and stored
             var playlistDetailView = new PlaylistDetailView(_playlistDetailViewModel);

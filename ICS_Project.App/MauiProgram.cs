@@ -35,6 +35,8 @@ public static class MauiProgram
         //builder.Services.AddTransient<PlaylistView>();
         //builder.Services.AddTransient<PlaylistListViewModel>();
         //builder.Services.AddTransient<PlaylistDetailViewModel>();
+        builder.Services.AddTransient <PlaylistCreateNewPopup>();
+        builder.Services.AddTransient<PlaylistCreateNewPopupModel>();
 
         builder.Services
             .addDALServises()
