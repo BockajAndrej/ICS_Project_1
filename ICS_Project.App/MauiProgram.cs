@@ -12,8 +12,6 @@ using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger
 using ICS_Project.App.Services;        // Needed for your services
 using ICS_Project.App.Services.Interfaces; // Needed for your interfaces
-
-using CommunityToolkit.Maui;
 using ICS_Project.DAL.Entities;
 
 namespace ICS_Project.App;
