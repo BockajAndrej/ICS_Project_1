@@ -162,7 +162,25 @@ namespace ICS_Project.App.ViewModels.Playlist
                 }
                 else
                 {
+                    PlaylistDetail.MusicTracks.Clear();
                     var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
+
+                    foreach (var track in _selectedTracks)
+                    {
+                        await _facade.AddMusicTrackToPlaylistAsync(savedPlaylist.Id, track.Id);
+                    }
+
+
+                    Debug.WriteLine("Saved Playlist:");
+                    Debug.WriteLine($"ID: {savedPlaylist.Id}");
+                    Debug.WriteLine($"Name: {savedPlaylist.Name}");
+                    Debug.WriteLine($"Description: {savedPlaylist.Description}");
+                    Debug.WriteLine($"Added Tracks: {_selectedTracks.Count}");
+
+                    foreach (var track in _selectedTracks)
+                    {
+                        Debug.WriteLine($"  Track ID: {track.Id}, Title: {track.Title}, Length: {track.Length}");
+                    }
                 }
             }
 
