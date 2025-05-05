@@ -48,6 +48,8 @@ namespace ICS_Project.App.ViewModels.Playlist
         private bool _isRegistered = false;
         private bool _isNotRegistered = true;
 
+        private bool _isEdit;
+
 
 
         public async Task InitializeAsync(Guid id)
@@ -83,9 +85,9 @@ namespace ICS_Project.App.ViewModels.Playlist
                 {
                     Debug.WriteLine("PlaylistPopupContextMessage received in PlaylistCreateNewPopupModel.");
 
-                    var context = m.IsEditMode;
+                    _isEdit = m.IsEditMode;
 
-                    if (context)
+                    if (_isEdit)
                     {
                         Debug.WriteLine("Edit mode — loading existing playlist.");
                         ListenForGUID();
@@ -131,26 +133,36 @@ namespace ICS_Project.App.ViewModels.Playlist
             {
                 PlaylistDetail.Name = Name;
                 PlaylistDetail.Description = Description;
-
-                // Get the current track IDs in the playlist
-                var currentTrackIds = PlaylistDetail.MusicTracks.Select(t => t.Id).ToHashSet();
-
-                // Tracks that were selected but are not in the current playlist
-                var tracksToAdd = _selectedTracks.Where(track => !currentTrackIds.Contains(track.Id)).ToList();
-
-                // Tracks that are in the playlist but were deselected
-                var tracksToRemove = PlaylistDetail.MusicTracks.Where(track => !_selectedTracks.Any(t => t.Id == track.Id)).ToList();
-
-                // Remove tracks that are not selected
-                foreach (var track in tracksToRemove)
+                PlaylistDetail.NumberOfMusicTracks = NumberOfTracks;
+                PlaylistDetail.TotalPlayTime = TotalTrackTime;
+                if (_isEdit)
                 {
-                    await _facade.RemoveMusicTrackFromPlaylistAsync(PlaylistDetail.Id, track.Id);
+
+                    // Get the current track IDs in the playlist
+                    var currentTrackIds = PlaylistDetail.MusicTracks.Select(t => t.Id).ToHashSet();
+
+                    // Tracks that were selected but are not in the current playlist
+                    var tracksToAdd = _selectedTracks.Where(track => !currentTrackIds.Contains(track.Id)).ToList();
+
+                    // Tracks that are in the playlist but were deselected
+                    var tracksToRemove = PlaylistDetail.MusicTracks
+                        .Where(track => !_selectedTracks.Any(t => t.Id == track.Id)).ToList();
+
+                    // Remove tracks that are not selected
+                    foreach (var track in tracksToRemove)
+                    {
+                        await _facade.RemoveMusicTrackFromPlaylistAsync(PlaylistDetail.Id, track.Id);
+                    }
+
+                    // Add tracks that are selected but not in the playlist
+                    foreach (var track in tracksToAdd)
+                    {
+                        await _facade.AddMusicTrackToPlaylistAsync(PlaylistDetail.Id, track.Id);
+                    }
                 }
-
-                // Add tracks that are selected but not in the playlist
-                foreach (var track in tracksToAdd)
+                else
                 {
-                    await _facade.AddMusicTrackToPlaylistAsync(PlaylistDetail.Id, track.Id);
+                    var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
                 }
             }
 
