@@ -58,6 +58,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Remove="Messages\PlaylistCreateNewSelectedTrack.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\ICS_Project.BL\ICS_Project.BL.csproj" />
         <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -72,6 +76,12 @@
 
     <ItemGroup>
         <Folder Include="Converters\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml.cs">
+        <DependentUpon>PlaylistCreateNewPopup.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -103,6 +113,9 @@
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\ContentPageBase.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml">
           <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Playlist\PlaylistDetailView.xaml">

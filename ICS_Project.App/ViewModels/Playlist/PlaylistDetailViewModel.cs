@@ -40,6 +40,7 @@ namespace ICS_Project.App.ViewModels.Playlist
             _facade = playlistFacade;
             _messenger = messengerService.Messenger; // Assign the messenger
             // _messengerService is available via the base class property 'MessengerService'
+            ListenToGUIDRequest();
         }
 
         // Command now accepts a parameter
@@ -68,6 +69,17 @@ namespace ICS_Project.App.ViewModels.Playlist
             var tmp = (await _facade.GetAsync()).ToObservableCollection();
 
             await InitializeAsync(tmp.First().Id);
+        }
+        public void ListenToGUIDRequest()
+        {
+            WeakReferenceMessenger.Default.Register<PlaylistRequestGUID>(this, (recipient, message) =>
+            {
+                var id = PlaylistDetail.Id;
+
+                Debug.WriteLine($"[ListenToGUIDRequest] Received request, sending back GUID: {id}");
+
+                WeakReferenceMessenger.Default.Send(new PlaylistEditGUID{ID = id});
+            });
         }
     }
 }

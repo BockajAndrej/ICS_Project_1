@@ -19,7 +19,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         string timestamp;
 
         [ObservableProperty]
-        private ObservableCollection<PlaylistListModel> _playlists = [];
+        private ObservableCollection<PlaylistListModel> _playlists;
 
         [ObservableProperty]
         private string _searchPlaylist;

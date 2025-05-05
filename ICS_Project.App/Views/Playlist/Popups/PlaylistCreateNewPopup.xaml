@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ICS_Project.App.Views.Playlist"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ICS_Project.App.Views.Playlist.PlaylistCreateNewPopup"
+             Opened="PlaylistCreateNewPopup_Opened">
+
+    <Frame 
+        WidthRequest="600"
+        HeightRequest="500"
+        Padding="0"
+        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+        CornerRadius="12"
+        HasShadow="True"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+
+        <Grid RowDefinitions="Auto, Auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
+                <!-- Image | Texty | Button -->
+
+                <Image Grid.Column="0" 
+                   Source="redhotchilli.png" 
+                   WidthRequest="150" 
+                   HeightRequest="150" 
+                   Aspect="AspectFill" 
+                   VerticalOptions="Start"/>
+
+                <StackLayout Grid.Column="1" 
+                             Margin="10,0,10,0" 
+                             VerticalOptions="Start">
+                    <Entry Text="{Binding Name}" 
+                           Placeholder="Název playlistu" 
+                           FontSize="Large" 
+                           FontAttributes="Bold"/>
+                    <Entry Text="{Binding Description}" 
+                           Placeholder="Popis playlistu" 
+                           FontSize="Large" 
+                           FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="5">
+                        <Label Text="{Binding NumberOfTracks}" VerticalOptions="Center"/>
+                        <Label Text=" skladeb" VerticalOptions="Center"/>
+                        <Label Text=" | " VerticalOptions="Center"/>
+                        <Label Text="{Binding TotalTrackTime}" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </StackLayout>
+
+                <!-- Option button  "..." -->
+                    <StackLayout Grid.Column="2" Margin="10, 0, 10, 10" Spacing="20">
+                        <Button x:Name="SaveButton" Text="Uložit" Command="{Binding SaveChangesCommand}"/>
+                        <Button x:Name="RevertButton" Text="Zrušit změny" Command="{Binding RevertChangesCommand}"/>
+                    </StackLayout>
+            </Grid>
+
+            <!-- Search/Filter for musictracks-->
+            <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
+                <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="Vyhladavanie"/>
+                <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
+            </Grid>
+
+            <!-- Music tracks - Header -->
+            <Grid Grid.Row="2" RowDefinitions="Auto, *" Margin="10, 0, 10, 10">
+                <!-- Header for MusicTracks -->
+                <Grid ColumnDefinitions="Auto, 2*, 2*, 2*, Auto, Auto">
+                    <Label Grid.Column="0" Text="Výběr" Margin="0,0,5,0"/>
+                    <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
+                    <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
+                    <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
+                    <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
+                    <Label Grid.Column="5" Text=""/>
+                </Grid>
+
+                <!-- Music tracks - Content -->
+                <CollectionView Grid.Row="1"
+                                ItemsSource="{Binding MusicTracks}"
+                                VerticalOptions="FillAndExpand">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, Auto, *, *, *, Auto">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalOptions="Center" />
+                                <Image Grid.Column="1" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
+                                <Label Grid.Column="2" Text="{Binding Title}" VerticalOptions="Center"/>
+                                <Label Grid.Column="3" Text="Autor" VerticalOptions="Center"/>
+                                <Label Grid.Column="4" Text="{Binding Size}" VerticalOptions="Center"/>
+                                <Label Grid.Column="5" Text="{Binding Length}" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+    </Frame>
+
+</toolkit:Popup>
