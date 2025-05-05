@@ -40,7 +40,7 @@
                            FontSize="Large" 
                            FontAttributes="Bold"/>
                     <HorizontalStackLayout Spacing="5">
-                        <Label Text="{Binding NumberOfTracks}" VerticalOptions="Center"/>
+                        <Label Text="{Binding Name}" VerticalOptions="Center"/>
                         <Label Text=" skladeb" VerticalOptions="Center"/>
                         <Label Text=" | " VerticalOptions="Center"/>
                         <Label Text="{Binding TotalTrackTime}" VerticalOptions="Center"/>

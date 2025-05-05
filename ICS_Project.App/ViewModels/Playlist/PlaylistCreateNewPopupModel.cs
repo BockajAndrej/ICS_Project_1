@@ -46,6 +46,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         private HashSet<Guid> _selectedTrackIds = new();
 
         private bool _isRegistered = false;
+        private bool _isNotRegistered = true;
 
 
 
@@ -73,6 +74,7 @@ namespace ICS_Project.App.ViewModels.Playlist
                 MusicTracks = new ObservableCollection<MusicTrackListModel>(),
             };
 
+            WeakReferenceMessenger.Default.UnregisterAll(this);
             // Register to listen for PlaylistPopupContextMessage
             if (!_isRegistered)
             {
@@ -189,31 +191,35 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         private void ListenForGUID()
         {
-            WeakReferenceMessenger.Default.Register<PlaylistEditGUID>(this, async (recipient, message) =>
+            if (_isNotRegistered)
             {
-                Debug.WriteLine($"Received PlaylistEditGUID with ID: {message.ID}");
-
-                // Fetch the playlist detail using the provided GUID
-                PlaylistDetail = await _facade.GetAsync(message.ID);
-
-                // Optional: Refresh the music tracks and their selection
-                await LoadSongsAsync();
-
-                // Pre-select tracks already in the playlist
-                foreach (var track in PlaylistDetail.MusicTracks)
+                WeakReferenceMessenger.Default.Register<PlaylistEditGUID>(this, async (recipient, message) =>
                 {
-                    _originalTrackIds.Add(track.Id);
+                    Debug.WriteLine($"Received PlaylistEditGUID with ID: {message.ID}");
 
-                    var match = MusicTracks.FirstOrDefault(t => t.Id == track.Id);
-                    if (match != null)
+                    // Fetch the playlist detail using the provided GUID
+                    PlaylistDetail = await _facade.GetAsync(message.ID);
+
+                    // Optional: Refresh the music tracks and their selection
+                    await LoadSongsAsync();
+
+                    // Pre-select tracks already in the playlist
+                    foreach (var track in PlaylistDetail.MusicTracks)
                     {
-                        match.IsSelected = true;
-                    }
-                }
+                        _originalTrackIds.Add(track.Id);
 
-                Name = PlaylistDetail.Name;
-                Description = PlaylistDetail.Description;
-            });
+                        var match = MusicTracks.FirstOrDefault(t => t.Id == track.Id);
+                        if (match != null)
+                        {
+                            match.IsSelected = true;
+                        }
+                    }
+
+                    Name = PlaylistDetail.Name;
+                    Description = PlaylistDetail.Description;
+                });
+                _isNotRegistered = false;
+            }
         }
     }
 }
