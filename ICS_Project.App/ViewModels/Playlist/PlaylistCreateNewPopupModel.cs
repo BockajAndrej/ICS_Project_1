@@ -29,16 +29,16 @@ namespace ICS_Project.App.ViewModels.Playlist
         private ObservableCollection<MusicTrackListModel> _musicTracks = [];
 
         [ObservableProperty] 
-        private string _name;
+        private string _name = "";
 
         [ObservableProperty] 
-        private string _description;
+        private string _description = "";
 
         [ObservableProperty] 
-        private int _numberOfTracks;
+        private int _numberOfTracks = 0;
 
         [ObservableProperty] 
-        private TimeSpan _totalTrackTime;
+        private TimeSpan _totalTrackTime = TimeSpan.Zero;
 
         private readonly List<MusicTrackListModel> _selectedTracks = new();
 
@@ -129,7 +129,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         [RelayCommand]
         public async void SaveChanges()
         {
-            if (Name != null)
+            if (Name != "" && Description != "" && NumberOfTracks != 0)
             {
                 PlaylistDetail.Name = Name;
                 PlaylistDetail.Description = Description;
@@ -159,12 +159,13 @@ namespace ICS_Project.App.ViewModels.Playlist
                     {
                         await _facade.AddMusicTrackToPlaylistAsync(PlaylistDetail.Id, track.Id);
                     }
+                    PlaylistDetail.MusicTracks.Clear();
+                    var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
                 }
                 else
                 {
                     PlaylistDetail.MusicTracks.Clear();
                     var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
-
                     foreach (var track in _selectedTracks)
                     {
                         await _facade.AddMusicTrackToPlaylistAsync(savedPlaylist.Id, track.Id);
@@ -182,16 +183,20 @@ namespace ICS_Project.App.ViewModels.Playlist
                         Debug.WriteLine($"  Track ID: {track.Id}, Title: {track.Title}, Length: {track.Length}");
                     }
                 }
+                WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
             }
-
-            WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Validační chyba", "Všechna pole musí být vyplněná", "OK");
+            }
         }
 
         // Command for reverting the changes
         [RelayCommand]
         public void RevertChanges()
         {
-            Debug.WriteLine("Revert button pressed");
+            //TODO: Perhaps proper revert functionality?
+            WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
         }
 
         private void Track_PropertyChanged(object? sender, PropertyChangedEventArgs e)
