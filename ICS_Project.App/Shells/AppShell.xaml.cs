@@ -13,11 +13,13 @@ public partial class AppShell : Shell, IRecipient<PlaylistShowOptions>
 {
     private readonly IMessengerService _messengerService;
 
+    private readonly IServiceProvider _serviceProvider;
     // Inject IMessengerService
-    public AppShell(IMessengerService messengerService)
+    public AppShell(IMessengerService messengerService, IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _messengerService = messengerService;
+        _serviceProvider = serviceProvider;
 
         // Register AppShell itself to receive the message
         Debug.WriteLine("--- AppShell: ABOUT TO REGISTER for PlaylistShowOptions ---"); // <<< ADD THIS
@@ -54,7 +56,7 @@ public partial class AppShell : Shell, IRecipient<PlaylistShowOptions>
             Debug.WriteLine($"--- AppShell: Message Anchor Type: {message.Anchor.GetType().Name} ---");
 
             Debug.WriteLine("--- AppShell: Creating PlaylistOptionsView popup instance ---");
-            var popup = new PlaylistOptionsView();
+            var popup = new PlaylistOptionsView(_serviceProvider);
 
             Debug.WriteLine("--- AppShell: Setting popup BindingContext ---");
             popup.BindingContext = message.ViewModel;

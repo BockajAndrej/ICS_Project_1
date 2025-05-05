@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ICS_Project.App.Messages
 {
-    public class PopupOpenedMessage : ValueChangedMessage<bool>
+    public class PlaylistNewPlaylistOpened : ValueChangedMessage<bool>
     {
-        public PopupOpenedMessage(bool value) : base(value) { }
+        public PlaylistNewPlaylistOpened(bool value) : base(value) { }
     }
 }

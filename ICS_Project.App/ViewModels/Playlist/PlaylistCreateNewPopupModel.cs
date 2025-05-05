@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ICS_Project.App.Messages;
+using System.ComponentModel;
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -33,6 +34,21 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty] 
         private string _description;
 
+        [ObservableProperty] 
+        private int _numberOfTracks;
+
+        [ObservableProperty] 
+        private TimeSpan _totalTrackTime;
+
+        private readonly List<MusicTrackListModel> _selectedTracks = new();
+
+        private HashSet<Guid> _originalTrackIds = new();
+        private HashSet<Guid> _selectedTrackIds = new();
+
+        private bool _isRegistered = false;
+
+
+
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
@@ -44,6 +60,8 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             _facade = playlistFacade;
             _musicTrackFacade = musicTrackFacade;
+            NumberOfTracks = 0;
+            TotalTrackTime = TimeSpan.Zero;
 
             PlaylistDetail = new PlaylistDetailModel
             {
@@ -55,21 +73,29 @@ namespace ICS_Project.App.ViewModels.Playlist
                 MusicTracks = new ObservableCollection<MusicTrackListModel>(),
             };
 
-            // Register to listen for PopupOpenedMessage
-            WeakReferenceMessenger.Default.Register<PopupOpenedMessage>(this, async (r, m) =>
+            // Register to listen for PlaylistPopupContextMessage
+            if (!_isRegistered)
             {
-                Debug.WriteLine("PopupOpenedMessage received in PlaylistCreateNewPopupModel.");
+                _isRegistered = true;
+                WeakReferenceMessenger.Default.Register<PlaylistPopupContext>(this, async (r, m) =>
+                {
+                    Debug.WriteLine("PlaylistPopupContextMessage received in PlaylistCreateNewPopupModel.");
 
-                if (m.Value)
-                {
-                    Debug.WriteLine("Message value was TRUE — calling LoadSongsAsync.");
-                    await LoadSongsAsync();
-                }
-                else
-                {
-                    Debug.WriteLine("Message value was FALSE — skipping LoadSongsAsync.");
-                }
-            });
+                    var context = m.IsEditMode;
+
+                    if (context)
+                    {
+                        Debug.WriteLine("Edit mode — loading existing playlist.");
+                        ListenForGUID();
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Create mode — initializing new playlist.");
+                        await LoadSongsAsync();
+                    }
+                });
+            }
+
         }
 
 
@@ -88,6 +114,11 @@ namespace ICS_Project.App.ViewModels.Playlist
             //     // Assuming each song has a 'Title' and 'Artist' or similar properties, you can adjust this to match the actual properties of your 'MusicTrackListModel'
             //     Debug.WriteLine($"- {track.Title}");
             // }
+
+            foreach (var track in MusicTracks)
+            {
+                track.PropertyChanged += Track_PropertyChanged;
+            }
         }
 
         // Command for saving the playlist
@@ -99,10 +130,29 @@ namespace ICS_Project.App.ViewModels.Playlist
                 PlaylistDetail.Name = Name;
                 PlaylistDetail.Description = Description;
 
-                var savedPlaylist = await _facade.SaveAsync(PlaylistDetail);
+                // Get the current track IDs in the playlist
+                var currentTrackIds = PlaylistDetail.MusicTracks.Select(t => t.Id).ToHashSet();
+
+                // Tracks that were selected but are not in the current playlist
+                var tracksToAdd = _selectedTracks.Where(track => !currentTrackIds.Contains(track.Id)).ToList();
+
+                // Tracks that are in the playlist but were deselected
+                var tracksToRemove = PlaylistDetail.MusicTracks.Where(track => !_selectedTracks.Any(t => t.Id == track.Id)).ToList();
+
+                // Remove tracks that are not selected
+                foreach (var track in tracksToRemove)
+                {
+                    await _facade.RemoveMusicTrackFromPlaylistAsync(PlaylistDetail.Id, track.Id);
+                }
+
+                // Add tracks that are selected but not in the playlist
+                foreach (var track in tracksToAdd)
+                {
+                    await _facade.AddMusicTrackToPlaylistAsync(PlaylistDetail.Id, track.Id);
+                }
             }
 
-            WeakReferenceMessenger.Default.Send(new PopupClosedMessage());
+            WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
         }
 
         // Command for reverting the changes
@@ -110,6 +160,60 @@ namespace ICS_Project.App.ViewModels.Playlist
         public void RevertChanges()
         {
             Debug.WriteLine("Revert button pressed");
+        }
+
+        private void Track_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MusicTrackListModel.IsSelected) && sender is MusicTrackListModel track)
+            {
+                if (track.IsSelected)
+                {
+                    if (_selectedTrackIds.Add(track.Id))
+                    {
+                        _selectedTracks.Add(track);
+                        NumberOfTracks++;
+                        TotalTrackTime += track.Length;
+                    }
+                }
+                else
+                {
+                    if (_selectedTrackIds.Remove(track.Id))
+                    {
+                        _selectedTracks.RemoveAll(t => t.Id == track.Id);
+                        NumberOfTracks--;
+                        TotalTrackTime -= track.Length;
+                    }
+                }
+            }
+        }
+
+        private void ListenForGUID()
+        {
+            WeakReferenceMessenger.Default.Register<PlaylistEditGUID>(this, async (recipient, message) =>
+            {
+                Debug.WriteLine($"Received PlaylistEditGUID with ID: {message.ID}");
+
+                // Fetch the playlist detail using the provided GUID
+                PlaylistDetail = await _facade.GetAsync(message.ID);
+
+                // Optional: Refresh the music tracks and their selection
+                await LoadSongsAsync();
+
+                // Pre-select tracks already in the playlist
+                foreach (var track in PlaylistDetail.MusicTracks)
+                {
+                    _originalTrackIds.Add(track.Id);
+
+                    var match = MusicTracks.FirstOrDefault(t => t.Id == track.Id);
+                    if (match != null)
+                    {
+                        match.IsSelected = true;
+                    }
+                }
+
+                Name = PlaylistDetail.Name;
+                Description = PlaylistDetail.Description;
+            });
         }
     }
 }

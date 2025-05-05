@@ -40,10 +40,10 @@
                            FontSize="Large" 
                            FontAttributes="Bold"/>
                     <HorizontalStackLayout Spacing="5">
-                        <Label Text="{Binding Name}" VerticalOptions="Center"/>
+                        <Label Text="{Binding NumberOfTracks}" VerticalOptions="Center"/>
                         <Label Text=" skladeb" VerticalOptions="Center"/>
                         <Label Text=" | " VerticalOptions="Center"/>
-                        <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
+                        <Label Text="{Binding TotalTrackTime}" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </StackLayout>
 
@@ -63,8 +63,8 @@
             <!-- Music tracks - Header -->
             <Grid Grid.Row="2" RowDefinitions="Auto, *" Margin="10, 0, 10, 10">
                 <!-- Header for MusicTracks -->
-                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, *, *, Auto, Auto">
-                    <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
+                <Grid ColumnDefinitions="Auto, 2*, 2*, 2*, Auto, Auto">
+                    <Label Grid.Column="0" Text="Výběr" Margin="0,0,5,0"/>
                     <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
                     <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
                     <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
@@ -78,13 +78,13 @@
                                 VerticalOptions="FillAndExpand">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto" Padding="10">
-                                <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
-                                <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
-                                <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
+                            <Grid ColumnDefinitions="Auto, Auto, *, *, *, Auto">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalOptions="Center" />
+                                <Image Grid.Column="1" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
+                                <Label Grid.Column="2" Text="{Binding Title}" VerticalOptions="Center"/>
+                                <Label Grid.Column="3" Text="Autor" VerticalOptions="Center"/>
+                                <Label Grid.Column="4" Text="{Binding Size}" VerticalOptions="Center"/>
+                                <Label Grid.Column="5" Text="{Binding Length}" VerticalOptions="Center"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
