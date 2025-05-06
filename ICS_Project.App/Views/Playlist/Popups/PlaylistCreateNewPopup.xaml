@@ -56,8 +56,7 @@
 
             <!-- Search/Filter for musictracks-->
             <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-                <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="Vyhladavanie"/>
-                <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
+                <SearchBar Text="{Binding SearchbarText}" SearchCommand="{Binding SearchSongsCommand}" Placeholder="Zadajte názov pre vyhľadanie..." Grid.Column="0" />
             </Grid>
 
             <!-- Music tracks - Header -->
