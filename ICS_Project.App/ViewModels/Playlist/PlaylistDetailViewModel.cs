@@ -41,6 +41,9 @@ namespace ICS_Project.App.ViewModels.Playlist
             _messenger = messengerService.Messenger; // Assign the messenger
             // _messengerService is available via the base class property 'MessengerService'
             ListenToGUIDRequest();
+
+            ListenToPlaylistSelect();
+            
         }
 
         // Command now accepts a parameter
@@ -79,6 +82,14 @@ namespace ICS_Project.App.ViewModels.Playlist
                 Debug.WriteLine($"[ListenToGUIDRequest] Received request, sending back GUID: {id}");
 
                 WeakReferenceMessenger.Default.Send(new PlaylistEditGUID{ID = id});
+            });
+        }
+        public void ListenToPlaylistSelect()
+        {
+            _messenger.Register<PlaylistSelectedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistDetailViewModel] Prijatý Playlist ID: {m.Value}");
+                await InitializeAsync(m.Value);
             });
         }
     }

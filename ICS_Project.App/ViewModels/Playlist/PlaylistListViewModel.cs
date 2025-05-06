@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces; // Needed for your custom message
+using System.Diagnostics; // Pridal som pre Debug.WriteLine
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -23,6 +24,22 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         [ObservableProperty]
         private string _searchPlaylist;
+
+        
+        [RelayCommand]
+        private void PlaylistTapped(PlaylistListModel? playlist) // Parameter je vybraný playlist
+        {
+            if (playlist != null)
+            {
+                Debug.WriteLine($"KLIK cez Command vo ViewModele: Playlist '{playlist.Name}', ID: {playlist.Id}");
+
+                MessengerService.Messenger.Send(new PlaylistSelectedMessage(playlist.Id));
+            }
+            else
+            {
+                Debug.WriteLine("PlaylistTapped bol zavolaný s null parametrom.");
+            }
+        }
 
 
         [RelayCommand]
