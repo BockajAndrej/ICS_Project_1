@@ -25,9 +25,44 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty]
         private PlaylistDetailModel _playlistDetail;
 
+        [ObservableProperty]
+        private ObservableCollection<MusicTrackListModel> _musicTracks;
+
+        [ObservableProperty]
+        private string _searchTracks;
+
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
+            MusicTracks = new ObservableCollection<MusicTrackListModel>(PlaylistDetail.MusicTracks);
+        }
+
+        [RelayCommand]
+        private async Task SearchSongs(string inputText)
+        {
+            _searchTracks = inputText;
+            MusicTracks.Clear();
+            Filter();
+        }
+
+        private void Filter()
+        {
+            Debug.WriteLine($"Searching for {SearchTracks}");
+            if (string.IsNullOrWhiteSpace(SearchTracks))
+            {
+                Debug.WriteLine("Searchbar text is empty");
+                MusicTracks = new ObservableCollection<MusicTrackListModel>(PlaylistDetail.MusicTracks);
+            }
+            else
+            {
+                Debug.WriteLine("SearchbarText is NOT empty");
+                var lower = SearchTracks.ToLowerInvariant();
+                var filtered = PlaylistDetail.MusicTracks.ToList()
+                    .Where(track =>
+                        !string.IsNullOrWhiteSpace(track.Title) && track.Title.ToLowerInvariant().Contains(lower))
+                    .ToList();
+                MusicTracks = new ObservableCollection<MusicTrackListModel>(filtered);
+            }
         }
 
 

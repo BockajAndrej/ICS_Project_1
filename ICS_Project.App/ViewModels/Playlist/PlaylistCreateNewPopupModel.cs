@@ -185,6 +185,8 @@ namespace ICS_Project.App.ViewModels.Playlist
                         Debug.WriteLine($"  Track ID: {track.Id}, Title: {track.Title}, Length: {track.Length}");
                     }
                 }
+
+                WeakReferenceMessenger.Default.Send(new PlaylistNewCreation());
                 WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
             }
             else
