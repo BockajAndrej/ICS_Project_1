@@ -260,8 +260,9 @@ namespace ICS_Project.App.ViewModels.Playlist
         }
 
         [RelayCommand]
-        public void SearchSongs()
+        public void SearchSongs(string newText)
         {
+            SearchbarText = newText;
             Debug.WriteLine("SearchSongs has triggered");
             Filter();
         }
