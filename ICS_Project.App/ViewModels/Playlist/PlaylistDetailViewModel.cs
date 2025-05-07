@@ -92,5 +92,31 @@ namespace ICS_Project.App.ViewModels.Playlist
                 await InitializeAsync(m.Value);
             });
         }
+
+        [RelayCommand]
+        private async Task DeletePlaylistAsync()
+        {
+            if (PlaylistDetail == null || PlaylistDetail.Id == Guid.Empty)
+            {
+                Debug.WriteLine("[DeletePlaylistAsync] Žiadny playlist na vymazanie (PlaylistDetail je null alebo má prázdne Id).");
+                return;
+            }
+
+            Debug.WriteLine($"[DeletePlaylistAsync] Pokus o vymazanie playlistu s ID: {PlaylistDetail.Id}");
+
+            try
+            {
+                await _facade.DeleteAsync(PlaylistDetail.Id);
+                Debug.WriteLine($"[DeletePlaylistAsync] Playlist s ID: {PlaylistDetail.Id} bol úspešne vymazaný.");
+
+                _messenger.Send(new PlaylistDeletedMessage(PlaylistDetail.Id));
+
+                PlaylistDetail = PlaylistDetailModel.Empty;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DeletePlaylistAsync] Chyba pri mazaní playlistu: {ex.Message}");
+            }
+        }
     }
 }

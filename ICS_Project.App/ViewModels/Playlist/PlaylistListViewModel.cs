@@ -64,6 +64,18 @@ namespace ICS_Project.App.ViewModels.Playlist
             SearchPlaylist = string.Empty;
             LoadAllPlaylistsAsync();
 
+
+            ReloadPlaylistsAfterDeletion();
+
+        }
+
+        private void ReloadPlaylistsAfterDeletion()
+        {
+            MessengerService.Messenger.Register<PlaylistDeletedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistListViewModel] Prijatá správa o vymazaní playlistu s ID: {m.Value}. Obnovujem zoznam.");
+                await LoadAllPlaylistsAsync();
+            });
         }
 
         [RelayCommand]
@@ -91,7 +103,7 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         }
 
-
+        
 
         //------------
         public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>
