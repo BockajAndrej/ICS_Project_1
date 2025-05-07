@@ -3,7 +3,6 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using ICS_Project.App.Messages;
 using ICS_Project.App.ViewModels.Playlist;
-using ICS_Project.BL.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ICS_Project.App.Views.Playlist;

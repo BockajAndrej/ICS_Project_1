@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces; // Needed for your custom message
-using System.Diagnostics; // Pridal som pre Debug.WriteLine
+using System.Diagnostics; // For debug writeline
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -31,13 +31,13 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             if (playlist != null)
             {
-                Debug.WriteLine($"KLIK cez Command vo ViewModele: Playlist '{playlist.Name}', ID: {playlist.Id}");
+                Debug.WriteLine($"Click through Command in ViewModel: Playlist '{playlist.Name}', ID: {playlist.Id}");
 
                 MessengerService.Messenger.Send(new PlaylistSelectedMessage(playlist.Id));
             }
             else
             {
-                Debug.WriteLine("PlaylistTapped bol zavolaný s null parametrom.");
+                Debug.WriteLine("PlaylistTapped was called with null param.");
             }
         }
 
@@ -73,7 +73,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             MessengerService.Messenger.Register<PlaylistDeletedMessage>(this, async (r, m) =>
             {
-                Debug.WriteLine($"[PlaylistListViewModel] Prijatá správa o vymazaní playlistu s ID: {m.Value}. Obnovujem zoznam.");
+                Debug.WriteLine($"[PlaylistListViewModel] received Message about deleting playlist with ID: {m.Value}. Refreshing list.");
                 await LoadAllPlaylistsAsync();
             });
         }

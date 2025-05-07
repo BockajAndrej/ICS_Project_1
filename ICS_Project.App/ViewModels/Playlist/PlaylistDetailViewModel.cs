@@ -88,7 +88,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             _messenger.Register<PlaylistSelectedMessage>(this, async (r, m) =>
             {
-                Debug.WriteLine($"[PlaylistDetailViewModel] Prijatý Playlist ID: {m.Value}");
+                Debug.WriteLine($"[PlaylistDetailViewModel] Received Playlist ID: {m.Value}");
                 await InitializeAsync(m.Value);
             });
         }
@@ -98,16 +98,16 @@ namespace ICS_Project.App.ViewModels.Playlist
         {
             if (PlaylistDetail == null || PlaylistDetail.Id == Guid.Empty)
             {
-                Debug.WriteLine("[DeletePlaylistAsync] Žiadny playlist na vymazanie (PlaylistDetail je null alebo má prázdne Id).");
+                Debug.WriteLine("[DeletePlaylistAsync] No playlist to delete.");
                 return;
             }
 
-            Debug.WriteLine($"[DeletePlaylistAsync] Pokus o vymazanie playlistu s ID: {PlaylistDetail.Id}");
+            Debug.WriteLine($"[DeletePlaylistAsync] Trying to delete playlist with ID: {PlaylistDetail.Id}");
 
             try
             {
                 await _facade.DeleteAsync(PlaylistDetail.Id);
-                Debug.WriteLine($"[DeletePlaylistAsync] Playlist s ID: {PlaylistDetail.Id} bol úspešne vymazaný.");
+                Debug.WriteLine($"[DeletePlaylistAsync] Playlist with ID: {PlaylistDetail.Id} was succsefully removed.");
 
                 _messenger.Send(new PlaylistDeletedMessage(PlaylistDetail.Id));
 
@@ -115,7 +115,7 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[DeletePlaylistAsync] Chyba pri mazaní playlistu: {ex.Message}");
+                Debug.WriteLine($"[DeletePlaylistAsync] Error when trying to delete playlist: {ex.Message}");
             }
         }
     }
