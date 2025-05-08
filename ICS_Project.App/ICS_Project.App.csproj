@@ -103,10 +103,10 @@
         <MauiXaml Update="Views\Genre\GenreListView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\MusicTrack\MusicTrackDetailView.xaml">
+        <MauiXaml Update="Views\MusicTrack\Popups\MusicTrackDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\MusicTrack\MusicTrackEditView.xaml">
+        <MauiXaml Update="Views\MusicTrack\Popups\MusicTrackEditView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\MusicTrack\MusicTrackListView.xaml">

@@ -1,46 +1,121 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView"
              xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
-             >
+             xmlns:playlist_vm="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView">
 
+    <Grid ColumnDefinitions="*"
+          RowDefinitions="*"
+          BackgroundColor="{StaticResource PageBackgroundColor}"
+          Margin="0"
+          Padding="0">
 
-    <Grid RowDefinitions="Auto, Auto, *">
+        <Border BackgroundColor="{StaticResource Gradient2}"
+                Padding="5"
+                Margin="10"
+                Stroke="{StaticResource Tertiary}">
 
-        <!-- Search/Filter for musictracks-->
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="{Binding SearchMusicTrackStr}" SearchCommand="{Binding SearchMusicTracksCommand}"/>
-            <Button Grid.Column="1" Text="Add track"/>
-        </Grid>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
 
-        <!-- Music tracks - Header -->
-        <Grid Grid.Row="1" Margin="10, 0, 10, 0" ColumnDefinitions="Auto, *, *, *, Auto, Auto">
-            <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
-            <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
-            <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
-            <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
-            <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
-            <Label Grid.Column="5" Text=""/>
-        </Grid>
+            <Border.Background>
+                <RadialGradientBrush Center="0.5,1.25" 
+                                      Radius="0.53"
+                                     >
+                    <GradientStop Color="{StaticResource Gradient1}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource Gradient2}" Offset="1.0" />
+                </RadialGradientBrush>
+            </Border.Background>
 
-        <!-- Music tracks - Content -->
-        <CollectionView Grid.Row="3" Margin="10, 0, 10, 10" ItemsSource="{Binding MusicTracks}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto">
-                        <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                        <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
-                        <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
-                        <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
-                        <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
-                        <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <Grid RowDefinitions="Auto, Auto, *">
 
+                <!-- Search/Filter for musictracks-->
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*, Auto"
+                      Margin="10, 10, 10, 10">
+
+                    <SearchBar Grid.Column="0"
+                               Placeholder="Prohledat playlist"
+                               Text="{Binding SearchMusicTrackStr}"
+                               SearchCommand="{Binding SearchMusicTracksCommand}" />
+
+                    <Button Grid.Column="1"
+                            Text="Add track" />
+                </Grid>
+
+                <!-- Music tracks - Header -->
+                <Grid Grid.Row="1"
+                      Margin="10, 0, 10, 0"
+                      ColumnDefinitions="Auto, *, *, *, *, Auto">
+
+                    <Label Grid.Column="0"
+                           Text="#"
+                           Margin="0,0,5,0" />
+                    <Label Grid.Column="1"
+                           Text="Název"
+                           HorizontalOptions="Start" />
+                    <Label Grid.Column="2"
+                           Text="Umělec"
+                           HorizontalOptions="Start" />
+                    <Label Grid.Column="3"
+                           Text="Album"
+                           HorizontalOptions="Start" />
+                    <Label Grid.Column="4"
+                           Text="Délka"
+                           HorizontalOptions="Start" />
+                    <Label Grid.Column="5"
+                           Text="" />
+                </Grid>
+
+                <!-- Music tracks - Content -->
+                <CollectionView Grid.Row="2"
+                                Margin="10, 0, 10, 10"
+                                ItemsSource="{Binding MusicTracks}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Assuming a ViewModel per item, adjust if it's a Model -->
+                            <Grid ColumnDefinitions="Auto, *, *, *, *, Auto"
+                                  Padding="0,2">
+
+                                <Image Grid.Column="0"
+                                       Source="redhotchilli.png"
+                                       WidthRequest="30"
+                                       HeightRequest="30"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,5,0" />
+
+                                <Label Grid.Column="1"
+                                       Text="{Binding Title}"
+                                       VerticalOptions="Center" />
+
+                                <Label Grid.Column="2"
+                                       Text="Autor"
+                                       VerticalOptions="Center" />
+
+                                <Label Grid.Column="3"
+                                       Text="{Binding Size}"
+                                       VerticalOptions="Center" />
+                                <!-- Note: Column 3 Header is "Album", this binds to Size -->
+                                <Label Grid.Column="4"
+                                       Text="{Binding Length}"
+                                       VerticalOptions="Center" />
+
+                                <Button Grid.Column="4" 
+                                    Text="···"
+                                        FontSize="11"
+                                        WidthRequest="37"
+                                        HeightRequest="35"
+                                        VerticalOptions="Center"
+                                        Command="{Binding MusicTrackShowOptionsMessageCommand}"
+                                        CommandParameter="{Binding Source={RelativeSource Self}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
     </Grid>
-
-
-</ContentView >
+</ContentView>
