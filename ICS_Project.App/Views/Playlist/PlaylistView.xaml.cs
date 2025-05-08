@@ -1,13 +1,13 @@
-using ICS_Project.App.ViewModels; 
+using ICS_Project.App.ViewModels;
 using ICS_Project.App.ViewModels.Playlist;
-using ICS_Project.App.Views; 
-using System.Diagnostics; 
-using Microsoft.Maui.Controls; 
+using ICS_Project.App.Views;
+using System.Diagnostics;
+using Microsoft.Maui.Controls;
 
 namespace ICS_Project.App.Views.Playlist;
 
 
-public partial class PlaylistView : ContentPageBase 
+public partial class PlaylistView : ContentPageBase
 {
     // Store the Detail ViewModel needed for the child view
     private readonly PlaylistDetailViewModel _playlistDetailViewModel;

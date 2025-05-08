@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces; // Needed for your custom message
+using System.Diagnostics; // For debug writeline
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -23,6 +24,22 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         [ObservableProperty]
         private string _searchPlaylist;
+
+        
+        [RelayCommand]
+        private void PlaylistTapped(PlaylistListModel? playlist) // Parameter je vybraný playlist
+        {
+            if (playlist != null)
+            {
+                Debug.WriteLine($"Click through Command in ViewModel: Playlist '{playlist.Name}', ID: {playlist.Id}");
+
+                MessengerService.Messenger.Send(new PlaylistSelectedMessage(playlist.Id));
+            }
+            else
+            {
+                Debug.WriteLine("PlaylistTapped was called with null param.");
+            }
+        }
 
 
         [RelayCommand]
@@ -47,6 +64,18 @@ namespace ICS_Project.App.ViewModels.Playlist
             SearchPlaylist = string.Empty;
             LoadAllPlaylistsAsync();
 
+
+            ReloadPlaylistsAfterDeletion();
+
+        }
+
+        private void ReloadPlaylistsAfterDeletion()
+        {
+            MessengerService.Messenger.Register<PlaylistDeletedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistListViewModel] received Message about deleting playlist with ID: {m.Value}. Refreshing list.");
+                await LoadAllPlaylistsAsync();
+            });
         }
 
         [RelayCommand]
@@ -74,7 +103,7 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         }
 
-
+        
 
         //------------
         public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>

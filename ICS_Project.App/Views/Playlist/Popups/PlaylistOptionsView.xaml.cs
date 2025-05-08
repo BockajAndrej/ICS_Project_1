@@ -62,12 +62,10 @@ public partial class PlaylistOptionsView : Popup
         this.Close(); // Close the popup
     }
 
-    // Handler for the Delete button
-    private void DeleteButton_Clicked(object sender, EventArgs e)
+
+    private void DeleteButton_AndClose_Clicked(object sender, EventArgs e)
     {
-        Debug.WriteLine("Delete button clicked!");
-        // In a real app, you would pass data back or trigger an action
-        // For now, just close the popup
-        this.Close(); // Close the popup
+        Debug.WriteLine("DeleteButton_AndClose_Clicked: Zatváram popup po príkaze.");
+        this.Close();
     }
 }

@@ -41,6 +41,9 @@ namespace ICS_Project.App.ViewModels.Playlist
             _messenger = messengerService.Messenger; // Assign the messenger
             // _messengerService is available via the base class property 'MessengerService'
             ListenToGUIDRequest();
+
+            ListenToPlaylistSelect();
+            
         }
 
         // Command now accepts a parameter
@@ -80,6 +83,40 @@ namespace ICS_Project.App.ViewModels.Playlist
 
                 WeakReferenceMessenger.Default.Send(new PlaylistEditGUID{ID = id});
             });
+        }
+        public void ListenToPlaylistSelect()
+        {
+            _messenger.Register<PlaylistSelectedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistDetailViewModel] Received Playlist ID: {m.Value}");
+                await InitializeAsync(m.Value);
+            });
+        }
+
+        [RelayCommand]
+        private async Task DeletePlaylistAsync()
+        {
+            if (PlaylistDetail == null || PlaylistDetail.Id == Guid.Empty)
+            {
+                Debug.WriteLine("[DeletePlaylistAsync] No playlist to delete.");
+                return;
+            }
+
+            Debug.WriteLine($"[DeletePlaylistAsync] Trying to delete playlist with ID: {PlaylistDetail.Id}");
+
+            try
+            {
+                await _facade.DeleteAsync(PlaylistDetail.Id);
+                Debug.WriteLine($"[DeletePlaylistAsync] Playlist with ID: {PlaylistDetail.Id} was succsefully removed.");
+
+                _messenger.Send(new PlaylistDeletedMessage(PlaylistDetail.Id));
+
+                PlaylistDetail = PlaylistDetailModel.Empty;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DeletePlaylistAsync] Error when trying to delete playlist: {ex.Message}");
+            }
         }
     }
 }
