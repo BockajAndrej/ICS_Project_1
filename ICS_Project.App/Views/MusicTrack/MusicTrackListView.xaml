@@ -3,15 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView"
              xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
-             >
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
 
     <Grid RowDefinitions="Auto, Auto, *">
 
         <!-- Search/Filter for musictracks-->
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-            <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="{Binding SearchMusicTrackStr}" SearchCommand="{Binding SearchMusicTracksCommand}"/>
-            <Button Grid.Column="1" Text="Add track"/>
+            <SearchBar Text="{Binding SearchMusicTrackStr}" 
+                       SearchCommand="{Binding SearchMusicTracksCommand}" 
+                       Placeholder="Zadajte názov pre vyhľadanie..." 
+                       Grid.Column="0" 
+            >
+                <SearchBar.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        EventName="TextChanged"
+                        Command="{Binding SearchMusicTracksCommand}"
+                        EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                </SearchBar.Behaviors>
+            </SearchBar>            <Button Grid.Column="1" Text="Add track"/>
         </Grid>
 
         <!-- Music tracks - Header -->

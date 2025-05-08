@@ -85,7 +85,18 @@
             </Border.Background>
 
             <Grid ColumnDefinitions="*, Auto">
-                <SearchBar Grid.Column="0" Placeholder="Prohledat playlist" Text="Vyhladavanie"/>
+                <SearchBar Text="{Binding SearchTracks}" 
+                           SearchCommand="{Binding SearchSongsCommand}" 
+                           Placeholder="Zadajte názov pre vyhľadanie..." 
+                           Grid.Column="0" 
+                >
+                    <SearchBar.Behaviors>
+                        <toolkit:EventToCommandBehavior
+                            EventName="TextChanged"
+                            Command="{Binding SearchSongsCommand}"
+                            EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                    </SearchBar.Behaviors>
+                </SearchBar>
                 <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
             </Grid>
         </Border>
@@ -118,7 +129,7 @@
                     <Label Grid.Column="5" Text=""/>
                 </Grid>
 
-                <CollectionView Grid.Row="1" ItemsSource="{Binding PlaylistDetail.MusicTracks}">
+                <CollectionView Grid.Row="1" ItemsSource="{Binding MusicTracks}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto" Padding="0,3">

@@ -28,6 +28,8 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty]
         private ObservableCollection<MusicTrackListModel> _musicTracks = [];
 
+        private List<MusicTrackListModel> _allTracks = [];
+
         [ObservableProperty] 
         private string _name = "";
 
@@ -40,6 +42,9 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty] 
         private TimeSpan _totalTrackTime = TimeSpan.Zero;
 
+        [ObservableProperty] 
+        private string _searchbarText = "";
+        
         private readonly List<MusicTrackListModel> _selectedTracks = new();
 
         private HashSet<Guid> _originalTrackIds = new();
@@ -49,7 +54,6 @@ namespace ICS_Project.App.ViewModels.Playlist
         private bool _isNotRegistered = true;
 
         private bool _isEdit;
-
 
 
         public async Task InitializeAsync(Guid id)
@@ -106,10 +110,8 @@ namespace ICS_Project.App.ViewModels.Playlist
         public async Task LoadSongsAsync()
         {
             // Fetch songs asynchronously
-            var tracks = await _musicTrackFacade.GetAsync();
-
-            // Convert the result to an ObservableCollection
-            MusicTracks = tracks.ToObservableCollection();
+            _allTracks = (await _musicTrackFacade.GetAsync()).ToList();
+            MusicTracks = new ObservableCollection<MusicTrackListModel>(_allTracks);
 
             // Print the contents of the Songs collection to the output for debugging
             // Debug.WriteLine("Loaded Songs:");
@@ -183,6 +185,8 @@ namespace ICS_Project.App.ViewModels.Playlist
                         Debug.WriteLine($"  Track ID: {track.Id}, Title: {track.Title}, Length: {track.Length}");
                     }
                 }
+
+                WeakReferenceMessenger.Default.Send(new PlaylistNewCreation());
                 WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
             }
             else
@@ -254,6 +258,39 @@ namespace ICS_Project.App.ViewModels.Playlist
                     Description = PlaylistDetail.Description;
                 });
                 _isNotRegistered = false;
+            }
+        }
+
+        [RelayCommand]
+        public void SearchSongs(string newText)
+        {
+            SearchbarText = newText;
+            Debug.WriteLine("SearchSongs has triggered");
+            Filter();
+        }
+
+        private void Filter()
+        {
+            Debug.WriteLine($"Searching for {SearchbarText}");
+            if (string.IsNullOrWhiteSpace(SearchbarText))
+            {
+                Debug.WriteLine("Searchbar text is empty");
+                MusicTracks = new ObservableCollection<MusicTrackListModel>(_allTracks);
+            }
+            else
+            {
+                Debug.WriteLine("SearchbarText is NOT empty");
+                var lower = SearchbarText.ToLowerInvariant();
+                var filtered = _allTracks
+                    .Where(track =>
+                        !string.IsNullOrWhiteSpace(track.Title) && track.Title.ToLowerInvariant().Contains(lower))
+                    .ToList();
+                MusicTracks = new ObservableCollection<MusicTrackListModel>(filtered);
+            }
+
+            foreach (var track in MusicTracks)
+            {
+                track.PropertyChanged += Track_PropertyChanged;
             }
         }
     }

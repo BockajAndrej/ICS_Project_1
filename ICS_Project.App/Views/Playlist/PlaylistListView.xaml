@@ -7,13 +7,25 @@
     xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
     xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
     xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     >
     <Grid RowDefinitions="Auto, Auto, *" ColumnDefinitions="Auto, *">
 
         <!-- Search/Filter panel -->
         <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
-            <SearchBar Text="{Binding SearchPlaylist}" SearchCommand="{Binding SearchPlaylistsCommand}" Placeholder="Zadajte názov pre vyhľadanie..." Grid.Column="0" />
-            <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
+            <SearchBar Text="{Binding SearchPlaylist}" 
+                       SearchCommand="{Binding SearchPlaylistsCommand}" 
+                       Placeholder="Zadajte názov pre vyhľadanie..." 
+                       Grid.Column="0" 
+                       >
+                <SearchBar.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        EventName="TextChanged"
+                        Command="{Binding SearchPlaylistsCommand}"
+                        EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
+                <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
         </Grid>
 
         <Grid Grid.Row="1" Margin="5" ColumnDefinitions="*, Auto">

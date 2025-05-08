@@ -7,6 +7,7 @@ using ICS_Project.BL.Models;
 using ICS_Project.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces; // Needed for your custom message
@@ -21,6 +22,8 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         [ObservableProperty]
         private ObservableCollection<PlaylistListModel> _playlists;
+
+        private List<PlaylistListModel> _allPlaylists;
 
         [ObservableProperty]
         private string _searchPlaylist;
@@ -43,16 +46,38 @@ namespace ICS_Project.App.ViewModels.Playlist
 
 
         [RelayCommand]
-        private async Task SearchPlaylists()
+        private async Task SearchPlaylists(string inputText)
         {
+            _searchPlaylist = inputText;
             Playlists.Clear();
-            Playlists = (await _facade.GetAsync(SearchPlaylist)).ToObservableCollection();
+            Filter();
+        }
+
+        private void Filter()
+        {
+            Debug.WriteLine($"Searching for {SearchPlaylist}");
+            if (string.IsNullOrWhiteSpace(SearchPlaylist))
+            {
+                Debug.WriteLine("Searchbar text is empty");
+                Playlists = new ObservableCollection<PlaylistListModel>(_allPlaylists);
+            }
+            else
+            {
+                Debug.WriteLine("SearchbarText is NOT empty");
+                var lower = SearchPlaylist.ToLowerInvariant();
+                var filtered = _allPlaylists
+                    .Where(playlist =>
+                        !string.IsNullOrWhiteSpace(playlist.Name) && playlist.Name.ToLowerInvariant().Contains(lower))
+                    .ToList();
+                Playlists = new ObservableCollection<PlaylistListModel>(filtered);
+            }
         }
 
         [RelayCommand]
         public async Task LoadAllPlaylistsAsync()
         {
-            Playlists = (await _facade.GetAsync()).ToObservableCollection();
+            _allPlaylists = (await _facade.GetAsync()).ToList();
+            Playlists = new ObservableCollection<PlaylistListModel>(_allPlaylists);
         }
 
         public PlaylistListViewModel(
@@ -66,7 +91,7 @@ namespace ICS_Project.App.ViewModels.Playlist
 
 
             ReloadPlaylistsAfterDeletion();
-
+            ListenForCreation();
         }
 
         private void ReloadPlaylistsAfterDeletion()
@@ -125,6 +150,16 @@ namespace ICS_Project.App.ViewModels.Playlist
                     TotalPlayTime = new TimeSpan(1, 12, 0) // 1 hour, 12 minutes
                 }
         };
+
+        //TODO: TEMPORARY SOLUTION, reflashing allPlaylists memory when new playlist is created
+
+        private async void ListenForCreation()
+        {
+            WeakReferenceMessenger.Default.Register<PlaylistNewCreation>(this, async (r, m) =>
+            {
+                await LoadAllPlaylistsAsync();
+            });
+        }
 
     }
 }
