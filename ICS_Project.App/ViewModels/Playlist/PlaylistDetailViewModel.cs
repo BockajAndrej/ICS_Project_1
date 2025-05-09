@@ -78,7 +78,8 @@ namespace ICS_Project.App.ViewModels.Playlist
             ListenToGUIDRequest();
 
             ListenToPlaylistSelect();
-            
+
+            ListenToEdits();
         }
 
         // Command now accepts a parameter
@@ -125,6 +126,15 @@ namespace ICS_Project.App.ViewModels.Playlist
             {
                 Debug.WriteLine($"[PlaylistDetailViewModel] Received Playlist ID: {m.Value}");
                 await InitializeAsync(m.Value);
+            });
+        }
+
+        public void ListenToEdits()
+        {
+            WeakReferenceMessenger.Default.Register<PlaylistDetailViewUpdate>(this, async (r, m) =>
+            {
+                Debug.WriteLine("Playlist updated");
+                await InitializeAsync(_playlistDetail.Id);
             });
         }
 

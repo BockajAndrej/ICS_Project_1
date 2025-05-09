@@ -54,6 +54,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         private bool _isNotRegistered = true;
 
         private bool _isEdit;
+        private bool _editedSongs;
 
 
         public async Task InitializeAsync(Guid id)
@@ -131,18 +132,31 @@ namespace ICS_Project.App.ViewModels.Playlist
         [RelayCommand]
         public async void SaveChanges()
         {
-            if (Name != "" && Description != "" && NumberOfTracks != 0)
+            if (Name != "")
             {
+                // Check if any properties have changed
+                bool nameOrDescriptionChanged = PlaylistDetail.Name != Name || 
+                                                PlaylistDetail.Description != Description;
+                bool hasChanges = nameOrDescriptionChanged ||
+                                  PlaylistDetail.NumberOfMusicTracks != NumberOfTracks ||
+                                  PlaylistDetail.TotalPlayTime != TotalTrackTime;
+                // Check if the song list has changed
+                var currentTrackIds = PlaylistDetail.MusicTracks.Select(t => t.Id).ToHashSet();
+                var selectedTrackIds = _selectedTracks.Select(t => t.Id).ToHashSet();
+                bool trackListChanged = !currentTrackIds.SetEquals(selectedTrackIds);
+                // If nothing has changed, skip saving
+                if (!hasChanges && !trackListChanged)
+                {
+                    WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
+                    Debug.WriteLine("No changes detected. Skipping save.");
+                    return;
+                }
                 PlaylistDetail.Name = Name;
                 PlaylistDetail.Description = Description;
                 PlaylistDetail.NumberOfMusicTracks = NumberOfTracks;
                 PlaylistDetail.TotalPlayTime = TotalTrackTime;
                 if (_isEdit)
                 {
-
-                    // Get the current track IDs in the playlist
-                    var currentTrackIds = PlaylistDetail.MusicTracks.Select(t => t.Id).ToHashSet();
-
                     // Tracks that were selected but are not in the current playlist
                     var tracksToAdd = _selectedTracks.Where(track => !currentTrackIds.Contains(track.Id)).ToList();
 
@@ -186,7 +200,11 @@ namespace ICS_Project.App.ViewModels.Playlist
                     }
                 }
 
-                WeakReferenceMessenger.Default.Send(new PlaylistNewCreation());
+                if (_isEdit)
+                {
+                    WeakReferenceMessenger.Default.Send(new PlaylistDetailViewUpdate());
+                }
+                if (nameOrDescriptionChanged) WeakReferenceMessenger.Default.Send(new PlaylistListViewUpdate());
                 WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
             }
             else

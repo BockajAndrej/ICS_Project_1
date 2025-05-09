@@ -155,7 +155,7 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         private async void ListenForCreation()
         {
-            WeakReferenceMessenger.Default.Register<PlaylistNewCreation>(this, async (r, m) =>
+            WeakReferenceMessenger.Default.Register<PlaylistListViewUpdate>(this, async (r, m) =>
             {
                 await LoadAllPlaylistsAsync();
             });
