@@ -62,6 +62,7 @@
                         VerticalOptions="Start"
                         Command="{Binding ShowOptionsCommand}"
                         CommandParameter="{Binding Source={RelativeSource Self}}"
+                        IsEnabled="{Binding IsPlaylistAvailable}"
                         />
             </Grid>
         </Border>

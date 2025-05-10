@@ -24,4 +24,16 @@ public partial class PlaylistDetailModel : ModelBase
         NumberOfMusicTracks = 0,
         TotalPlayTime = TimeSpan.Zero
     };
+
+    public static PlaylistDetailModel CreateEmpty()
+    {
+        return new PlaylistDetailModel
+        {
+            Id = Guid.Empty,
+            Name = string.Empty,
+            Description = string.Empty,
+            NumberOfMusicTracks = 0,
+            TotalPlayTime = TimeSpan.Zero
+        };
+    }
 }
