@@ -31,6 +31,14 @@ namespace ICS_Project.App.ViewModels.Playlist
         [ObservableProperty]
         private string _searchTracks;
 
+        public bool IsPlaylistAvailable => PlaylistDetail != null && PlaylistDetail.Id != Guid.Empty;
+
+
+        partial void OnPlaylistDetailChanged(PlaylistDetailModel value)
+        {
+            OnPropertyChanged(nameof(IsPlaylistAvailable));
+        }
+
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
@@ -146,7 +154,9 @@ namespace ICS_Project.App.ViewModels.Playlist
 
                 _messenger.Send(new PlaylistDeletedMessage(PlaylistDetail.Id));
 
-                PlaylistDetail = PlaylistDetailModel.Empty;
+                PlaylistDetail = PlaylistDetailModel.CreateEmpty();
+
+
             }
             catch (Exception ex)
             {
