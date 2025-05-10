@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="ICS_Project.App.Views.Playlist.PlaylistListView"
-    x:Name="PlaylistListRoot"
-    xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
-    xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
-    xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    >
-    <Grid RowDefinitions="Auto, Auto, *" ColumnDefinitions="Auto, *">
+<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               x:Name="PlaylistListRoot"
+               xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+               xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
+               xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ICS_Project.App.Views.Playlist.PlaylistListView">
 
-        <!-- Search/Filter panel -->
-        <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
-            <SearchBar Text="{Binding SearchPlaylist}" 
-                       SearchCommand="{Binding SearchPlaylistsCommand}" 
-                       Placeholder="Zadajte názov pre vyhľadanie..." 
-                       Grid.Column="0" 
-                       >
-                <SearchBar.Behaviors>
-                    <toolkit:EventToCommandBehavior
-                        EventName="TextChanged"
-                        Command="{Binding SearchPlaylistsCommand}"
-                        EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
-                </SearchBar.Behaviors>
-            </SearchBar>
-                <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
-        </Grid>
+    <Grid ColumnDefinitions="auto"
+          RowDefinitions="*"
+          BackgroundColor="{StaticResource PageBackgroundColor}"
+          Margin="0"
+          Padding="0">
 
-        <Grid Grid.Row="1" Margin="5" ColumnDefinitions="*, Auto">
-            <Button Text="New Playlist" Grid.Column="0" Clicked="OnNewPlaylistClicked"/>
-        </Grid>
+        <Border BackgroundColor="{StaticResource Gradient2}"
+                Padding="5"
+                Margin="10"
+                Stroke="{StaticResource Tertiary}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12"/>
+                </Border.StrokeShape>
 
-        <CollectionView Grid.Row="2"
-                ItemsSource="{Binding Playlists}"
-                SelectionMode="Single"
-                Margin="10">
-            <!-- We add a border around CollectionView -->
+            <Grid RowDefinitions="Auto, Auto, *"
+                  ColumnDefinitions="Auto, *"
+                  >
 
-            <!-- Spacing between items -->
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
-            </CollectionView.ItemsLayout>
+                <!-- Search/Filter panel -->
+                <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
+                    <SearchBar Text="{Binding SearchPlaylist}" 
+                  SearchCommand="{Binding SearchPlaylistsCommand}" 
+                  Placeholder="Zadajte názov pre vyhľadanie..." 
+                  Grid.Column="0" 
+                  >
+                        <SearchBar.Behaviors>
+                            <toolkit:EventToCommandBehavior
+                   EventName="TextChanged"
+                   Command="{Binding SearchPlaylistsCommand}"
+                   EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                        </SearchBar.Behaviors>
+                    </SearchBar>
+                    <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      Margin="5"
+                      ColumnDefinitions="*, Auto">
+
+                    <Button Grid.Column="0"
+                            Text="New Playlist"
+                            Clicked="OnNewPlaylistClicked"
+                            Margin="10,0,10,0"/>
+                </Grid>
+
+                <CollectionView Grid.Row="2"
+                                ItemsSource="{Binding Playlists}"
+                                SelectionMode="Single"
+                                Margin="10">
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"
+                                           ItemSpacing="2" />
+                    </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate >
@@ -60,56 +80,55 @@
                         
                         <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
 
-                            <!-- Image for playlist-->
-                            <Image Grid.Column="0"
-                           Source="{Binding ImageUrl, FallbackValue='redhotchilli.png'}"
-                                HeightRequest="60"
-                           WidthRequest="60"
-                           Aspect="AspectFill"
-                                VerticalOptions="Center">
-                                <!-- Image rounding -->
-                                <Image.Clip>
-                                    <RoundRectangleGeometry CornerRadius="4" Rect="0,0,60,60"/>
-                                </Image.Clip>
-                            </Image>
+                                    <!-- Image for playlist-->
+                                    <Image Grid.Column="0"
+                                           Source="redhotchilli.png"
+                                           HeightRequest="60"
+                                           WidthRequest="60"
+                                           Aspect="AspectFill"
+                                           VerticalOptions="Center">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="4"
+                                                                    Rect="0,0,60,60" />
+                                        </Image.Clip>
+                                    </Image>
 
-                            <!-- Text info -->
-                            <VerticalStackLayout Grid.Column="1"
-                                         VerticalOptions="Center"
-                                         Spacing="4">
+                                    <!-- Text info -->
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center"
+                                                         Spacing="4">
 
-                                <!-- Name -->
-                                <Label Text="{Binding Name}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                               LineBreakMode="TailTruncation"
-                                    SemanticProperties.HeadingLevel="Level2"/>
+                                        <!-- Name -->
+                                        <Label Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                               LineBreakMode="TailTruncation"
+                                               SemanticProperties.HeadingLevel="Level2" />
 
-                                <!-- Description -->
-                                <Label Text="{Binding Description}"
-                               FontSize="12"
-                               TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}"
-                                        LineBreakMode="TailTruncation"
-                               MaxLines="2"/>
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
+                                        <!-- Description -->
+                                        <Label Text="{Binding Description}"
+                                               FontSize="12"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
 
-            <!-- Empty list -->
-            <CollectionView.EmptyView>
-                <ContentView Padding="20">
-                    <Label Text="Zatiaľ tu nie sú žiadne playlisty."
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   TextColor="{StaticResource Gray500}"/>
-                </ContentView>
-            </CollectionView.EmptyView>
+                    <CollectionView.EmptyView>
+                        <ContentView Padding="20">
+                            <Label Text="Zatiaľ tu nie sú žiadne playlisty."
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource Gray500}" />
+                        </ContentView>
+                    </CollectionView.EmptyView>
 
-        </CollectionView>
-
+                </CollectionView>
+            </Grid>
+        </Border>
     </Grid>
-
 </ContentView>

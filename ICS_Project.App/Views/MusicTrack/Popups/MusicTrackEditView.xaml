@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:musicTrack_vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
+               x:Class="ICS_Project.App.Views.MusicTrack.Popups.MusicTrackEditView"
+               x:DataType="musicTrack_vm:MusicTrackEditViewModel"
+               CanBeDismissedByTappingOutsideOfPopup="True"
+               Color="Transparent">
+
+    <Frame CornerRadius="10"
+           BackgroundColor="{StaticResource CardBackgroundColor}"
+           BorderColor="{StaticResource SecondaryDarkText}"
+           Padding="5"
+           Margin="1"
+           VerticalOptions="Center"
+           HorizontalOptions="Center"
+           HasShadow="True"
+         >
+
+        <Grid 
+            RowSpacing="4"
+            ColumnDefinitions="*"
+            RowDefinitions="auto,auto,auto">
+
+            <Button Grid.Row="0"
+                    FontSize="12"
+                    CornerRadius="10"
+                    HeightRequest="44"
+                    Text="Add to Playlist"
+                    Command="{Binding AddToPlaylistCommand}"
+                    TextColor="{StaticResource PrimaryDarkText}"
+                    BorderWidth="3"
+                    BorderColor="{StaticResource PrimaryButtonColor}"/>
+
+            <Button Grid.Row="1"
+                    FontSize="12"
+                    CornerRadius="10"
+                    HeightRequest="44"
+                    Text="Edit Track Details"
+                    Command="{Binding EditTrackCommand}"
+                    TextColor="{StaticResource PrimaryDarkText}"
+                    BorderWidth="3"
+                    BorderColor="{StaticResource PrimaryButtonColor}"/>
+
+            <Button Grid.Row="2"
+                    FontSize="12"
+                    CornerRadius="10"
+                    HeightRequest="44"
+                    Text="Delete from Playlist"
+                    Command="{Binding DeleteFromPlaylistCommand}"
+                    TextColor="{StaticResource Red}"
+                    BorderWidth="3"
+                    BorderColor="{StaticResource PrimaryButtonColor}"
+                    />
+
+
+        </Grid>
+    </Frame>
+</toolkit:Popup>

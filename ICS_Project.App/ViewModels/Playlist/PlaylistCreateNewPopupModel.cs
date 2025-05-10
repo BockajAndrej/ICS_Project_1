@@ -188,6 +188,9 @@ namespace ICS_Project.App.ViewModels.Playlist
 
                 WeakReferenceMessenger.Default.Send(new PlaylistNewCreation());
                 WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
+
+                //toto je ojeb treba spravit lepsie idk
+                WeakReferenceMessenger.Default.Send(new PlaylistSelectedMessage(PlaylistDetail.Id));
             }
             else
             {
