@@ -61,8 +61,9 @@ namespace ICS_Project.App.ViewModels.Playlist
         [RelayCommand]
         private async Task SearchSongs(string inputText)
         {
+
             _searchTracks = inputText;
-            MusicTracks.Clear();
+            MusicTrackVMs.Clear();
             Filter();
         }
 
@@ -72,17 +73,23 @@ namespace ICS_Project.App.ViewModels.Playlist
             if (string.IsNullOrWhiteSpace(SearchTracks))
             {
                 Debug.WriteLine("Searchbar text is empty");
-                MusicTracks = new ObservableCollection<MusicTrackListModel>(PlaylistDetail.MusicTracks);
+                foreach (var trackModel in PlaylistDetail.MusicTracks)
+                {
+                    MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
+                }
             }
             else
             {
                 Debug.WriteLine("SearchbarText is NOT empty");
                 var lower = SearchTracks.ToLowerInvariant();
-                var filtered = PlaylistDetail.MusicTracks.ToList()
+                var filtered = PlaylistDetail.MusicTracks
                     .Where(track =>
                         !string.IsNullOrWhiteSpace(track.Title) && track.Title.ToLowerInvariant().Contains(lower))
                     .ToList();
-                MusicTracks = new ObservableCollection<MusicTrackListModel>(filtered);
+                foreach (var trackModel in filtered)
+                {
+                    MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
+                }
             }
         }
 

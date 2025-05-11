@@ -202,13 +202,11 @@ namespace ICS_Project.App.ViewModels.Playlist
 
                 if (_isEdit)
                 {
-                    WeakReferenceMessenger.Default.Send(new PlaylistDetailViewUpdate());
+                    //toto je ojeb treba spravit lepsie idk
+                    WeakReferenceMessenger.Default.Send(new PlaylistSelectedMessage(PlaylistDetail.Id));
                 }
                 if (nameOrDescriptionChanged) WeakReferenceMessenger.Default.Send(new PlaylistListViewUpdate());
                 WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
-
-                //toto je ojeb treba spravit lepsie idk
-                WeakReferenceMessenger.Default.Send(new PlaylistSelectedMessage(PlaylistDetail.Id));
             }
             else
             {
