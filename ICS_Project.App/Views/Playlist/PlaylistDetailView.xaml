@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistDetailView"
-             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             xmlns:playlist_vm="clr-namespace:ICS_Project.App.ViewModels.Playlist"
              xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
-             >
+             x:DataType="playlist_vm:PlaylistDetailViewModel">
 
     <Grid RowDefinitions="Auto, Auto, *"
           BackgroundColor="{StaticResource PageBackgroundColor}"
           RowSpacing="5"
+          Padding="0"
+          Margin="0"
           >
 
         <Border Grid.Row="0"
@@ -18,7 +20,7 @@
                 StrokeThickness="1"
                 Stroke="{StaticResource Tertiary}">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12"/>
+                <RoundRectangle CornerRadius="15"/>
             </Border.StrokeShape>
             <Border.Background>
                 <RadialGradientBrush Center="0.5,-0.1" 
@@ -51,7 +53,12 @@
                     <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
                 </StackLayout>
 
-                <Button Grid.Column="2" Text="..." WidthRequest="40" HeightRequest="40" VerticalOptions="Start" Command="{Binding ModifyTrackCommand}"/>
+                <Button Grid.Column="1
+                        " Text="..." 
+                        WidthRequest="40" 
+                        HeightRequest="40" 
+                        VerticalOptions="Start" 
+                        Command="{Binding ModifyTrackCommand}"/>
 
 
                 <Button x:Name="OptionsButton"
@@ -62,6 +69,7 @@
                         VerticalOptions="Start"
                         Command="{Binding ShowOptionsCommand}"
                         CommandParameter="{Binding Source={RelativeSource Self}}"
+                        IsEnabled="{Binding IsPlaylistAvailable}"
                         />
             </Grid>
         </Border>
@@ -97,7 +105,7 @@
                             EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
                     </SearchBar.Behaviors>
                 </SearchBar>
-                <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}"/>
+                <!--  <Button Grid.Column="1" Text="Add track" Command="{Binding AddMusicTrackToPlaylistCommand}" /> -->
             </Grid>
         </Border>
 
@@ -120,25 +128,56 @@
             </Border.Background>
 
             <Grid RowDefinitions="auto, *">
-                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, *, *, Auto, Auto" Margin="0,0,0,5">
+                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, *, *, *, auto" Margin="0,0,0,5">
                     <Label Grid.Column="0" Text="#" Margin="0,0,5,0"/>
                     <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
                     <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
-                    <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
+                    <Label Grid.Column="3" Text="Velkost" HorizontalOptions="Start"/>
                     <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
                     <Label Grid.Column="5" Text=""/>
                 </Grid>
 
-                <CollectionView Grid.Row="1" ItemsSource="{Binding MusicTracks}">
+                <CollectionView Grid.Row="1" ItemsSource="{Binding MusicTrackVMs}">
+                    <!-- Corrected Binding -->
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid ColumnDefinitions="Auto, *, *, *, Auto, Auto" Padding="0,3">
+                        <DataTemplate x:DataType="playlist_vm:PlaylistTrackViewModel">
+                            <!-- x:DataType matches item type -->
+                            <Grid ColumnDefinitions="Auto, *, *, *, *, auto" Padding="0,2">
                                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
+
+
+                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                                            <Setter Property="TextDecorations" Value="Underline" />
+                                            <Style.Triggers>
+                                                <Trigger TargetType="Label" Property="IsFocused" Value="True">
+                                                    <Setter Property="TextColor" Value="{StaticResource Tertiary}" />
+                                                </Trigger>
+                                                <!-- You might need custom logic for hover/pressed states if not inherently supported -->
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding MusicTrackShowDetailMessageCommand}" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+
+
                                 <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
+                                <!-- Assuming 'Autor' is static or from a property in PlaylistTrackViewModel -->
                                 <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
                                 <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center"/>
-                                <Button Grid.Column="5" Text="..." WidthRequest="30" HeightRequest="30" VerticalOptions="Center"/>
+                                <Button Grid.Column="4"
+                                        Text="···"
+                                        FontSize="11"
+                                        WidthRequest="37"
+                                        HeightRequest="35"
+                                        VerticalOptions="Center"
+                                        Command="{Binding MusicTrackShowOptionsMessageCommand}"
+                                    CommandParameter="{Binding Source={RelativeSource Self}}"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

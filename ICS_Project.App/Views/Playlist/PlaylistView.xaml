@@ -4,7 +4,8 @@
              x:Class="ICS_Project.App.Views.Playlist.PlaylistView"
              xmlns:playlist="clr-namespace:ICS_Project.App.Views.Playlist"
              xmlns:views="clr-namespace:ICS_Project.App.Views"
-             Title="PlaylistView">
+             Shell.NavBarIsVisible="False"
+             >
 
     <Grid>
         <Grid.ColumnDefinitions>
