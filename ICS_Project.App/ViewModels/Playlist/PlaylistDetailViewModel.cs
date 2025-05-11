@@ -30,9 +30,6 @@ namespace ICS_Project.App.ViewModels.Playlist
         private PlaylistDetailModel? _playlistDetail; // For playlist name, description etc.
 
         [ObservableProperty]
-        private ObservableCollection<MusicTrackListModel> _musicTracks;
-
-        [ObservableProperty]
         private string _searchTracks;
 
         public bool IsPlaylistAvailable => PlaylistDetail != null && PlaylistDetail.Id != Guid.Empty;
