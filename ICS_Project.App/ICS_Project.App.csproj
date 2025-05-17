@@ -79,6 +79,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="Views\MusicTrack\Popups\MusicTrackCreateNewPopup.xaml.cs">
+        <DependentUpon>MusicTrackCreateNewPopup.xaml</DependentUpon>
+      </Compile>
       <Compile Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml.cs">
         <DependentUpon>PlaylistCreateNewPopup.xaml</DependentUpon>
       </Compile>
@@ -113,6 +116,9 @@
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\ContentPageBase.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\MusicTrack\Popups\MusicTrackCreateNewPopup.xaml">
           <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml">
