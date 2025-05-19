@@ -36,7 +36,21 @@
                         FontAttributes="Bold"/>
                     <Entry Text="{Binding Description}" 
                         Placeholder="Popis skladby" 
-                        FontSize="Small"/>
+                        FontSize="12"/>
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Entry Text="{Binding FileSizeString}" 
+                            Placeholder="Velikost" 
+                            Keyboard="Numeric"
+                            FontSize="Small">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                EventName="Unfocused"
+                                Command="{Binding ParseAndCorrectFileSizeCommand}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                        <Label Text="MB"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
                     <HorizontalStackLayout Spacing="5">
                         <Entry Text="{Binding HoursString}" 
                                Placeholder="HH" 
@@ -84,7 +98,7 @@
                 </StackLayout>
             </Grid>
 
-            <Grid Grid.Row="1" RowDefinitions="Auto, Auto, *" ColumnDefinitions="*, *" Margin="10, 0, 10, 10" ColumnSpacing="20" RowSpacing="5">
+            <Grid Grid.Row="1" RowDefinitions="Auto, Auto, *" ColumnDefinitions="*, *" Margin="10, 0, 10, 10" ColumnSpacing="20" RowSpacing="3">
 
                 <!-- Search/Filter for autors-->
                 <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
@@ -104,7 +118,7 @@
                     x:Name="NewAutorButton" Text="Přidat Autora" Command="{Binding CreateNewAuthorCommand}"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    Padding="10"/>
+                    Padding="8"/>
 
                     <!-- Autors - Content -->
                 <CollectionView Grid.Row="2" Grid.Column="0"
@@ -141,7 +155,7 @@
                     x:Name="NewGenreButton" Text="Přidat žánr" Command="{Binding CreateNewGenreCommand}"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    Padding="10"/> 
+                    Padding="8"/> 
 
                 <!-- Genres - Content -->
                 <CollectionView Grid.Row="2" Grid.Column="1"

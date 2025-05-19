@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
-public partial class MusicTrackCreateNewPopupModel : ObservableValidator
+public partial class MusicTrackCreateNewPopupModel : ObservableObject
 {
     private readonly IMusicTrackFacade _facade;
     private readonly IArtistFacade _artistFacade;
@@ -42,18 +42,20 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
     private string _URL = "";
 
     [ObservableProperty]
-    [RegularExpression("^[0-9]{1,2}$", ErrorMessage = "Invalid time format for hours. Only values 0-99.")]
     private string _hoursString = "00";
 
     [ObservableProperty]
-    [RegularExpression("^[0-5][0-9]$", ErrorMessage = "Invalid time format for minutes. Only values 00-59.")]
     private string _minutesString = "00";
 
     [ObservableProperty]
-    [RegularExpression("^[0-5][0-9]$", ErrorMessage = "Invalid time format for seconds. Only values 00-59.")]
     private string _secondsString = "00";
 
-    private TimeSpan TotalDuration = TimeSpan.Zero; 
+    private TimeSpan TotalDuration = TimeSpan.Zero;
+
+    [ObservableProperty]
+    private string _fileSizeString = "";
+
+    private double FileSizeMB = 0.0;
 
     [ObservableProperty]
     private string _searchbarAuthorsText = "";
@@ -165,7 +167,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
     public async void SaveChanges()
     {
         // Constraints
-        if (Title == "" || URL == "" || TotalDuration == TimeSpan.Zero || Description == "")
+        if (Title == "" || URL == "" || TotalDuration == TimeSpan.Zero || Description == "" || FileSizeMB == 0.0)
         {
             await Application.Current.MainPage.DisplayAlert("Validační chyba", "Všechna pole musí být vyplněná", "OK");
         }
@@ -183,7 +185,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             bool scalarValuesChanged = MusicTrackDetail.Title != Title ||
                 MusicTrackDetail.Description != Description ||
                 MusicTrackDetail.Length != TotalDuration ||
-                MusicTrackDetail.UrlAddress != URL;
+                MusicTrackDetail.UrlAddress != URL ||
+                MusicTrackDetail.Size != FileSizeMB;
 
 
             // Check if artists or genres have changed
@@ -211,6 +214,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             MusicTrackDetail.Description = Description;
             MusicTrackDetail.UrlAddress = URL;
             MusicTrackDetail.Length = TotalDuration;
+            MusicTrackDetail.Size = FileSizeMB;
 
 
 
@@ -283,6 +287,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             Debug.WriteLine($"Description: {MusicTrackDetail.Description}");
             Debug.WriteLine($"Length: {MusicTrackDetail.Length}");
             Debug.WriteLine($"URL: {MusicTrackDetail.UrlAddress}");
+            Debug.WriteLine($"Size: {MusicTrackDetail.Size} MB");
             // Artists and genres cannot be read from MusicTrackDetail, because they are updated asynchronously - they might not be in the list yet (you cannot display it's Guid for the same reason)
             Debug.WriteLine($"Artists: {string.Join(", ", _selectedArtists.Select(g => g.ArtistName))}");
             Debug.WriteLine($"Genres: {string.Join(", ", _selectedGenres.Select(t => t.GenreName))}");
@@ -402,6 +407,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
                 Title = MusicTrackDetail.Title;
                 Description = MusicTrackDetail.Description;
                 URL = MusicTrackDetail.UrlAddress;
+                FileSizeMB = MusicTrackDetail.Size;
+                FileSizeString = FileSizeMB.ToString();
                 TotalDuration = MusicTrackDetail.Length;
 
                 HoursString = TotalDuration.Hours.ToString("D2");
@@ -489,18 +496,18 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
     private void ValidateAndCorrectHoursString()
     {
         string? newValue = HoursString;
-        string correctedValue = newValue ?? "0"; // Výchozí, pokud je null
+        string correctedValue = newValue ?? "0"; // Default if Null
 
         if (string.IsNullOrWhiteSpace(newValue))
         {
-            correctedValue = "00"; // Nebo nech prázdné, podle UX
+            correctedValue = "00"; 
             Debug.WriteLine("Hour is whitespace");
         }
         else if (int.TryParse(newValue, out int hours))
         {
             if (hours < 0) correctedValue = "00";
             else if (hours > 99) correctedValue = "99";
-            else correctedValue = hours.ToString("D2"); // Udržuj formát s vedoucí nulou
+            else correctedValue = hours.ToString("D2"); // Keep format with leading zeor
             Debug.WriteLine($"Hour valid number: {correctedValue}");
         }
         else
@@ -508,9 +515,9 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             correctedValue = "00"; // Fallback
         }
 
-        if (HoursString != correctedValue) // this.DurationHoursString zavolá getter
+        if (HoursString != correctedValue) 
         {
-            HoursString = correctedValue; // toto zavolá setter, který vyvolá OnPropertyChanged
+            HoursString = correctedValue; 
         }
 
         UpdateTotalDuration();
@@ -520,18 +527,18 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
     private void ValidateAndCorrectMinutesString()
     {
         string? newValue = MinutesString;
-        string correctedValue = newValue ?? "0"; // Výchozí, pokud je null
+        string correctedValue = newValue ?? "0"; 
 
         if (string.IsNullOrWhiteSpace(newValue))
         {
-            correctedValue = "00"; // Nebo nech prázdné, podle UX
+            correctedValue = "00";
             Debug.WriteLine("Minute is whitespace");
         }
         else if (int.TryParse(newValue, out int minutes))
         {
             if (minutes < 0) correctedValue = "00";
             else if (minutes > 59) correctedValue = "59";
-            else correctedValue = minutes.ToString("D2"); // Udržuj formát s vedoucí nulou
+            else correctedValue = minutes.ToString("D2"); 
             Debug.WriteLine($"Minute valid number: {correctedValue}");
         }
         else
@@ -539,9 +546,9 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             correctedValue = "00"; // Fallback
         }
 
-        if (MinutesString != correctedValue) // this.DurationHoursString zavolá getter
+        if (MinutesString != correctedValue) 
         {
-            MinutesString = correctedValue; // toto zavolá setter, který vyvolá OnPropertyChanged
+            MinutesString = correctedValue;
         }
 
         UpdateTotalDuration();
@@ -551,18 +558,18 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
     private void ValidateAndCorrectSecondsString()
     {
         string newValue = SecondsString;
-        string correctedValue = newValue ?? "0"; // Výchozí, pokud je null
+        string correctedValue = newValue ?? "0"; 
 
         if (string.IsNullOrWhiteSpace(newValue))
         {
-            correctedValue = "00"; // Nebo nech prázdné, podle UX
+            correctedValue = "00";
             Debug.WriteLine("Second is whitespace");
         }
         else if (int.TryParse(newValue, out int seconds))
         {
             if (seconds < 0) correctedValue = "00";
             else if (seconds > 59) correctedValue = "59";
-            else correctedValue = seconds.ToString("D2"); // Udržuj formát s vedoucí nulou
+            else correctedValue = seconds.ToString("D2"); 
             Debug.WriteLine($"Second valid number: {correctedValue}");
         }
         else
@@ -570,9 +577,9 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             correctedValue = "00"; // Fallback
         }
 
-        if (SecondsString != correctedValue) // this.DurationHoursString zavolá getter
+        if (SecondsString != correctedValue) 
         {
-            SecondsString = correctedValue; // toto zavolá setter, který vyvolá OnPropertyChanged
+            SecondsString = correctedValue;
         }
 
         UpdateTotalDuration();
@@ -592,5 +599,39 @@ public partial class MusicTrackCreateNewPopupModel : ObservableValidator
             Debug.WriteLine("Failed to parse time values. Setting default Value");
             TotalDuration = TimeSpan.Zero; // Default value if parsing fails
         }
+    }
+
+    [RelayCommand]
+    private void ParseAndCorrectFileSize()
+    {
+        string newValue = FileSizeString;
+        string correctedValue = newValue ?? "0,0"; // Default if Null
+        double megabytes = 0.0;
+
+        if (string.IsNullOrWhiteSpace(newValue))
+        {
+            correctedValue = "0,0"; 
+            Debug.WriteLine("File size is whitespace");
+        }
+        else if (double.TryParse(newValue, out megabytes))
+        {
+            if (megabytes < 0)
+            {
+                correctedValue = "0,0";
+                megabytes = 0.0;
+            }
+            Debug.WriteLine($"File size valid number: {correctedValue}");
+        }
+        else
+        {
+            correctedValue = "0,0"; // Fallback
+        }
+
+        if (FileSizeString != correctedValue) 
+        {
+            FileSizeString = correctedValue;
+        }
+
+        FileSizeMB = megabytes;
     }
 }
