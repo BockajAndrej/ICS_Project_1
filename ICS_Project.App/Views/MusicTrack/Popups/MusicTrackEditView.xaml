@@ -38,7 +38,7 @@
                     CornerRadius="10"
                     HeightRequest="44"
                     Text="Edit Track Details"
-                    Command="{Binding EditTrackCommand}"
+                    Clicked="EditButton_Clicked"
                     TextColor="{StaticResource PrimaryDarkText}"
                     BorderWidth="3"
                     BorderColor="{StaticResource PrimaryButtonColor}"/>

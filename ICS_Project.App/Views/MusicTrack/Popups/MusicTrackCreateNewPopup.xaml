@@ -5,7 +5,7 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackCreateNewPopup"
              Opened="MusicTrackCreateNewPopup_Opened"
-             CanBeDismissedByTappingOutsideOfPopup="True" 
+             CanBeDismissedByTappingOutsideOfPopup="False" 
              Color="Transparent">
     <Frame 
         WidthRequest="600"
@@ -16,7 +16,7 @@
         HasShadow="True"
         VerticalOptions="Center"
         HorizontalOptions="Center">
-        <Grid RowDefinitions="Auto, Auto">
+        <Grid RowDefinitions="Auto, *">
             <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
                 <!-- Image | Texty | Button -->
 
@@ -37,9 +37,40 @@
                     <Entry Text="{Binding Description}" 
                         Placeholder="Popis skladby" 
                         FontSize="Small"/>
-                    <Entry Text="{Binding TrackLength}" 
-                        Placeholder="Délka skladby" 
-                        FontSize="Medium"/>
+                    <HorizontalStackLayout Spacing="5">
+                        <Entry Text="{Binding HoursString}" 
+                               Placeholder="HH" 
+                               Keyboard="Numeric" 
+                               MaxLength="2">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="Unfocused"
+                                    Command="{Binding ValidateAndCorrectHoursStringCommand}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                        <Label Text=":" VerticalOptions="Center" />
+                        <Entry Text="{Binding MinutesString}" 
+                               Placeholder="MM" 
+                               Keyboard="Numeric" 
+                               MaxLength="2">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="Unfocused"
+                                    Command="{Binding ValidateAndCorrectMinutesStringCommand}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                        <Label Text=":" VerticalOptions="Center" />
+                        <Entry Text="{Binding SecondsString}" 
+                               Placeholder="SS" 
+                               Keyboard="Numeric" 
+                               MaxLength="2">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="Unfocused"
+                                    Command="{Binding ValidateAndCorrectSecondsStringCommand}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                    </HorizontalStackLayout>
                     <Entry Text="{Binding URL}" 
                         Placeholder="URL" 
                         FontSize="Medium" 
@@ -77,8 +108,8 @@
 
                     <!-- Autors - Content -->
                 <CollectionView Grid.Row="2" Grid.Column="0"
-                    ItemsSource="{Binding Authors}"
-                    VerticalOptions="FillAndExpand">
+                    ItemsSource="{Binding Artists}"
+                    VerticalOptions="Fill">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, *">
@@ -114,8 +145,8 @@
 
                 <!-- Genres - Content -->
                 <CollectionView Grid.Row="2" Grid.Column="1"
-                            ItemsSource="{Binding Genres}"
-                            VerticalOptions="FillAndExpand">
+                                ItemsSource="{Binding Genres}"
+                                VerticalOptions="Fill">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, *">
