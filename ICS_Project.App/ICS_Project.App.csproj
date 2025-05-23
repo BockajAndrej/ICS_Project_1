@@ -100,7 +100,7 @@
         <MauiXaml Update="Views\Genre\GenreDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\Genre\GenreEditView.xaml">
+        <MauiXaml Update="Views\Genre\Popups\GenreEditView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Genre\GenreListView.xaml">

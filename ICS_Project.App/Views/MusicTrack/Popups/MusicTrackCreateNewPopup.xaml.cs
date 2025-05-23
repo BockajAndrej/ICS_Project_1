@@ -4,6 +4,7 @@ using ICS_Project.App.ViewModels.MusicTrack;
 using ICS_Project.App.Messages;
 using ICS_Project.App.Views.Artist.Popups;
 using System.Diagnostics;
+using ICS_Project.App.Views.Genre.Popups;
 
 namespace ICS_Project.App.Views.MusicTrack;
 
@@ -32,7 +33,47 @@ public partial class MusicTrackCreateNewPopup : Popup
     {
         var popup = _serviceProvider.GetRequiredService<ArtistEditView>();
 
-        WeakReferenceMessenger.Default.Send(new PlaylistPopupContext { IsEditMode = false });
+        // --- Find the parent Page ---
+        // We need to traverse up the visual tree from the ContentView ('this')
+        // until we find the Page that contains it.
+
+        // Idealy we would like to display second popup over the first one,
+        // but since maui does not support popup stacking, we can only display it over original page
+        // -> Therefore it looks kinda weird (mainly the fact, that the og page gets even darker but the first popup remains the same)
+        Element parent = this;
+        while (parent != null && !(parent is Page))
+        {
+            parent = parent.Parent; // Go up one level
+        }
+
+        // Cast the found parent element to a Page
+        Page currentPage = parent as Page;
+        // --- End Finding Page ---
+
+
+        // --- Show the Popup using the Page context ---
+        if (currentPage != null)
+        {
+
+            // Now call ShowPopup on the Page instance.
+            // The toolkit will use the Anchor (if set) and the Page context
+            // to display the popup correctly.
+            currentPage.ShowPopup(popup);
+        }
+        else
+        {
+            // Should not happen in a normal MAUI app structure, but good to handle.
+            Debug.WriteLine("Error: Could not find the parent Page to display the popup.");
+            // Maybe show an alert or log this error properly.
+        }
+        // --- End Showing Popup ---
+    }
+
+    private async void OnNewGenreClicked(object sender, EventArgs e)
+    {
+        // TODO: this should be merged with method above, only depending on the type of the popup, given by EventArgs
+
+        var popup = _serviceProvider.GetRequiredService<GenreEditView>();
 
         // --- Find the parent Page ---
         // We need to traverse up the visual tree from the ContentView ('this')

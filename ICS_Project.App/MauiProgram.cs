@@ -21,6 +21,8 @@ using ICS_Project.App.Views.MusicTrack.Popups; // <-- Make sure this using is he
 using ICS_Project.DAL.Entities;
 using ICS_Project.App.Views.Artist.Popups;
 using ICS_Project.App.ViewModels.Artist;
+using ICS_Project.App.ViewModels.Genre;
+using ICS_Project.App.Views.Genre.Popups;
 
 namespace ICS_Project.App;
 
@@ -60,6 +62,9 @@ public static class MauiProgram
 
         builder.Services.AddTransient<ArtistEditView>();
         builder.Services.AddTransient<ArtistEditViewModel>();
+
+        builder.Services.AddTransient<GenreEditView>();
+        builder.Services.AddTransient<GenreEditViewModel>();
 
         builder.Services.AddTransient<PlaylistOptionsView>();
 

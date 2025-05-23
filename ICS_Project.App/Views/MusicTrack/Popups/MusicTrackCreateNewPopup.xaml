@@ -152,7 +152,7 @@
 
                 <!-- Button to add new Genre -->
                 <Button Grid.Row="1" Grid.Column="1"
-                    x:Name="NewGenreButton" Text="Přidat žánr"
+                    x:Name="NewGenreButton" Text="Přidat žánr" Clicked="OnNewGenreClicked"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
                     Padding="8"/> 
