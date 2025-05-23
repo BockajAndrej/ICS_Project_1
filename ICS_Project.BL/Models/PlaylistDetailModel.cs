@@ -5,14 +5,11 @@ namespace ICS_Project.BL.Models;
 
 public partial class PlaylistDetailModel : ModelBase
 {
-    [ObservableProperty]
-    public partial string Name { get; set; }
-    [ObservableProperty]
-    public partial string Description { get; set; }
-    [ObservableProperty]
-    public partial int NumberOfMusicTracks { get; set; }
-    [ObservableProperty]
-    public partial TimeSpan TotalPlayTime { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    
+    public int NumberOfMusicTracks { get; set; }
+    public TimeSpan TotalPlayTime { get; set; }
 
     public ObservableCollection<MusicTrackListModel> MusicTracks { get; init; } = new();
 
