@@ -1,33 +1,61 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+# .NET MAUI Build Pipeline for Windows
 
 trigger:
 - '*'
-
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-latest' # Correct for MAUI Windows builds
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  solution: '**/*.sln' # This is fine if you build the whole solution
+  # If you only want to build the MAUI app project, you can point directly to it later
+  mauiAppProject: '**/ICS_Project.App.csproj' # ADJUST 'ICS_Project.App.csproj' TO YOUR ACTUAL MAUI APP PROJECT FILE NAME/PATH
   buildConfiguration: 'Release'
+  # For .NET MAUI Windows, you need to specify the target framework, including the Windows SDK version.
+  # Find this in your MAUI App's .csproj file under <TargetFrameworks> e.g., net8.0-windows10.0.19041.0
+  windowsTargetFramework: 'net8.0-windows10.0.19041.0' # IMPORTANT: VERIFY AND ADJUST THIS FROM YOUR .CSPROJ
+  dotnetSdkVersion: '8.0.406' # <<< PINNED TO YOUR LOCAL VERSION
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: UseDotNet@2
+  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
-    restoreSolution: '$(solution)'
+    packageType: 'sdk'
+    version: '$(dotnetSdkVersion)'
+    performMultiLevelLookup: true
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: 'Restore .NET MAUI Workloads'
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'custom'
+    custom: 'workload'
+    arguments: 'restore --source https://api.nuget.org/v3/index.json'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet Packages'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'restore'
+    projects: '$(solution)'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build MAUI App for Windows'
+  inputs:
+    command: 'publish'
+    projects: '$(mauiAppProject)'
+    arguments: '--framework $(windowsTargetFramework) --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/App.Windows -r win-x64 /p:WindowsPackageType=None /p:PublishProfile=win-$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run Unit Tests'
+  inputs:
+    command: 'test'
+    projects: '**/*[Tt]ests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
+    publishTestResults: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Windows App Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/App.Windows'
+    ArtifactName: 'maui-windows-app'
+    publishLocation: 'Container'
+  condition: succeededOrFailed()

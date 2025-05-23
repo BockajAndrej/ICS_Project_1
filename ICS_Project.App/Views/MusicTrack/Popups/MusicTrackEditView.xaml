@@ -13,6 +13,8 @@
            BorderColor="{StaticResource SecondaryDarkText}"
            Padding="5"
            Margin="1"
+           WidthRequest="155"
+           HeightRequest="150"
            VerticalOptions="Center"
            HorizontalOptions="Center"
            HasShadow="True"
@@ -20,7 +22,7 @@
 
         <Grid 
             RowSpacing="4"
-            ColumnDefinitions="*"
+            ColumnDefinitions="auto"
             RowDefinitions="auto,auto,auto">
 
             <Button Grid.Row="0"

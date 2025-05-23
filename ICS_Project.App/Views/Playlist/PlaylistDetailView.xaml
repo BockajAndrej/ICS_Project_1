@@ -53,13 +53,6 @@
                     <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
                 </StackLayout>
 
-                <Button Grid.Column="1
-                        " Text="..." 
-                        WidthRequest="40" 
-                        HeightRequest="40" 
-                        VerticalOptions="Start" 
-                        Command="{Binding ModifyTrackCommand}"/>
-
 
                 <Button x:Name="OptionsButton"
                         Grid.Column="2"

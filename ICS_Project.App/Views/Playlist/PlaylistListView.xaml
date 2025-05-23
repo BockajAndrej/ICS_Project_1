@@ -8,9 +8,10 @@
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistListView">
 
-    <Grid ColumnDefinitions="auto"
+    <Grid ColumnDefinitions="*"
           RowDefinitions="*"
           BackgroundColor="{StaticResource PageBackgroundColor}"
+          MinimumWidthRequest="380"
           Margin="0"
           Padding="0">
 
@@ -22,22 +23,25 @@
                     <RoundRectangle CornerRadius="12"/>
                 </Border.StrokeShape>
 
-            <Grid RowDefinitions="Auto, Auto, *"
-                  ColumnDefinitions="Auto, *"
+            <Grid RowDefinitions="auto, auto, *"
+                  ColumnDefinitions="*, auto"
                   >
 
                 <!-- Search/Filter panel -->
-                <Grid Grid.Row="0" Margin="5" ColumnDefinitions="*, Auto">
+                <Grid Grid.Row="0"
+                      Margin="5"
+                      ColumnDefinitions="*, Auto">
+
                     <SearchBar Text="{Binding SearchPlaylist}" 
-                  SearchCommand="{Binding SearchPlaylistsCommand}" 
-                  Placeholder="Zadajte názov pre vyhľadanie..." 
-                  Grid.Column="0" 
-                  >
+                               SearchCommand="{Binding SearchPlaylistsCommand}" 
+                               Placeholder="Zadajte názov pre vyhľadanie..." 
+                               Grid.Column="0" 
+                    >
                         <SearchBar.Behaviors>
                             <toolkit:EventToCommandBehavior
-                   EventName="TextChanged"
-                   Command="{Binding SearchPlaylistsCommand}"
-                   EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                               EventName="TextChanged"
+                               Command="{Binding SearchPlaylistsCommand}"
+                               EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
                         </SearchBar.Behaviors>
                     </SearchBar>
                     <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
@@ -54,6 +58,7 @@
                 </Grid>
 
                 <CollectionView Grid.Row="2"
+                                Grid.ColumnSpan="2"
                                 ItemsSource="{Binding Playlists}"
                                 SelectionMode="Single"
                                 Margin="10">
@@ -68,6 +73,7 @@
 
                     <Frame Padding="10"
                         CornerRadius="8"
+                        MaximumWidthRequest="350"
                         HasShadow="{OnPlatform iOS=true, Android=true, Default=false}"
                         BorderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                         BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray950}}">
@@ -78,7 +84,9 @@
                                 CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
                         
-                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
+                        <Grid ColumnDefinitions="auto, *" 
+                              ColumnSpacing="12"
+                              >
 
                                     <!-- Image for playlist-->
                                     <Image Grid.Column="0"
@@ -96,6 +104,7 @@
                                     <!-- Text info -->
                                     <VerticalStackLayout Grid.Column="1"
                                                          VerticalOptions="Center"
+                                                         MaximumWidthRequest="230"
                                                          Spacing="4">
 
                                         <!-- Name -->
