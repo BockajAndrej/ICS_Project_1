@@ -3,17 +3,14 @@
 trigger:
 - '*'
 pool:
-  vmImage: 'windows-latest' # Correct for MAUI Windows builds
+  vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln' # This is fine if you build the whole solution
-  # If you only want to build the MAUI app project, you can point directly to it later
-  mauiAppProject: '**/ICS_Project.App.csproj' # ADJUST 'ICS_Project.App.csproj' TO YOUR ACTUAL MAUI APP PROJECT FILE NAME/PATH
+  solution: '**/*.sln' 
+  mauiAppProject: 'ICS_Project.App/ICS_Project.App.csproj'
   buildConfiguration: 'Release'
-  # For .NET MAUI Windows, you need to specify the target framework, including the Windows SDK version.
-  # Find this in your MAUI App's .csproj file under <TargetFrameworks> e.g., net8.0-windows10.0.19041.0
-  windowsTargetFramework: 'net8.0-windows10.0.19041.0' # IMPORTANT: VERIFY AND ADJUST THIS FROM YOUR .CSPROJ
-  dotnetSdkVersion: '8.0.406' # <<< PINNED TO YOUR LOCAL VERSION
+  windowsTargetFramework: 'net8.0-windows10.0.19041.0'
+  dotnetSdkVersion: '8.0.406' 
 
 steps:
 - task: UseDotNet@2
@@ -41,6 +38,7 @@ steps:
   displayName: 'Build MAUI App for Windows'
   inputs:
     command: 'publish'
+    publishWebProjects: false
     projects: '$(mauiAppProject)'
     arguments: '--framework $(windowsTargetFramework) --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/App.Windows -r win-x64 /p:WindowsPackageType=None /p:PublishProfile=win-$(buildConfiguration)'
 
