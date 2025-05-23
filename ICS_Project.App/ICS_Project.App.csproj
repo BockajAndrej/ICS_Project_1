@@ -91,11 +91,11 @@
         <MauiXaml Update="Views\Artist\ArtistDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\Artist\ArtistEditView.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
         <MauiXaml Update="Views\Artist\ArtistListView.xaml">
             <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\Artist\Popups\ArtistEditView.xaml">
+          <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Genre\GenreDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
