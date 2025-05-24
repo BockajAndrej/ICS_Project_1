@@ -23,5 +23,15 @@ public partial class GenreEditView : Popup
         {
             Close(); // closes the popup
         });
+
+        this.Opened += GenreEditView_Opened;
+    }
+
+    private void GenreEditView_Opened(object sender, PopupOpenedEventArgs e)
+    {
+        if (GenreNameEntry != null)
+        {
+            GenreNameEntry.Focus();
+        }
     }
 }

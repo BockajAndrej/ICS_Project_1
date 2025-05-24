@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               x:Name="PlaylistListRoot"
-               xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
-               xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
-               xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
-               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="PlaylistListRoot"
+             xmlns:playlist="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
+             xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistListView">
 
     <Grid ColumnDefinitions="*"
@@ -15,116 +15,139 @@
           Margin="0"
           Padding="0">
 
-        <Border Padding="5"
-            Margin="10"
+        <Border Padding="5" 
+            Margin="5"
                 Stroke="{StaticResource Tertiary}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="12"/>
             </Border.StrokeShape>
             <Border.Background>
-                <!-- MODIFIED: Changed RadialGradientBrush to LinearGradientBrush -->
                 <LinearGradientBrush x:Name="AnimatedListSweepBrush" StartPoint="0,0" EndPoint="1,1">
-                    <!-- Using similar gradients as PlaylistDetailView for consistency -->
-                    <!-- You can adjust offsets or colors to match your preferred DetailView brush -->
                     <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
                     <GradientStop Color="{StaticResource Gradient2}" Offset="0.6" />
                     <GradientStop Color="{StaticResource Gradient9}" Offset="1.0" />
                 </LinearGradientBrush>
             </Border.Background>
 
-
+            <!-- MainLayoutGrid -->
             <Grid RowDefinitions="auto, auto, *"
-                  ColumnDefinitions="*, auto"
-                  >
+                  ColumnDefinitions="*, *" 
+                RowSpacing="10">
+                <!-- Added RowSpacing for space between button row, search row, and collection -->
 
-                <!-- Search/Filter panel -->
+                <!-- ButtonContainerGrid -->
                 <Grid Grid.Row="0"
-                      Margin="5"
-                      ColumnDefinitions="*, Auto">
-
-                    <SearchBar Text="{Binding SearchPlaylist}" 
-                               SearchCommand="{Binding SearchPlaylistsCommand}" 
-                               Placeholder="Zadajte názov pre vyhľadanie..." 
-                               Grid.Column="0" 
-                    >
-                        <SearchBar.Behaviors>
-                            <toolkit:EventToCommandBehavior
-                               EventName="TextChanged"
-                               Command="{Binding SearchPlaylistsCommand}"
-                               EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
-                        </SearchBar.Behaviors>
-                    </SearchBar>
-                    <Button Grid.Column="1"
-                            Text="Add Music Track"  
-                            Clicked="OnNewMusicTrackClicked"/>
-                </Grid>
-
-                <Grid Grid.Row="1"
-                      Margin="5"
-                      ColumnDefinitions="*, Auto">
+                      Grid.ColumnSpan="2"
+                    Margin="5,5,5,0"
+                    
+                    ColumnDefinitions="*, *"
+                      ColumnSpacing="10">
+                    <!-- Space between the two buttons -->
 
                     <Button Grid.Column="0"
                             Text="New Playlist"
                             TextColor="{StaticResource SecondaryTextColor}"
                             BackgroundColor="{StaticResource PrimaryButtonColor}"
                             Clicked="OnNewPlaylistClicked"
-                            Margin="10,0,10,0"/>
+                            CornerRadius="10"/>
+                    <!-- Added CornerRadius -->
+                    <!-- Removed individual button margin, relying on Grid's ColumnSpacing -->
+
+                    <Button Grid.Column="1"
+                            Text="New Music Track"
+                            TextColor="{StaticResource SecondaryTextColor}"
+                            BackgroundColor="{StaticResource PrimaryButtonColor}"
+                            Clicked="OnNewMusicTrackClicked"
+                            CornerRadius="10"/>
+                    <!-- Added CornerRadius -->
+                </Grid>
+
+                <!-- SearchBarContainerGrid -->
+                <Grid Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                    Margin="5,0,5,0">
+                    <!-- Margin for the search bar row -->
+                    <!-- ColumnDefinitions="*" is implicit for a single child spanning the grid cell -->
+
+                    <Border Stroke="{StaticResource SecondaryDarkText}"
+                            StrokeThickness="1"
+                            Padding="0"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Fill">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15"/>
+                        </Border.StrokeShape>
+                        <SearchBar Text="{Binding SearchPlaylist}"
+                                   SearchCommand="{Binding SearchPlaylistsCommand}"
+                                   Placeholder="Enter a playlist name"
+                                   BackgroundColor="Transparent"
+                                   CancelButtonColor="{StaticResource SecondaryDarkText}"
+                                   TextColor="{StaticResource SecondaryDarkText}"
+                                   PlaceholderColor="{StaticResource SecondaryDarkText}">
+                            <SearchBar.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="TextChanged"
+                                    Command="{Binding SearchPlaylistsCommand}"
+                                    EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                            </SearchBar.Behaviors>
+                        </SearchBar>
+                    </Border>
                 </Grid>
 
                 <CollectionView Grid.Row="2"
                                 Grid.ColumnSpan="2"
                                 ItemsSource="{Binding Playlists}"
                                 SelectionMode="Single"
-                                Margin="10">
+                                Margin="5">
+                    <!-- Consistent margin -->
 
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"
                                            ItemSpacing="2" />
+                        <!-- Increased item spacing for clarity like the image -->
                     </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="10"
+                                   CornerRadius="15"
+                                   MaximumWidthRequest="350" 
+                                    HasShadow="{OnPlatform iOS=true, Android=true, Default=false}"
+                                   BorderColor="{AppThemeBinding
+                                        Light={StaticResource Gray200},
+                                        Dark={StaticResource Tertiary}}"
+                                   BackgroundColor="{AppThemeBinding
+                                        Light=White,
+                                        Dark={StaticResource Gradient7}}">
 
-                    <Frame Padding="10"
-                        CornerRadius="8"
-                        MaximumWidthRequest="350"
-                        HasShadow="{OnPlatform iOS=true, Android=true, Default=false}"
-                        BorderColor="{AppThemeBinding 
-                            Light={StaticResource Gray200},
-                            Dark={StaticResource Tertiary}}"
-                        BackgroundColor="{AppThemeBinding 
-                            Light=White, 
-                            Dark={StaticResource Gradient7}}">
-
-                                <!-- Visual State Manager for Hover Effect -->
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal" />
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
                                                 <Setter Property="BackgroundColor"
-                                                Value="{AppThemeBinding 
-                                                    Light={StaticResource HoverLightColor}, 
-                                                    Dark={StaticResource HoverDarkColor}}" />
-                                                <!-- You can also change BorderColor or other properties -->
-                                                <!-- <Setter Property="BorderColor" Value="Orange" /> -->
+                                                        Value="{StaticResource HoverDarkColor}" />
+                                                <Setter Property="BorderColor" Value="{StaticResource Gradient1}" />
                                             </VisualState.Setters>
                                         </VisualState>
-                                        <!-- You can also define "Pressed" or "Selected" states if needed -->
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor"
+                                                        Value="{StaticResource HoverDarkColor}" />
+                                                <Setter Property="BorderColor" Value="{StaticResource Gradient1}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
 
                                 <Frame.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PlaylistListViewModel}}, Path=PlaylistTappedCommand}"
-                                CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
-                        
-                        <Grid ColumnDefinitions="auto, *"
-                              ColumnSpacing="12"
-                              >
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PlaylistListViewModel}}, Path=PlaylistTappedCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
 
-                                    <!-- Image for playlist-->
+                                <Grid ColumnDefinitions="auto, *"
+                                      ColumnSpacing="10">
                                     <Image Grid.Column="0"
                                            Source="redhotchilli.png"
                                            HeightRequest="60"
@@ -132,27 +155,19 @@
                                            Aspect="AspectFill"
                                            VerticalOptions="Center">
                                         <Image.Clip>
-                                            <RoundRectangleGeometry CornerRadius="4"
-                                                                    Rect="0,0,60,60" />
+                                            <RoundRectangleGeometry CornerRadius="8"
+                                                Rect="0,0,60,60" />
                                         </Image.Clip>
                                     </Image>
-
-                                    <!-- Text info -->
                                     <VerticalStackLayout Grid.Column="1"
                                                          VerticalOptions="Center"
-                                                         MaximumWidthRequest="230"
-                                                         Spacing="4"
-                                                         >
-
-                                        <!-- Name -->
+                                                         Spacing="4">
                                         <Label Text="{Binding Name}"
                                                FontSize="16"
                                                FontAttributes="Bold"
                                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                                                LineBreakMode="TailTruncation"
                                                SemanticProperties.HeadingLevel="Level2" />
-
-                                        <!-- Description -->
                                         <Label Text="{Binding Description}"
                                                FontSize="12"
                                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}"
@@ -172,7 +187,6 @@
                                    TextColor="{StaticResource Gray500}" />
                         </ContentView>
                     </CollectionView.EmptyView>
-
                 </CollectionView>
             </Grid>
         </Border>

@@ -19,10 +19,10 @@
         <StackLayout Margin="10,0,10,0"
             Spacing="5"
             VerticalOptions="Center">
-            <Entry Text="{Binding ArtistName}" 
-                Placeholder="Nový Autor" 
-                FontSize="Medium" 
-                FontAttributes="None"/>
+            <Entry x:Name="ArtistNameEntry" Text="{Binding ArtistName}"
+                   Placeholder="Nový Autor"
+                   FontSize="Medium"
+                   FontAttributes="None"/>
             <Button x:Name="SaveButton" Text="Uložit" Command="{Binding SaveChangesCommand}"/>
             <Button x:Name="RevertButton" Text="Zrušit změny" Command="{Binding RevertChangesCommand}"/>
         </StackLayout>

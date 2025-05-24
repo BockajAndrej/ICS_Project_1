@@ -15,7 +15,7 @@
 
         <!-- TOP BORDER - First Orbiting Gradient -->
         <Border Grid.Row="0"
-                Margin="10,10,10,5"
+                Margin="5,5,5,5"
                 Padding="10"
                 StrokeThickness="1"
                 VerticalOptions="Start"
@@ -35,59 +35,83 @@
             <!-- Content of the top border -->
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="150" HeightRequest="150" Aspect="AspectFill" VerticalOptions="Start"/>
-                <StackLayout Grid.Column="1" Margin="10,0,10,0" VerticalOptions="Start">
+                <StackLayout Grid.Column="1" Margin="15,0,10,0" VerticalOptions="Start">
                     <Label Text="{Binding PlaylistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
                     <HorizontalStackLayout Spacing="5">
-                        <Label Text="autor: " VerticalOptions="Center"/>
-                        <Label Text="Vlastny" FontAttributes="Bold" VerticalOptions="Center"/>
-                        <Label Text=" | " VerticalOptions="Center"/>
                         <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
-                        <Label Text=" skladeb" VerticalOptions="Center"/>
+                        <Label Text=" tracks" VerticalOptions="Center"/>
                         <Label Text=" | " VerticalOptions="Center"/>
                         <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small" FontAttributes="Italic" Margin="0,5,0,0"/>
+                    <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small"  Margin="0,5,0,0"/>
                 </StackLayout>
-                <Button x:Name="OptionsButton" Grid.Column="2" Text="Customize" TextColor="{StaticResource SecondaryTextColor}" WidthRequest="105" HeightRequest="35" VerticalOptions="Start" BackgroundColor="{StaticResource PrimaryButtonColor}" Command="{Binding ShowOptionsCommand}" CommandParameter="{Binding Source={RelativeSource Self}}" IsEnabled="{Binding IsPlaylistAvailable}"/>
+                <Button x:Name="OptionsButton" 
+                        Grid.Column="2" 
+                        Text="Customize" 
+                        TextColor="{StaticResource SecondaryTextColor}" 
+                        WidthRequest="105"
+                        HeightRequest="35" 
+                        VerticalOptions="Start" 
+                        BackgroundColor="{StaticResource PrimaryButtonColor}"
+                        Command="{Binding ShowOptionsCommand}" 
+                        CommandParameter="{Binding Source={RelativeSource Self}}" 
+                        IsEnabled="{Binding IsPlaylistAvailable}"/>
             </Grid>
         </Border>
 
-        <!-- MIDDLE BORDER - Now participates in the unified animation -->
+        <!-- MIDDLE BORDER -->
         <Border Grid.Row="1"
-                Margin="10,0,10,5"
+                Margin="5,0,5,5"
                 Padding="10"
                 StrokeThickness="1"
                 Stroke="{StaticResource Tertiary}">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8"/>
+                <RoundRectangle CornerRadius="15"/>
             </Border.StrokeShape>
             <Border.Background>
-                <!-- MODIFIED AnimatedDetailBrush2 -->
-                <!-- Example for AnimatedDetailBrush1 -->
                 <LinearGradientBrush x:Name="AnimatedDetailBrush2" StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
                     <GradientStop Color="{StaticResource Gradient2}" Offset="0.6" />
                     <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
                 </LinearGradientBrush>
             </Border.Background>
-            <!-- Content of the middle border -->
-            <Grid ColumnDefinitions="*, Auto">
-                <SearchBar Text="{Binding SearchTracks}" SearchCommand="{Binding SearchSongsCommand}" Placeholder="Zadajte názov pre vyhľadanie..." Grid.Column="0" IsEnabled="{Binding IsPlaylistAvailable}">
-                    <SearchBar.Behaviors>
-                        <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchSongsCommand}" EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
-                    </SearchBar.Behaviors>
-                </SearchBar>
+            <Grid ColumnDefinitions="*">
+                <Border Stroke="{StaticResource SecondaryDarkText}"
+                        StrokeThickness="1"
+                        Padding="0"
+                        Grid.Column="0" >
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="15"/>
+                    </Border.StrokeShape>
+
+                    <SearchBar Text="{Binding SearchTracks}"
+                               SearchCommand="{Binding SearchSongsCommand}"
+                               Placeholder="Enter a track name for searching..."
+                               IsEnabled="True"
+                               BackgroundColor="Transparent" 
+                               CancelButtonColor="{StaticResource SecondaryDarkText}"
+                               TextColor="{StaticResource SecondaryDarkText}"
+                               PlaceholderColor="{StaticResource SecondaryDarkText}">
+                        <SearchBar.Behaviors>
+                            <toolkit:EventToCommandBehavior 
+                                EventName="TextChanged"
+                                Command="{Binding SearchSongsCommand}"
+                                EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                        </SearchBar.Behaviors>
+                    </SearchBar>
+                </Border>
             </Grid>
         </Border>
 
-        <!-- BOTTOM BORDER - Second Orbiting Gradient (part of the unified animation) -->
+        <!-- BOTTOM BORDER -->
         <Border Grid.Row="2"
-                Margin="10,0,10,10"
+                Margin="5,0,5,5"
                 Padding="10"
                 StrokeThickness="1"
                 Stroke="{StaticResource Tertiary}">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8"/>
+                <RoundRectangle CornerRadius="15"/>
             </Border.StrokeShape>
             <Border.Background>
                 <!-- Example for AnimatedDetailBrush1 -->
@@ -104,15 +128,35 @@
                         <DataTemplate x:DataType="playlist_vm:PlaylistTrackViewModel">
                             <Grid ColumnDefinitions="Auto, *, *, *, *, *" Padding="0,2" ColumnSpacing="15">
                                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center"/>
+                                
+                                <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                                            <Setter Property="TextDecorations" Value="Underline" />
+                                            <Style.Triggers>
+                                                <Trigger TargetType="Label" Property="IsFocused" Value="True">
+                                                    <Setter Property="TextColor" Value="{StaticResource Tertiary}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding MusicTrackShowDetailMessageCommand}" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
                                 <Label Grid.Column="2" Text="Autor" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="{Binding Size}" VerticalOptions="Center"/>
-                                <Button Grid.Column="4" Text="···" FontSize="11" WidthRequest="37" HeightRequest="35" BackgroundColor="{StaticResource PrimaryButtonColor}" VerticalOptions="Center" Command="{Binding MusicTrackShowOptionsMessageCommand}" CommandParameter="{Binding Source={RelativeSource Self}}"/>
+                                <Label
+                                    Grid.Column="3"
+                                    Text="{Binding Size, StringFormat='{0:F2} MB'}"
+                                    VerticalOptions="Center" />
+                                    <Button Grid.Column="4" Text="···" FontSize="11" WidthRequest="37" HeightRequest="35" BackgroundColor="{StaticResource PrimaryButtonColor}" VerticalOptions="Center" Command="{Binding MusicTrackShowOptionsMessageCommand}" CommandParameter="{Binding Source={RelativeSource Self}}"/>
                                 <Label Grid.Column="5" Text="{Binding Length}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,5,0"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
             </Grid>
         </Border>
     </Grid>

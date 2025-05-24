@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using ICS_Project.App.Messages; // Often needed for enums like PlacementMode
 using ICS_Project.App.ViewModels.Playlist;
 using ICS_Project.App.ViewModels.Artist; // <<< Add this using
+using Microsoft.Maui.Controls; // For Entry
 
 
 namespace ICS_Project.App.Views.Artist.Popups;
@@ -24,5 +25,15 @@ public partial class ArtistEditView : Popup
         {
             Close(); // closes the popup
         });
+
+        this.Opened += ArtistEditView_Opened;
+    }
+
+    private void ArtistEditView_Opened(object sender, PopupOpenedEventArgs e)
+    {
+        if (ArtistNameEntry != null)
+        {
+            ArtistNameEntry.Focus();
+        }
     }
 }
