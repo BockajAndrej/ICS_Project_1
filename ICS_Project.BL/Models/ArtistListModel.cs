@@ -1,7 +1,11 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace ICS_Project.BL.Models;
 
-public class ArtistListModel : ModelBase
+public partial class ArtistListModel : ModelBase
 {
+    [ObservableProperty]
+    private bool isSelected;
     public required string ArtistName { get; set; }
     
     public static ArtistListModel Empty = new()

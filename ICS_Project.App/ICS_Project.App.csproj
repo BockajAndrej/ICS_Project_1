@@ -79,6 +79,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="Views\MusicTrack\Popups\MusicTrackCreateNewPopup.xaml.cs">
+        <DependentUpon>MusicTrackCreateNewPopup.xaml</DependentUpon>
+      </Compile>
       <Compile Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml.cs">
         <DependentUpon>PlaylistCreateNewPopup.xaml</DependentUpon>
       </Compile>
@@ -88,16 +91,16 @@
         <MauiXaml Update="Views\Artist\ArtistDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\Artist\ArtistEditView.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
         <MauiXaml Update="Views\Artist\ArtistListView.xaml">
             <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\Artist\Popups\ArtistEditView.xaml">
+          <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Genre\GenreDetailView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
-        <MauiXaml Update="Views\Genre\GenreEditView.xaml">
+        <MauiXaml Update="Views\Genre\Popups\GenreEditView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Genre\GenreListView.xaml">
@@ -113,6 +116,9 @@
             <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\ContentPageBase.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\MusicTrack\Popups\MusicTrackCreateNewPopup.xaml">
           <Generator>MSBuild:Compile</Generator>
         </MauiXaml>
         <MauiXaml Update="Views\Playlist\Popups\PlaylistCreateNewPopup.xaml">

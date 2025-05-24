@@ -44,7 +44,9 @@
                                EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
                         </SearchBar.Behaviors>
                     </SearchBar>
-                    <Button Text="Button" Grid.Column="1" Command="{Binding AddAlbumCommand}"/>
+                    <Button Grid.Column="1"
+                            Text="Add Music Track"  
+                            Clicked="OnNewMusicTrackClicked"/>
                 </Grid>
 
                 <Grid Grid.Row="1"

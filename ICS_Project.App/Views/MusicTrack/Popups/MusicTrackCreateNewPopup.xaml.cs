@@ -1,32 +1,45 @@
-using System.Diagnostics;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
+using ICS_Project.App.ViewModels.MusicTrack;
 using ICS_Project.App.Messages;
-using ICS_Project.App.ViewModels.Playlist;
-using ICS_Project.App.Views.MusicTrack;
-using Microsoft.Extensions.DependencyInjection;
+using ICS_Project.App.Views.Artist.Popups;
+using System.Diagnostics;
+using ICS_Project.App.Views.Genre.Popups;
 
-namespace ICS_Project.App.Views.Playlist;
+namespace ICS_Project.App.Views.MusicTrack;
 
-public partial class PlaylistListView : ContentView
+public partial class MusicTrackCreateNewPopup : Popup
 {
+
     private readonly IServiceProvider _serviceProvider;
-    public PlaylistListView(PlaylistListViewModel playlistListViewModel, IServiceProvider serviceProvider)
-    {
-        InitializeComponent();
+
+    public MusicTrackCreateNewPopup(MusicTrackCreateNewPopupModel musicTrackCreateNewPopupModel, IServiceProvider serviceProvider)
+	{
+		InitializeComponent();
         _serviceProvider = serviceProvider;
-        this.BindingContext = playlistListViewModel;
+        BindingContext = musicTrackCreateNewPopupModel;
+        // Register the messenger to close the popup when the message is received
+        WeakReferenceMessenger.Default.Register<MusicTrackNewMusicTrackClosed>(this, (r, m) =>
+        {
+            Close(); // closes the popup
+        });
+    }
+    private void MusicTrackCreateNewPopup_Opened(object sender, EventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new MusicTrackNewMusicTrackOpened(true));
     }
 
-    private async void OnNewPlaylistClicked(object sender, EventArgs e)
+    private async void OnNewArtistClicked(object sender, EventArgs e)
     {
-        var popup = _serviceProvider.GetRequiredService<PlaylistCreateNewPopup>();
-
-        WeakReferenceMessenger.Default.Send(new PlaylistPopupContext { IsEditMode = false });
+        var popup = _serviceProvider.GetRequiredService<ArtistEditView>();
 
         // --- Find the parent Page ---
         // We need to traverse up the visual tree from the ContentView ('this')
         // until we find the Page that contains it.
+
+        // Idealy we would like to display second popup over the first one,
+        // but since maui does not support popup stacking, we can only display it over original page
+        // -> Therefore it looks kinda weird (mainly the fact, that the og page gets even darker but the first popup remains the same)
         Element parent = this;
         while (parent != null && !(parent is Page))
         {
@@ -56,15 +69,19 @@ public partial class PlaylistListView : ContentView
         // --- End Showing Popup ---
     }
 
-    private async void OnNewMusicTrackClicked(object sender, EventArgs e)
+    private async void OnNewGenreClicked(object sender, EventArgs e)
     {
-        var popup = _serviceProvider.GetRequiredService<MusicTrackCreateNewPopup>();
+        // TODO: this should be merged with method above, only depending on the type of the popup, given by EventArgs
 
-        WeakReferenceMessenger.Default.Send(new MusicTrackPopupContext { IsEditMode = false });
+        var popup = _serviceProvider.GetRequiredService<GenreEditView>();
 
         // --- Find the parent Page ---
         // We need to traverse up the visual tree from the ContentView ('this')
         // until we find the Page that contains it.
+
+        // Idealy we would like to display second popup over the first one,
+        // but since maui does not support popup stacking, we can only display it over original page
+        // -> Therefore it looks kinda weird (mainly the fact, that the og page gets even darker but the first popup remains the same)
         Element parent = this;
         while (parent != null && !(parent is Page))
         {
