@@ -17,7 +17,7 @@
     <Color x:Key="CardBackgroundColor">#38274A</Color>
     <Color x:Key="SecondaryCardBackgroundColor">#47365A</Color>
     <Color x:Key="AccentColor">#A020F0</Color>
-    <Color x:Key="PrimaryButtonColor">#552C69</Color>
+    <Color x:Key="PrimaryButtonColor">#7a3bb8</Color>
     <Color x:Key="BordersColor">#CCCCEE</Color>
     <Color x:Key="SeparatorColor">#554466</Color>
 
@@ -26,12 +26,18 @@
     <Color x:Key="PlaceholderTextColor">#8888AA</Color>
     <Color x:Key="LinkTextColor">#A020F0</Color>
 
+    <Color x:Key="HoverLightColor">#A020F0</Color>
+    <Color x:Key="HoverDarkColor">#541391</Color>
+
     <Color x:Key="Gradient1">#A020F0</Color>
     <Color x:Key="Gradient2">#2f0b52</Color>
     <Color x:Key="Gradient3">#500d80</Color>
     <Color x:Key="Gradient4">#3a0f6b</Color>
     <Color x:Key="Gradient5">#5d19b0</Color>
     <Color x:Key="Gradient6">#49096e</Color>
+    <Color x:Key="Gradient7">#38125c</Color>
+    <Color x:Key="Gradient8">#4e117d</Color>
+    <Color x:Key="Gradient9">#290b52</Color>
 
 
     <Color x:Key="SuccessColor">#28A745</Color>
