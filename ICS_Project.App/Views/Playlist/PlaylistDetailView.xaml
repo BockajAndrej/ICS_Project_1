@@ -126,7 +126,7 @@
                 <CollectionView ItemsSource="{Binding MusicTrackVMs}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="playlist_vm:PlaylistTrackViewModel">
-                            <Grid ColumnDefinitions="Auto, *, *, *, *, *" Padding="0,2" ColumnSpacing="15">
+                            <Grid ColumnDefinitions="Auto, *, *, *, *, *, *" Padding="0,2" ColumnSpacing="15">
                                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
                                 
                                 <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center">
@@ -150,8 +150,14 @@
                                     Grid.Column="3"
                                     Text="{Binding Size, StringFormat='{0:F2} MB'}"
                                     VerticalOptions="Center" />
-                                    <Button Grid.Column="4" Text="···" FontSize="11" WidthRequest="37" HeightRequest="35" BackgroundColor="{StaticResource PrimaryButtonColor}" VerticalOptions="Center" Command="{Binding MusicTrackShowOptionsMessageCommand}" CommandParameter="{Binding Source={RelativeSource Self}}"/>
-                                <Label Grid.Column="5" Text="{Binding Length}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,5,0"/>
+                                <Button Grid.Column="6" Text="···" 
+                                        FontSize="11" WidthRequest="37"
+                                        HeightRequest="35" 
+                                        BackgroundColor="{StaticResource PrimaryButtonColor}" 
+                                        VerticalOptions="Center" Command="{Binding MusicTrackShowOptionsMessageCommand}" 
+                                        CommandParameter="{Binding Source={RelativeSource Self}}"
+                                        Margin="0,0,45,0"/>
+                                <Label Grid.Column="4" Text="{Binding Length}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,5,0"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
