@@ -60,11 +60,31 @@ public partial class MusicTrackEditViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task DeleteFromPlaylistAsync()
-    {
-        Debug.WriteLine($"Command: Delete Track '{_trackTitle}' (ID: {_trackId}) from Playlist");
-        // TODO: Implement deletion logic
-        await Task.CompletedTask;
+    private async Task DeleteMusicTrackAsync()
+    {       
+        if (_trackId == Guid.Empty)
+        {
+            Debug.WriteLine("[DeleteMusicTrackAsync] No track to delete.");
+            return;
+        }
+
+        Debug.WriteLine($"[DeleteMusicTrackAsync] Trying to delete track with ID: {_trackId}");
+
+        try
+        {
+            await _facade.DeleteAsync(_trackId);
+            Debug.WriteLine($"[DeleteMusicTrackAsync] Track with ID: {_trackId} was successfully removed.");
+            // Send a message to notify other parts of the app
+            _messenger.Send(new MusicTrackDeletedMessage(_trackId));
+            // Optionally, you can reset the view model state
+            TrackId = Guid.Empty;
+            TrackTitle = null;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[DeleteMusicTrackAsync] Error when trying to delete track: {ex.Message}");
+        }
+
     }
 
 

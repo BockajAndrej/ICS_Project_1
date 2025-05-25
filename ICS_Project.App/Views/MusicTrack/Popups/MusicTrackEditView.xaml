@@ -16,13 +16,13 @@
            VerticalOptions="Center"
            HorizontalOptions="Center"
            HasShadow="True"
-         >
+           WidthRequest="152">
 
         <Grid 
             RowSpacing="4"
-            ColumnDefinitions="*"
+            ColumnDefinitions="auto"
             RowDefinitions="auto,auto,auto">
-
+            
             <Button Grid.Row="0"
                     FontSize="12"
                     CornerRadius="10"
@@ -47,14 +47,12 @@
                     FontSize="12"
                     CornerRadius="10"
                     HeightRequest="44"
-                    Text="Delete from Playlist"
-                    Command="{Binding DeleteFromPlaylistCommand}"
+                    Text="Delete from Device"
+                    Command="{Binding DeleteMusicTrackCommand}"
+                    Clicked="ClosePopup"
                     TextColor="{StaticResource Red}"
                     BorderWidth="3"
-                    BorderColor="{StaticResource PrimaryButtonColor}"
-                    />
-
-
+                    BorderColor="{StaticResource PrimaryButtonColor}"/>
         </Grid>
     </Frame>
 </toolkit:Popup>
