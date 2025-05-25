@@ -11,7 +11,9 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces; // Needed for your custom message
-using System.Diagnostics; // For debug writeline
+using System.Diagnostics;
+using ICS_Project.App.Views.MusicTrack; // For debug writeline
+
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -128,7 +130,7 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         }
 
-        
+
 
         //------------
         public List<PlaylistListModel> PlaylistList { get; set; } = new List<PlaylistListModel>

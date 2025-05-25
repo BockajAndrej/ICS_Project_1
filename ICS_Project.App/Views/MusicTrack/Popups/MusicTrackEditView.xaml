@@ -13,22 +13,24 @@
            BorderColor="{StaticResource SecondaryDarkText}"
            Padding="5"
            Margin="1"
+           WidthRequest="155"
+           HeightRequest="102"
            VerticalOptions="Center"
            HorizontalOptions="Center"
            HasShadow="True"
-           WidthRequest="152">
+         >
 
         <Grid 
             RowSpacing="4"
             ColumnDefinitions="auto"
-            RowDefinitions="auto,auto,auto">
-            
+            RowDefinitions="auto,auto">
+
             <Button Grid.Row="0"
                     FontSize="12"
                     CornerRadius="10"
                     HeightRequest="44"
-                    Text="Add to Playlist"
-                    Command="{Binding AddToPlaylistCommand}"
+                    Text="Edit Track Details"
+                    Clicked="EditButton_Clicked"
                     TextColor="{StaticResource PrimaryDarkText}"
                     BorderWidth="3"
                     BorderColor="{StaticResource PrimaryButtonColor}"/>

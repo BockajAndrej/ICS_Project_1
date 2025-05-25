@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
 using ICS_Project.App.Messages;
-using ICS_Project.App.Services.Interfaces; // Needed for your custom message
+using ICS_Project.App.Services.Interfaces;
+using ICS_Project.App.Views.MusicTrack; // Needed for your custom message
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
@@ -18,6 +19,8 @@ public partial class MusicTrackEditViewModel : ViewModelBase
 {
     private readonly IMusicTrackFacade _facade;
     private readonly IMessenger _messenger; // Inject the messenger
+    private readonly IServiceProvider _serviceProvider; // Inject the service provider
+    private readonly IPopupService _popupService; // Inject popup service
 
     [ObservableProperty]
     private Guid _trackId;
@@ -27,11 +30,17 @@ public partial class MusicTrackEditViewModel : ViewModelBase
 
     public MusicTrackEditViewModel(
         IMusicTrackFacade musicTrackFacade,
-        IMessengerService messengerService) // Required by ViewModelBase
+        IMessengerService messengerService,
+        IServiceProvider serviceProvider,
+        IPopupService popupService) 
         : base(messengerService) // Pass messengerService to base
     {
         _facade = musicTrackFacade;
         _messenger = messengerService.Messenger; // Assign the messenger
+        _serviceProvider = serviceProvider; 
+        _popupService = popupService;
+
+        ListenToGUIDRequest(); // Register for GUID requests
     }
 
     public void Initialize(Guid trackId, string trackTitle)
@@ -50,13 +59,14 @@ public partial class MusicTrackEditViewModel : ViewModelBase
         //ClosePopup();
     }
 
-    [RelayCommand]
-    private async Task EditTrackAsync()
+    public void ListenToGUIDRequest()
     {
-        Debug.WriteLine($"Command: Edit Track '{_trackTitle}' (ID: {_trackId})");
-        // TODO: Implement navigation to an edit page or show edit popup
-        await Task.CompletedTask;
-        //ClosePopup();
+        WeakReferenceMessenger.Default.Register<MusicTrackRequestGUID>(this, (recipient, message) =>
+        {
+            Debug.WriteLine($"[ListenToGUIDRequest] Received request, sending back GUID: {TrackId}");
+
+            WeakReferenceMessenger.Default.Send(new MusicTrackEditGUID { ID = TrackId });
+        });
     }
 
     [RelayCommand]
