@@ -1,107 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ICS_Project.App.Views.Playlist"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="ICS_Project.App.Views.Playlist.PlaylistCreateNewPopup"
-             Opened="PlaylistCreateNewPopup_Opened"
-             CanBeDismissedByTappingOutsideOfPopup="True" 
-             Color="Transparent">
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:local="clr-namespace:ICS_Project.App.Views.Playlist"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="ICS_Project.App.Views.Playlist.PlaylistCreateNewPopup"
+               xmlns:viewModels="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+               xmlns:converters="clr-namespace:ICS_Project.App.Converters"
+               Opened="PlaylistCreateNewPopup_Opened"
+               CanBeDismissedByTappingOutsideOfPopup="False"
+               Color="Transparent">
 
-    <Frame 
-        WidthRequest="600"
-        HeightRequest="500"
-        Padding="0"
-        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
-        CornerRadius="12"
-        HasShadow="True"
-        VerticalOptions="Center"
-        HorizontalOptions="Center">
+    <toolkit:Popup.Resources>
+        <ResourceDictionary>
+            <converters:TimeSpanFormatConverter x:Key="TimeSpanFormatter" />
+        </ResourceDictionary>
+    </toolkit:Popup.Resources>
+
+    <Border WidthRequest="600"
+            HeightRequest="500"
+            Padding="5"
+            BackgroundColor="{StaticResource PageBackgroundColor}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15" />
+        </Border.StrokeShape>
 
         <Grid RowDefinitions="Auto, Auto, *">
-            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="10">
-                <!-- Image | Texty | Button -->
 
-                <Image Grid.Column="0" 
-                   Source="redhotchilli.png" 
-                   WidthRequest="150" 
-                   HeightRequest="150" 
-                   Aspect="AspectFill" 
-                   VerticalOptions="Start"/>
+            <Border Grid.Row="0"
+                    BackgroundColor="{StaticResource Gradient2}"
+                    Margin="5,5,5,5"
+                    Padding="5"
+                    Stroke="{StaticResource Tertiary}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
 
-                <StackLayout Grid.Column="1" 
-                             Margin="10,0,10,0" 
-                             VerticalOptions="Start">
-                    <Entry Text="{Binding Name}" 
-                           Placeholder="Název playlistu" 
-                           FontSize="Large" 
-                           FontAttributes="Bold"/>
-                    <Entry Text="{Binding Description}" 
-                           Placeholder="Popis playlistu" 
-                           FontSize="Large" 
-                           FontAttributes="Bold"/>
-                    <HorizontalStackLayout Spacing="5">
-                        <Label Text="{Binding NumberOfTracks}" VerticalOptions="Center"/>
-                        <Label Text=" skladeb" VerticalOptions="Center"/>
-                        <Label Text=" | " VerticalOptions="Center"/>
-                        <Label Text="{Binding TotalTrackTime}" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                </StackLayout>
+                <Grid ColumnDefinitions="Auto, *, Auto"
+                      RowDefinitions="*, Auto"
+                      Margin="10">
 
-                <!-- Option button  "..." -->
-                    <StackLayout Grid.Column="2" Margin="10, 0, 10, 10" Spacing="20">
-                        <Button x:Name="SaveButton" Text="Uložit" Command="{Binding SaveChangesCommand}"/>
-                        <Button x:Name="RevertButton" Text="Zrušit změny" Command="{Binding RevertChangesCommand}"/>
+                    <Image Grid.Column="0"
+                           Grid.Row="0"
+                           Grid.RowSpan="2"
+                           Source="redhotchilli.png"
+                           WidthRequest="150"
+                           HeightRequest="150"
+                           Aspect="AspectFill"
+                           VerticalOptions="Start" />
+
+                    <!-- Buttons PlaylistName / PlaylistDescription -->
+                    <StackLayout Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="0"
+                                 Margin="10,0,0,0"
+                                 VerticalOptions="Start"
+                                 Spacing="8">
+
+                        <Border Stroke="{StaticResource SecondaryDarkText}"
+                                StrokeThickness="1"
+                                Padding="0"
+                                Margin="2,0,2,2">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15" />
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding Name}"
+                                   Placeholder="Name"
+                                   FontSize="25"
+                                   FontAttributes="Bold"
+                                   BackgroundColor="Transparent"
+                                   />
+                        </Border>
+
+                        <Border Stroke="{StaticResource SecondaryDarkText}"
+                                StrokeThickness="1"
+                                Padding="0"
+                                Margin="2">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15" />
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding Description}"
+                                   Placeholder="Description"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   BackgroundColor="Transparent"
+                                   />
+                        </Border>
                     </StackLayout>
-            </Grid>
+
+                    <!-- Buttons Count / Time -->
+                    <Border Grid.Column="1"
+                            Grid.Row="1"
+                            VerticalOptions="Start"
+                            HorizontalOptions="Start"
+                            Stroke="{StaticResource SecondaryDarkText}"
+                            StrokeThickness="1"
+                            Padding="0"
+                            Margin="10,10,0,0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="5"
+                                               Padding="10,8">
+                            <Label Text="{Binding NumberOfTracks}" 
+                                   VerticalOptions="Center" 
+                                   FontSize="13"/>
+                            <Label Text=" tracks" 
+                                   VerticalOptions="Center" 
+                                   FontSize="13"/>
+                            <Label Text=" | " 
+                                   VerticalOptions="Center" 
+                                   FontSize="13"/>
+                            <Label Text="{Binding TotalTrackTime, Converter={StaticResource TimeSpanFormatter}}"
+                                   VerticalOptions="Center" 
+                                   FontSize="13"/>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Buttons Save / Cancel -->
+                    <HorizontalStackLayout Grid.Column="2"
+                                 Grid.Row="1"
+                                 VerticalOptions="End"
+                                 HorizontalOptions="End"
+                                 Spacing="10"
+                                 Margin="0,10,5,0">
+                        <Button x:Name="RevertButton"
+                                BackgroundColor="{StaticResource PrimaryButtonColor}"
+                                TextColor="{StaticResource SecondaryTextColor}"
+                                Text="Cancel"
+                                Padding="15,5"
+                                Command="{Binding RevertChangesCommand}" />
+                        <Button x:Name="SaveButton"
+                                BackgroundColor="{StaticResource PrimaryButtonColor}"
+                                TextColor="{StaticResource SecondaryTextColor}"
+                                Text="Save"
+                                Padding="15,5"
+                                Command="{Binding SaveChangesCommand}" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+
 
             <!-- Search/Filter for musictracks-->
-            <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-                <SearchBar Text="{Binding SearchbarText}" 
-                           SearchCommand="{Binding SearchSongsCommand}" 
-                           Placeholder="Zadajte názov pre vyhľadanie..." Grid.Column="0"
-                           >
-                    <SearchBar.Behaviors>
-                        <toolkit:EventToCommandBehavior
-                            EventName="TextChanged"
-                            Command="{Binding SearchSongsCommand}"
-                            EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
-                    </SearchBar.Behaviors>
-                </SearchBar>
-            </Grid>
+            <Border Grid.Row="1"
+                    BackgroundColor="{StaticResource Gradient2}"
+                    Margin="5,5,5,5"
+                    Padding="5"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource Tertiary}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
 
-            <!-- Music tracks - Header -->
-            <Grid Grid.Row="2" RowDefinitions="Auto, *" Margin="10, 0, 10, 10">
-                <!-- Header for MusicTracks -->
-                <Grid ColumnDefinitions="Auto, 2*, 2*, 2*, Auto, Auto">
-                    <Label Grid.Column="0" Text="Výběr" Margin="0,0,5,0"/>
-                    <Label Grid.Column="1" Text="Název" HorizontalOptions="Start"/>
-                    <Label Grid.Column="2" Text="Umělec" HorizontalOptions="Start"/>
-                    <Label Grid.Column="3" Text="Album" HorizontalOptions="Start"/>
-                    <Label Grid.Column="4" Text="Délka" HorizontalOptions="Start"/>
-                    <Label Grid.Column="5" Text=""/>
-                </Grid>
+                <Border Stroke="{StaticResource SecondaryDarkText}"
+                        StrokeThickness="1"
+                        Padding="0"
+                        Margin="2">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="15" />
+                    </Border.StrokeShape>
+
+                    <SearchBar Text="{Binding SearchbarText}"
+                               SearchCommand="{Binding SearchSongsCommand}"
+                               IsEnabled="True"
+                               Placeholder="Enter a track name for searching..."
+                               Grid.Column="0"
+                               BackgroundColor="Transparent"
+                               CancelButtonColor="{StaticResource SecondaryDarkText}"
+                               TextColor="{StaticResource SecondaryDarkText}"
+                               PlaceholderColor="{StaticResource SecondaryDarkText}">
+                        <SearchBar.Behaviors>
+                            <toolkit:EventToCommandBehavior
+                                EventName="TextChanged"
+                                Command="{Binding SearchSongsCommand}"
+                                EventArgsConverter="{StaticResource TextChangedEventArgsConverter}" />
+                        </SearchBar.Behaviors>
+                    </SearchBar>
+                </Border>
+            </Border>
+
+            <Border Grid.Row="2"
+                    BackgroundColor="{StaticResource Gradient2}"
+                    Margin="5,5,5,5"
+                    Padding="10,10,10,10"
+                    Stroke="{StaticResource Tertiary}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
 
                 <!-- Music tracks - Content -->
-                <CollectionView Grid.Row="1"
+                <CollectionView 
                                 ItemsSource="{Binding MusicTracks}"
                                 VerticalOptions="FillAndExpand">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, Auto, *, *, *, Auto">
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalOptions="Center" />
-                                <Image Grid.Column="1" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                                <Label Grid.Column="2" Text="{Binding Title}" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="Autor" VerticalOptions="Center"/>
-                                <Label Grid.Column="4" Text="{Binding Size}" VerticalOptions="Center"/>
-                                <Label Grid.Column="5" Text="{Binding Length}" VerticalOptions="Center"/>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          VerticalOptions="Center" />
+                                <Image Grid.Column="1"
+                                       Source="redhotchilli.png"
+                                       WidthRequest="30"
+                                       HeightRequest="30"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,5,0" />
+                                <Label Grid.Column="2"
+                                       Text="{Binding Title}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="3"
+                                       Text="artist nie je linked"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="4"
+                                       Text="{Binding Size}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="5"
+                                       Text="{Binding Length, Converter={StaticResource TimeSpanFormatter}}"
+                                       VerticalOptions="Center" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </Grid>
-        </Grid>
-    </Frame>
 
+            </Border>
+        </Grid>
+    </Border>
 </toolkit:Popup>

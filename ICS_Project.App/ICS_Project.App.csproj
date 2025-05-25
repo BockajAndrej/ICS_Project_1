@@ -75,10 +75,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Converters\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Update="Views\MusicTrack\Popups\MusicTrackCreateNewPopup.xaml.cs">
         <DependentUpon>MusicTrackCreateNewPopup.xaml</DependentUpon>
       </Compile>

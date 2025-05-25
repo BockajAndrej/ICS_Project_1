@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:TextChangedEventArgsConverter x:Key="TextChangedEventArgsConverter"/>
+            <converters:TimeSpanFormatConverter x:Key="TimeSpanFormatter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

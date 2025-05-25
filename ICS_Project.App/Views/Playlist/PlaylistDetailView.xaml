@@ -2,10 +2,12 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:ICS_Project.App.Converters"
              x:Class="ICS_Project.App.Views.Playlist.PlaylistDetailView"
              xmlns:playlist_vm="clr-namespace:ICS_Project.App.ViewModels.Playlist"
              xmlns:models="clr-namespace:ICS_Project.BL.Models;assembly=ICS_Project.BL"
              x:DataType="playlist_vm:PlaylistDetailViewModel">
+
 
     <Grid RowDefinitions="Auto, Auto, *"
           BackgroundColor="{StaticResource PageBackgroundColor}"
@@ -35,26 +37,41 @@
             <!-- Content of the top border -->
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="150" HeightRequest="150" Aspect="AspectFill" VerticalOptions="Start"/>
-                <StackLayout Grid.Column="1" Margin="15,0,10,0" VerticalOptions="Start">
-                    <Label Text="{Binding PlaylistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
-                    <HorizontalStackLayout Spacing="5">
-                        <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center"/>
-                        <Label Text=" tracks" VerticalOptions="Center"/>
-                        <Label Text=" | " VerticalOptions="Center"/>
-                        <Label Text="{Binding PlaylistDetail.TotalPlayTime}" VerticalOptions="Center"/>
+
+                <Grid Grid.Column="1" Margin="15,0,10,0"
+                      RowDefinitions="Auto, Auto, *"
+                    VerticalOptions="FillAndExpand">
+
+                    <Label Grid.Row="0" Text="{Binding PlaylistDetail.Name}" FontSize="Large" FontAttributes="Bold"/>
+
+                    <HorizontalStackLayout Grid.Row="1" Spacing="5">
+                        <Label Text="{Binding PlaylistDetail.NumberOfMusicTracks}" VerticalOptions="Center" FontSize="15"/>
+                        <Label Text=" tracks" VerticalOptions="Center" FontSize="15"/>
+                        <Label Text=" | " VerticalOptions="Center" FontSize="15"/>
+                        <Label Text="{Binding PlaylistDetail.TotalPlayTime, Converter={StaticResource TimeSpanFormatter}}" 
+                               VerticalOptions="Center"
+                               FontSize="15"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding PlaylistDetail.Description}" FontSize="Small"  Margin="0,5,0,0"/>
-                </StackLayout>
-                <Button x:Name="OptionsButton" 
-                        Grid.Column="2" 
-                        Text="Customize" 
-                        TextColor="{StaticResource SecondaryTextColor}" 
+
+                    <ScrollView Grid.Row="2" VerticalOptions="FillAndExpand">
+                        <Label Text="{Binding PlaylistDetail.Description}"
+                               FontSize="Small"
+                               Margin="0,5,0,0"
+                               LineBreakMode="WordWrap"/>
+                        <!-- Ensures text wraps within the Label -->
+                    </ScrollView>
+                </Grid>
+
+                <Button x:Name="OptionsButton"
+                        Grid.Column="2"
+                        Text="Customize"
+                        TextColor="{StaticResource SecondaryTextColor}"
                         WidthRequest="105"
-                        HeightRequest="35" 
-                        VerticalOptions="Start" 
+                        HeightRequest="35"
+                        VerticalOptions="Start"
                         BackgroundColor="{StaticResource PrimaryButtonColor}"
-                        Command="{Binding ShowOptionsCommand}" 
-                        CommandParameter="{Binding Source={RelativeSource Self}}" 
+                        Command="{Binding ShowOptionsCommand}"
+                        CommandParameter="{Binding Source={RelativeSource Self}}"
                         IsEnabled="{Binding IsPlaylistAvailable}"/>
             </Grid>
         </Border>
