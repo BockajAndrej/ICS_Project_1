@@ -1,124 +1,143 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
-             xmlns:playlist_vm="clr-namespace:ICS_Project.App.ViewModels.Playlist"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView">
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:ICS_Project.App.ViewModels.MusicTrack"
+    xmlns:playlist_vm="clr-namespace:ICS_Project.App.ViewModels.Playlist"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="ICS_Project.App.Views.MusicTrack.MusicTrackListView">
 
-    <Grid ColumnDefinitions="*"
-          RowDefinitions="*"
-          BackgroundColor="{StaticResource PageBackgroundColor}"
-          Margin="0"
-          Padding="0">
+    <Grid
+        ColumnDefinitions="*"
+        RowDefinitions="*"
+        BackgroundColor="{StaticResource PageBackgroundColor}"
+        Margin="0"
+        Padding="0">
 
-        <Border BackgroundColor="{StaticResource Gradient2}"
-                Padding="5"
-                Margin="10"
+
+
+        <Grid
+            RowDefinitions="Auto, Auto, *">
+
+            <!-- Search/Filter for musictracks - Styled as per example -->
+            <Border
+                Grid.Row="0"
+                Margin="5,5,5,5"
+                Padding="10"
+                StrokeThickness="1"
+                Stroke="{StaticResource Tertiary}">
+                <Border.StrokeShape>
+                    <RoundRectangle
+                        CornerRadius="15"/>
+                </Border.StrokeShape>
+
+            <Border.Background>
+                <!-- Example for AnimatedDetailBrush1 -->
+                <LinearGradientBrush x:Name="AnimatedDetailBrush1" StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
+                    <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid
+                    ColumnDefinitions="*, Auto">
+                    <!-- Inner Border for SearchBar -->
+                    <Border
+                        Grid.Column="0"
+                        Stroke="{StaticResource SecondaryDarkText}"
+                        StrokeThickness="1"
+                        Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle
+                                CornerRadius="15"/>
+                        </Border.StrokeShape>
+                        <SearchBar
+                            Text="{Binding SearchMusicTrackStr}"
+                            SearchCommand="{Binding SearchMusicTracksCommand}"
+                            Placeholder="Enter a track name for searching..."
+                            IsEnabled="True"
+                            BackgroundColor="Transparent"
+                            CancelButtonColor="{StaticResource SecondaryDarkText}"
+                            TextColor="{StaticResource SecondaryDarkText}"
+                            PlaceholderColor="{StaticResource SecondaryDarkText}">
+                            <SearchBar.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="TextChanged"
+                                    Command="{Binding SearchMusicTracksCommand}"
+                                    EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
+                            </SearchBar.Behaviors>
+                        </SearchBar>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Music tracks - Content - Styled as per example -->
+            <Border
+                Grid.Row="2"
+                Margin="5,5,5,5" 
+                Padding="10"
+                StrokeThickness="1"
                 Stroke="{StaticResource Tertiary}">
 
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12" />
+                <RoundRectangle
+                        CornerRadius="15"/>
             </Border.StrokeShape>
 
             <Border.Background>
-                <RadialGradientBrush Center="0.5,1.25" 
-                                      Radius="0.53"
-                                     >
-                    <GradientStop Color="{StaticResource Gradient1}" Offset="0.0" />
-                    <GradientStop Color="{StaticResource Gradient2}" Offset="1.0" />
-                </RadialGradientBrush>
+                <!-- Example for AnimatedDetailBrush1 -->
+                <LinearGradientBrush x:Name="AnimatedDetailBrush2" StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
+                    <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
+                </LinearGradientBrush>
             </Border.Background>
 
-            <Grid RowDefinitions="Auto, Auto, *">
 
-        <!-- Search/Filter for musictracks-->
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="10, 0, 10, 10">
-            <SearchBar Text="{Binding SearchMusicTrackStr}" 
-                       SearchCommand="{Binding SearchMusicTracksCommand}" 
-                       Placeholder="Zadajte názov pre vyhľadanie..." 
-                       Grid.Column="0" 
-            >
-                <SearchBar.Behaviors>
-                    <toolkit:EventToCommandBehavior
-                        EventName="TextChanged"
-                        Command="{Binding SearchMusicTracksCommand}"
-                        EventArgsConverter="{StaticResource TextChangedEventArgsConverter}"/>
-                </SearchBar.Behaviors>
-            </SearchBar>            <Button Grid.Column="1" Text="Add track"/>
-        </Grid>
-
-                <!-- Music tracks - Header -->
-                <Grid Grid.Row="1"
-                      Margin="10, 0, 10, 0"
-                      ColumnDefinitions="Auto, *, *, *, *, Auto">
-
-                    <Label Grid.Column="0"
-                           Text="#"
-                           Margin="0,0,5,0" />
-                    <Label Grid.Column="1"
-                           Text="Název"
-                           HorizontalOptions="Start" />
-                    <Label Grid.Column="2"
-                           Text="Umělec"
-                           HorizontalOptions="Start" />
-                    <Label Grid.Column="3"
-                           Text="Album"
-                           HorizontalOptions="Start" />
-                    <Label Grid.Column="4"
-                           Text="Délka"
-                           HorizontalOptions="Start" />
-                    <Label Grid.Column="5"
-                           Text="" />
-                </Grid>
-
-                <!-- Music tracks - Content -->
-                <CollectionView Grid.Row="2"
-                                Margin="10, 0, 10, 10"
-                                ItemsSource="{Binding MusicTracks}">
+                <CollectionView
+                    ItemsSource="{Binding MusicTracks}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <!-- Assuming a ViewModel per item, adjust if it's a Model -->
-                            <Grid ColumnDefinitions="Auto, *, *, *, *, Auto"
-                                  Padding="0,2">
+                            <Grid
+                                ColumnDefinitions="Auto, *, *, *, *"
+                                ColumnSpacing="15"
+                                Padding="0,2">
 
-                                <Image Grid.Column="0"
-                                       Source="redhotchilli.png"
-                                       WidthRequest="30"
-                                       HeightRequest="30"
-                                       Aspect="AspectFit"
-                                       VerticalOptions="Center"
-                                       Margin="0,0,5,0" />
+                                <Image
+                                    Grid.Column="0"
+                                    Source="redhotchilli.png"
+                                    WidthRequest="30"
+                                    HeightRequest="30"
+                                    Aspect="AspectFit"
+                                    VerticalOptions="Center"
+                                    Margin="0,0,5,0" />
 
-                                <Label Grid.Column="1"
-                                       Text="{Binding Title}"
-                                       VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding Title}"
+                                    VerticalOptions="Center" />
 
-                                <Label Grid.Column="2"
-                                       Text="Autor"
-                                       VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    Text="Autor"
+                                    VerticalOptions="Center" />
 
-                                <Label Grid.Column="3"
-                                       Text="{Binding Size}"
-                                       VerticalOptions="Center" />
-                                <!-- Note: Column 3 Header is "Album", this binds to Size -->
-                                <Label Grid.Column="4"
-                                       Text="{Binding Length}"
-                                       VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="3"
+                                    Text="{Binding Size, StringFormat='{0:F2} MB'}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="4"
+                                    Text="{Binding Length, Converter={StaticResource TimeSpanFormatter}}"
+                                    VerticalOptions="Center" />
 
-                                <Button Grid.Column="4" 
-                                    Text="···"
-                                        FontSize="11"
-                                        WidthRequest="37"
-                                        HeightRequest="35"
-                                        VerticalOptions="Center"
-                                        Command="{Binding MusicTrackShowOptionsMessageCommand}"
-                                        CommandParameter="{Binding Source={RelativeSource Self}}" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </Grid>
-        </Border>
+            </Border>
+        </Grid>
     </Grid>
 </ContentView>

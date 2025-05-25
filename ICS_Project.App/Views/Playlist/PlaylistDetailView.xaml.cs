@@ -10,10 +10,8 @@ namespace ICS_Project.App.Views.Playlist
         private IDispatcherTimer _animationTimer;
         private double _baseAnimationAngle = 0;
 
-        // --- Animation Parameters ---
-        // How far the center of the gradient will move from the center of its Border (0.0 to 0.5 means inside, >0.5 means center can go outside)
-        // Increased from 0.4 to make the "circles" orbit further away. Adjust as needed.
-        private const double AnimationSpeed = 0.02; // Slower speed for a more ambient effect
+
+        private const double AnimationSpeed = 0.03;
 
         public PlaylistDetailView(PlaylistDetailViewModel viewModel)
         {
@@ -27,10 +25,10 @@ namespace ICS_Project.App.Views.Playlist
         private void PlaylistDetailView_Loaded(object sender, EventArgs e)
         {
             _animationTimer = this.Dispatcher.CreateTimer();
-            _animationTimer.Interval = TimeSpan.FromMilliseconds(50); // ~20 FPS
+            _animationTimer.Interval = TimeSpan.FromMilliseconds(50); 
             _animationTimer.Tick += AnimationTimer_Tick;
             _animationTimer.Start();
-            UpdateBrushPositions(); // Call once to set initial positions
+            UpdateBrushPositions(); 
         }
 
         private void PlaylistDetailView_Unloaded(object sender, EventArgs e)
@@ -53,15 +51,10 @@ namespace ICS_Project.App.Views.Playlist
             UpdateBrushPositions();
         }
 
-        private void UpdateBrushPositions() // Rename to UpdateGradientPoints or similar
+        private void UpdateBrushPositions()
         {
-            // Animate 'x' for StartPoint and EndPoint to make it sweep
-            // 't' goes from 0 to 1 and back, or cycles
-            double t = (Math.Sin(_baseAnimationAngle) + 1) / 2.0; // Varies from 0 to 1
-
-            // Example: Diagonal sweep from top-left to bottom-right then back
-            // Or more complex: make it look like a light bar scanning across
-            Point startPoint = new Point(t - 0.5, 0); // Sweep horizontally a band of 0.5 width
+            double t = (Math.Sin(_baseAnimationAngle) + 1) / 2.0; 
+            Point startPoint = new Point(t - 0.5, 0);
             Point endPoint = new Point(t + 0.5, 1);
 
             if (AnimatedDetailBrush1 is LinearGradientBrush lgb1)
@@ -71,12 +64,12 @@ namespace ICS_Project.App.Views.Playlist
             }
             if (AnimatedDetailBrush2 is LinearGradientBrush lgb2)
             {
-                lgb2.StartPoint = startPoint; // Or slightly offset for a wave
+                lgb2.StartPoint = startPoint;
                 lgb2.EndPoint = endPoint;
             }
             if (AnimatedDetailBrush3 is LinearGradientBrush lgb3)
             {
-                lgb3.StartPoint = startPoint; // Or slightly offset
+                lgb3.StartPoint = startPoint; 
                 lgb3.EndPoint = endPoint;
             }
         }

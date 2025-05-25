@@ -9,147 +9,167 @@
     x:DataType="vm:MusicTrackDetailViewModel"
     Color="Transparent">
 
-    <Frame
-        BackgroundColor="{StaticResource Gradient2}"
-        BorderColor="{StaticResource Tertiary}"
-        CornerRadius="30">
+    <Border
+        BackgroundColor="{StaticResource PageBackgroundColor}"
+        Stroke="{StaticResource Tertiary}"
+        StrokeThickness="1"
+        Padding="5"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+
+        <Border.StrokeShape>
+            <RoundRectangle
+                CornerRadius="15" />
+        </Border.StrokeShape>
 
         <Grid
-            ColumnDefinitions="auto, *"
-            RowDefinitions="Auto, auto, auto, auto, auto, auto"
-            ColumnSpacing="10"
+            RowDefinitions="Auto, Auto"
+            ColumnDefinitions="auto"
             RowSpacing="5">
 
-            <!-- Album Art Section -->
-            <Frame
-                Grid.Column="0"
+            <!-- Grid for Image and Music Info, on the same row -->
+            <Grid
                 Grid.Row="0"
-                Grid.RowSpan="5"
-                CornerRadius="30"
-                IsClippedToBounds="True"
-                BorderColor="{StaticResource Tertiary}"
-                BackgroundColor="Transparent"
-                Padding="0"
-                WidthRequest="180"
-                HeightRequest="180"
-                Margin="10,10,5,5">
-                <Image
-                    Source="redhotchilli.png"
-                    Aspect="AspectFill"
-                    WidthRequest="180"
-                    HeightRequest="180" />
-            </Frame>
+                ColumnDefinitions="Auto, auto"
+                ColumnSpacing="5"
+                Margin="5">
+                <!-- Common margin for this row's content block -->
 
-            <!-- Details Section -->
-            <Frame
-                Grid.Column="1"
-                Grid.Row="0"
-                Grid.RowSpan="5"
-                CornerRadius="30"
-                BorderColor="{StaticResource Tertiary}"
-                BackgroundColor="{StaticResource SecondaryCardBackgroundColor}"
+                <!-- Border for Album Art -->
+                <Border
+                    Grid.Column="0"
+                    BackgroundColor="{StaticResource Gradient2}"
+                    Stroke="{StaticResource Tertiary}"
+                    StrokeThickness="1"
+                    Margin="5"
+                    Padding="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="15" />
+                    </Border.StrokeShape>
+                    <Image
+                        Source="redhotchilli.png"
+                        Aspect="AspectFill"
+                        WidthRequest="150"
+                        HeightRequest="150"
+                        VerticalOptions="Start" />
+                </Border>
+
+                <!-- Border for Details Section -->
+                <Border
+                    Grid.Column="1"
+                    BackgroundColor="{StaticResource Gradient2}"
+                    Stroke="{StaticResource Tertiary}"
+                    StrokeThickness="1"
+                    Margin="5"
+                    Padding="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="15" />
+                    </Border.StrokeShape>
+                    <ScrollView
+                        VerticalOptions="Start">
+                        <VerticalStackLayout
+                            MaximumWidthRequest="350"
+                            Spacing="8">
+                            <Label
+                                FontSize="24"
+                                FontAttributes="Bold"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                Text="{Binding TrackDetails.Title}"
+                                LineBreakMode="TailTruncation" />
+
+                            <!-- Artists -->
+                            <Label
+                                FontSize="12"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                IsVisible="{Binding TrackDetails.Artists.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                                LineBreakMode="WordWrap">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Artists: "
+                                            FontAttributes="Bold" />
+                                        <Span
+                                            Text="{Binding ArtistsText}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <!-- Playlists -->
+                            <Label
+                                FontSize="12"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                IsVisible="{Binding TrackDetails.Playlists.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                                LineBreakMode="WordWrap">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Playlists: "
+                                            FontAttributes="Bold" />
+                                        <Span
+                                            Text="{Binding PlaylistsText}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <!-- Genres -->
+                            <Label
+                                FontSize="12"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                IsVisible="{Binding TrackDetails.Genres.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                                LineBreakMode="WordWrap">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Genres: "
+                                            FontAttributes="Bold" />
+                                        <Span
+                                            Text="{Binding GenresText}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <Label
+                                FontSize="12"
+                                TextColor="{StaticResource PrimaryTextColor}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Length: "
+                                            FontAttributes="Bold" />
+                                        <Span
+                                            Text="{Binding FormattedLength}"
+                                            FontAttributes="None" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Border>
+            </Grid>
+
+            <!-- Border 2: Description Section -->
+            <Border
+                Grid.Row="1"
+                BackgroundColor="{StaticResource Gradient2}"
+                Stroke="{StaticResource Tertiary}"
+                StrokeThickness="1"
                 Padding="10"
-                Margin="0,10,5,5">
-
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        FontSize="25"
-                        FontAttributes="Bold"
-                        TextColor="{StaticResource PrimaryTextColor}"
-                        Text="{Binding TrackDetails.Title}"
-                        LineBreakMode="TailTruncation" />
-
-                    <!-- Artists -->
+                Margin="5,0,5,5">
+                <Border.StrokeShape>
+                    <RoundRectangle
+                        CornerRadius="15" />
+                </Border.StrokeShape>
+                <ScrollView>
                     <Label
                         FontSize="12"
                         TextColor="{StaticResource PrimaryTextColor}"
-                        IsVisible="{Binding TrackDetails.Artists.Count, Converter={StaticResource CountToVisibilityConverter}}"
-                        LineBreakMode="WordWrap">
-                        <!-- Allow wrapping if the line gets too long -->
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Artists: " FontAttributes="Bold" />
-                                <Span Text="{Binding ArtistsText}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                        Text="{Binding TrackDetails.Description}"
+                        LineBreakMode="WordWrap" />
+                </ScrollView>
+            </Border>
 
-                    <!-- Playlists -->
-                    <Label
-                        FontSize="12"
-                        TextColor="{StaticResource PrimaryTextColor}"
-                        IsVisible="{Binding TrackDetails.Playlists.Count, Converter={StaticResource CountToVisibilityConverter}}"
-                        LineBreakMode="WordWrap">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Playlists: " FontAttributes="Bold" />
-                                <Span Text="{Binding PlaylistsText}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-
-                    <!-- Genres -->
-                    <Label
-                        FontSize="12"
-                        TextColor="{StaticResource PrimaryTextColor}"
-                        IsVisible="{Binding TrackDetails.Genres.Count, Converter={StaticResource CountToVisibilityConverter}}"
-                        LineBreakMode="WordWrap">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Genres: " FontAttributes="Bold" />
-                                <Span Text="{Binding GenresText}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-
-                    <Label
-                        FontSize="12"
-                        FontAttributes="Bold"
-                        TextColor="{StaticResource PrimaryTextColor}">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Length: " FontAttributes="Bold" />
-                                <Span Text="{Binding FormattedLength}" FontAttributes="None" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                        </Label>
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Description Section -->
-            <Frame
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Grid.Row="5"
-                CornerRadius="15"
-                BorderColor="{StaticResource Tertiary}"
-                BackgroundColor="{StaticResource CardBackgroundColor}"
-                Padding="10"
-                Margin="10,5,5,5">
-                <Label
-                    FontSize="12"
-                    FontAttributes="Bold"
-                    TextColor="White"
-                    Text="{Binding TrackDetails.Description}"
-                    LineBreakMode="WordWrap" />
-            </Frame>
-
-            <!-- 
-            <Button
-                Grid.Row="0"
-                Grid.Column="1"
-                CornerRadius="16"
-                WidthRequest="40"
-                HeightRequest="40"
-                VerticalOptions="Start"
-                HorizontalOptions="End"
-                BorderWidth="2"
-                TextColor="{StaticResource PrimaryTextColor}"
-                BackgroundColor="{StaticResource PrimaryButtonColor}"
-                Margin="0,15,15,10"
-                Padding="1"
-                FontSize="15"
-                Text="···" /> Options Button -->
         </Grid>
-    </Frame>
+    </Border>
 </toolkit:Popup>
