@@ -128,7 +128,8 @@ namespace ICS_Project.App.ViewModels.Playlist
 
             ListenToPlaylistSelect();
 
-            ListenToMusicTracksDelete();            
+            ListenToMusicTracksDelete();
+            ListenToMusicTracksUpdate();
         }
 
         // Call this when you know which playlist ID to load
@@ -356,6 +357,15 @@ namespace ICS_Project.App.ViewModels.Playlist
             MessengerService.Messenger.Register<MusicTrackDeletedMessage>(this, async (r, m) =>
             {
                 Debug.WriteLine($"[PlaylistDetailViewModel] received Message about deleting musicTrack with ID: {m.Value}. Refreshing list.");
+                await SetCurrentPlaylistAndLoadAsync(CurrentPlaylistId);
+            });
+        }
+
+        private void ListenToMusicTracksUpdate()
+        {
+            MessengerService.Messenger.Register<MusicTrackUpdatedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistDetailViewModel] received Message about updating musicTrack with ID: {m.Value}. Refreshing list.");
                 await SetCurrentPlaylistAndLoadAsync(CurrentPlaylistId);
             });
         }

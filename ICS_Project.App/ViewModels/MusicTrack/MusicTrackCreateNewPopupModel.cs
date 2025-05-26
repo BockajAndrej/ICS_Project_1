@@ -10,7 +10,8 @@ using CommunityToolkit.Mvvm.Input;
 // using ICS_Project.DAL.Entities; // Usually present
 // using System.ComponentModel.DataAnnotations; // Usually present
 using Microsoft.IdentityModel.Tokens; // Usually for other parts of app
-using System.Globalization; // For FileSize parsing
+using System.Globalization;
+using ICS_Project.App.Services.Interfaces; // For FileSize parsing
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
@@ -179,6 +180,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         };
 
         WeakReferenceMessenger.Default.UnregisterAll(this);
+        ListenToArtistCreate();
+        ListenToGenreCreate();
         if (!_isPopupContextRegistered) // Using combined flag
         {
             _isPopupContextRegistered = true;
@@ -332,7 +335,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         Debug.WriteLine($"Title: {MusicTrackDetail.Title}, Length: {MusicTrackDetail.Length}, Size: {MusicTrackDetail.Size}MB");
         if (scalarValuesChanged || !_isEditMode) // Simplified condition from git
         {
-            WeakReferenceMessenger.Default.Send(new MusicTrackListViewUpdate());
+            WeakReferenceMessenger.Default.Send(new MusicTrackUpdatedMessage(MusicTrackDetail.Id));
         }
         WeakReferenceMessenger.Default.Send(new MusicTrackSelectedMessage(MusicTrackDetail.Id));
         WeakReferenceMessenger.Default.Send(new MusicTrackNewMusicTrackClosed());
@@ -479,4 +482,22 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         if (FileSizeString != correctedValue) { FileSizeString = correctedValue; }
         FileSizeMB = megabytes;
     }
+    private void ListenToArtistCreate()
+    {
+        WeakReferenceMessenger.Default.Register<ArtistCreatedMessage>(this, async (r, m) => 
+        {
+            Debug.WriteLine($"[MusicTrackCreateNewPopupModel] received Message about creation of Artist. Refreshing list.");
+            await LoadAndPreselectArtistsAndGenres();
+        });
+    }
+
+    private void ListenToGenreCreate()
+    {
+        WeakReferenceMessenger.Default.Register<GenreCreatedMessage>(this, async (r, m) =>
+        {
+            Debug.WriteLine($"[MusicTrackCreateNewPopupModel] received Message about creation of Genre. Refreshing list.");
+            await LoadAndPreselectArtistsAndGenres();
+        });
+    }
+
 }

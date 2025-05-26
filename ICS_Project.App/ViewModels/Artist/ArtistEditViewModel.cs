@@ -62,10 +62,10 @@ public partial class ArtistEditViewModel : ObservableObject
             ArtistDetail.ArtistName = ArtistName;
 
             var saveArtist = await _facade.SaveAsync(ArtistDetail);
-            Debug.WriteLine("Music track created:");
+            Debug.WriteLine("Artist created:");
             Debug.WriteLine($"ArtistName: {ArtistDetail.ArtistName}");
 
-            // TODO: Here is probably the best place to inform about the changes - make the popup refresh
+            WeakReferenceMessenger.Default.Send(new ArtistCreatedMessage());
 
             WeakReferenceMessenger.Default.Send(new ArtistEditViewClosed());
         }

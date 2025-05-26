@@ -63,7 +63,7 @@ public partial class GenreEditViewModel : ObservableObject
             Debug.WriteLine("Genre created:");
             Debug.WriteLine($"GenreName: {GenreDetail.GenreName}");
 
-            // TODO: Here is probably the best place to inform about the changes - make the popup refresh
+            WeakReferenceMessenger.Default.Send(new GenreCreatedMessage());
 
             WeakReferenceMessenger.Default.Send(new GenreEditViewClosed());
         }
