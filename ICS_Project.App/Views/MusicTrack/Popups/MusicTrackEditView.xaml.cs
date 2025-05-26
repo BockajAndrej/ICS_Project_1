@@ -60,4 +60,10 @@ public partial class MusicTrackEditView : Popup
         // --- End Showing Popup ---
         this.Close(); // Close the popup
     }
+
+    private void ClosePopup(object sender, EventArgs e)
+    {
+        Debug.WriteLine("ClosePopup: Closing popup after button click.");
+        this.Close();
+    }
 }

@@ -65,39 +65,23 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         private void Filter()
         {
-            Debug.WriteLine($"Filtering tracks with search text: '{SearchTracks}'");
-
-            if (PlaylistDetail == null || PlaylistDetail.MusicTracks == null)
-            {
-                Debug.WriteLine("Filter: PlaylistDetail or PlaylistDetail.MusicTracks is null. Clearing VMs and exiting.");
-                MusicTrackVMs.Clear();
-                return;
-            }
-
-            MusicTrackVMs.Clear();
-
+            Debug.WriteLine($"Searching for {SearchTracks}");
             if (string.IsNullOrWhiteSpace(SearchTracks))
             {
-                Debug.WriteLine("Searchbar text is empty. Reloading all tracks.");
+                Debug.WriteLine("Searchbar text is empty");
                 foreach (var trackModel in PlaylistDetail.MusicTracks)
                 {
-                    if (trackModel != null)
-                    {
-                        MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
-                    }
+                    MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
                 }
             }
             else
             {
-                Debug.WriteLine("SearchbarText is NOT empty. Filtering tracks.");
+                Debug.WriteLine("SearchbarText is NOT empty");
                 var lower = SearchTracks.ToLowerInvariant();
                 var filtered = PlaylistDetail.MusicTracks
                     .Where(track =>
-                        track != null &&
-                        !string.IsNullOrWhiteSpace(track.Title) &&
-                        track.Title.ToLowerInvariant().Contains(lower))
+                        !string.IsNullOrWhiteSpace(track.Title) && track.Title.ToLowerInvariant().Contains(lower))
                     .ToList();
-
                 foreach (var trackModel in filtered)
                 {
                     MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
@@ -347,6 +331,15 @@ namespace ICS_Project.App.ViewModels.Playlist
             {
                 Debug.WriteLine($"[DeletePlaylistAsync] Error when trying to delete playlist: {ex.Message}");
             }
+        }
+
+        private void ListenToMusicTracksDelete()
+        {
+            MessengerService.Messenger.Register<MusicTrackDeletedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistDetailViewModel] received Message about deleting musicTrack with ID: {m.Value}. Refreshing list.");
+                await SetCurrentPlaylistAndLoadAsync(CurrentPlaylistId);
+            });
         }
     }
 }
