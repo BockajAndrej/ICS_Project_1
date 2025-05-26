@@ -58,14 +58,14 @@ public static class ArtistSeeds
         return context;
     }
 
-    // Manual Clone Method for Artists
+    // Shallow Clone Method for Artists
     private static Artist Clone(Artist original, string newId, string newName)
     {
         return new Artist
         {
             Id = Guid.Parse(newId),
             ArtistName = newName,
-            MusicTracks = new List<MusicTrack>()
+            MusicTracks = original.MusicTracks?.ToList() ?? new List<MusicTrack>()
         };
     }
 }

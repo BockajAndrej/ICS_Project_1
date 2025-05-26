@@ -54,14 +54,14 @@ public static class GenreSeeds
         return dbx;
     }
 
-    // Manual Clone Method for Genres
+    // Shallow Clone Method for Genres
     private static Genre Clone(Genre original, string newId, string newName)
     {
         return new Genre
         {
             Id = Guid.Parse(newId),
             GenreName = newName,
-            MusicTracks = new List<MusicTrack>()
+            MusicTracks = original.MusicTracks?.ToList() ?? new List<MusicTrack>()
         };
     }
 }
