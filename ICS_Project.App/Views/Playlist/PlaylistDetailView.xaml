@@ -15,7 +15,6 @@
           Padding="0"
           Margin="0">
 
-        <!-- TOP BORDER - First Orbiting Gradient -->
         <Border Grid.Row="0"
                 Margin="5,5,5,5"
                 Padding="10"
@@ -27,14 +26,12 @@
                 <RoundRectangle CornerRadius="15"/>
             </Border.StrokeShape>
             <Border.Background>
-                <!-- Example for AnimatedDetailBrush1 -->
                 <LinearGradientBrush x:Name="AnimatedDetailBrush1" StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
                     <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
                     <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
                 </LinearGradientBrush>
             </Border.Background>
-            <!-- Content of the top border -->
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="150" HeightRequest="150" Aspect="AspectFill" VerticalOptions="Start"/>
 
@@ -58,7 +55,6 @@
                                FontSize="Small"
                                Margin="0,5,0,0"
                                LineBreakMode="WordWrap"/>
-                        <!-- Ensures text wraps within the Label -->
                     </ScrollView>
                 </Grid>
 
@@ -76,7 +72,6 @@
             </Grid>
         </Border>
 
-        <!-- MIDDLE BORDER -->
         <Border Grid.Row="1"
                 Margin="5,0,5,5"
                 Padding="10"
@@ -121,7 +116,6 @@
             </Grid>
         </Border>
 
-        <!-- BOTTOM BORDER -->
         <Border Grid.Row="2"
                 Margin="5,0,5,5"
                 Padding="10"
@@ -131,21 +125,19 @@
                 <RoundRectangle CornerRadius="15"/>
             </Border.StrokeShape>
             <Border.Background>
-                <!-- Example for AnimatedDetailBrush1 -->
                 <LinearGradientBrush x:Name="AnimatedDetailBrush3" StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
                     <GradientStop Color="{StaticResource Gradient2}" Offset="0.4" />
                     <GradientStop Color="{StaticResource Gradient9}" Offset="0.9" />
                 </LinearGradientBrush>
             </Border.Background>
-            <!-- Content of the bottom border -->
             <Grid RowDefinitions="*">
                 <CollectionView ItemsSource="{Binding MusicTrackVMs}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="playlist_vm:PlaylistTrackViewModel">
                             <Grid ColumnDefinitions="Auto, *, *, *, *, *, *" Padding="0,2" ColumnSpacing="15">
                                 <Image Grid.Column="0" Source="redhotchilli.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center" Margin="0,0,5,0"/>
-                                
+
                                 <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center">
                                     <Label.Style>
                                         <Style TargetType="Label">

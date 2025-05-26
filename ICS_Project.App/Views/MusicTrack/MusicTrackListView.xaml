@@ -19,7 +19,6 @@
         <Grid
             RowDefinitions="Auto, Auto, *">
 
-            <!-- Search/Filter for musictracks - Styled as per example -->
             <Border
                 Grid.Row="0"
                 Margin="5,5,5,5"
@@ -31,18 +30,16 @@
                         CornerRadius="15"/>
                 </Border.StrokeShape>
 
-            <Border.Background>
-                <!-- Example for AnimatedDetailBrush1 -->
-                <LinearGradientBrush x:Name="AnimatedDetailBrush1" StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
-                    <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
-                    <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
+                <Border.Background>
+                    <LinearGradientBrush x:Name="AnimatedDetailBrush1" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
+                        <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
 
-            <Grid
+                <Grid
                     ColumnDefinitions="*, Auto">
-                    <!-- Inner Border for SearchBar -->
                     <Border
                         Grid.Column="0"
                         Stroke="{StaticResource SecondaryDarkText}"
@@ -72,7 +69,6 @@
                 </Grid>
             </Border>
 
-            <!-- Music tracks - Content - Styled as per example -->
             <Border
                 Grid.Row="2"
                 Margin="5,5,5,5" 
@@ -80,26 +76,24 @@
                 StrokeThickness="1"
                 Stroke="{StaticResource Tertiary}">
 
-            <Border.StrokeShape>
-                <RoundRectangle
+                <Border.StrokeShape>
+                    <RoundRectangle
                         CornerRadius="15"/>
-            </Border.StrokeShape>
+                </Border.StrokeShape>
 
-            <Border.Background>
-                <!-- Example for AnimatedDetailBrush1 -->
-                <LinearGradientBrush x:Name="AnimatedDetailBrush2" StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
-                    <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
-                    <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
+                <Border.Background>
+                    <LinearGradientBrush x:Name="AnimatedDetailBrush2" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource Gradient4}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource Gradient2}" Offset="0.7" />
+                        <GradientStop Color="{StaticResource Gradient9}" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
 
 
                 <CollectionView
                     ItemsSource="{Binding MusicTracks}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <!-- Assuming a ViewModel per item, adjust if it's a Model -->
                             <Grid
                                 ColumnDefinitions="Auto, *, *, *, *"
                                 ColumnSpacing="15"

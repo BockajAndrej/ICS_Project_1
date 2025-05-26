@@ -12,10 +12,5 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
-
-        <!-- Vložíme PlaylistListViewControl do ľavého stĺpca -->
-        <!--playlist:PlaylistListView Grid.Column="0"/-->
-        <!--playlist:PlaylistDetailView Grid.Column="1"/-->
     </Grid>
 </views:ContentPageBase>

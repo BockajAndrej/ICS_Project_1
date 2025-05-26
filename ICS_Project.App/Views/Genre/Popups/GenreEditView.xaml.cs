@@ -1,9 +1,7 @@
-using CommunityToolkit.Maui.Views;
-using System.Diagnostics;
-using CommunityToolkit.Maui.Views; // Make sure this using is present
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
-using ICS_Project.App.Messages; // Often needed for enums like PlacementMode
+using ICS_Project.App.Messages;
 using ICS_Project.App.ViewModels.Genre;
 
 
@@ -18,10 +16,10 @@ public partial class GenreEditView : Popup
     {
         InitializeComponent();
         _serviceProvider = serviceProvider;
-        BindingContext = genreEditViewModel; // Set BindingContext
+        BindingContext = genreEditViewModel;
         WeakReferenceMessenger.Default.Register<GenreEditViewClosed>(this, (r, m) =>
         {
-            Close(); // closes the popup
+            Close();
         });
 
         this.Opened += GenreEditView_Opened;

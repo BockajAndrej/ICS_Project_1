@@ -29,20 +29,16 @@
                 </LinearGradientBrush>
             </Border.Background>
 
-            <!-- MainLayoutGrid -->
             <Grid RowDefinitions="auto, auto, *"
                   ColumnDefinitions="*, *" 
                 RowSpacing="10">
-                <!-- Added RowSpacing for space between button row, search row, and collection -->
 
-                <!-- ButtonContainerGrid -->
                 <Grid Grid.Row="0"
                       Grid.ColumnSpan="2"
                     Margin="5,5,5,0"
                     
                     ColumnDefinitions="*, *"
                       ColumnSpacing="10">
-                    <!-- Space between the two buttons -->
 
                     <Button Grid.Column="0"
                             Text="New Playlist"
@@ -50,8 +46,6 @@
                             BackgroundColor="{StaticResource PrimaryButtonColor}"
                             Clicked="OnNewPlaylistClicked"
                             CornerRadius="10"/>
-                    <!-- Added CornerRadius -->
-                    <!-- Removed individual button margin, relying on Grid's ColumnSpacing -->
 
                     <Button Grid.Column="1"
                             Text="New Music Track"
@@ -59,15 +53,12 @@
                             BackgroundColor="{StaticResource PrimaryButtonColor}"
                             Clicked="OnNewMusicTrackClicked"
                             CornerRadius="10"/>
-                    <!-- Added CornerRadius -->
                 </Grid>
 
                 <!-- SearchBarContainerGrid -->
                 <Grid Grid.Row="1"
                       Grid.ColumnSpan="2"
                     Margin="5,0,5,0">
-                    <!-- Margin for the search bar row -->
-                    <!-- ColumnDefinitions="*" is implicit for a single child spanning the grid cell -->
 
                     <Border Stroke="{StaticResource SecondaryDarkText}"
                             StrokeThickness="1"
@@ -99,12 +90,10 @@
                                 ItemsSource="{Binding Playlists}"
                                 SelectionMode="Single"
                                 Margin="5">
-                    <!-- Consistent margin -->
 
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"
                                            ItemSpacing="2" />
-                        <!-- Increased item spacing for clarity like the image -->
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>

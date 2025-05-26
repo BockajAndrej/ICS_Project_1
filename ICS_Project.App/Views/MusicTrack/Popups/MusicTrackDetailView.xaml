@@ -27,15 +27,12 @@
             ColumnDefinitions="auto"
             RowSpacing="5">
 
-            <!-- Grid for Image and Music Info, on the same row -->
             <Grid
                 Grid.Row="0"
                 ColumnDefinitions="Auto, auto"
                 ColumnSpacing="5"
                 Margin="5">
-                <!-- Common margin for this row's content block -->
 
-                <!-- Border for Album Art -->
                 <Border
                     Grid.Column="0"
                     BackgroundColor="{StaticResource Gradient2}"
@@ -55,7 +52,6 @@
                         VerticalOptions="Start" />
                 </Border>
 
-                <!-- Border for Details Section -->
                 <Border
                     Grid.Column="1"
                     BackgroundColor="{StaticResource Gradient2}"

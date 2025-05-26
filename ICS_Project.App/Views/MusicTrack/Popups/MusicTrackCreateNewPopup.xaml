@@ -23,14 +23,12 @@
                 CornerRadius="15" />
         </Border.StrokeShape>
 
-        <!-- Main Grid for the Popup Content -->
         <Grid
             RowDefinitions="Auto, *"
             ColumnDefinitions="*, *"
             RowSpacing="5"
             ColumnSpacing="5">
 
-            <!-- Border 0: Music Creation Details -->
             <Border
                 Grid.Row="0"
                 Grid.Column="0"
@@ -222,7 +220,6 @@
                 </Grid>
             </Border>
 
-            <!-- Artists -->
             <Border
                 Grid.Row="2"
                 Grid.Column="0"
@@ -298,7 +295,6 @@
                 </Grid>
             </Border>
 
-            <!-- Genres-->
             <Border
                 Grid.Row="2"
                 Grid.Column="1"

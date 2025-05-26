@@ -6,7 +6,7 @@ using ICS_Project.App.ViewModels.Playlist;
 namespace ICS_Project.App.Views.Playlist
 {
     public partial class PlaylistCreateNewPopup : Popup
-    {   
+    {
         public PlaylistCreateNewPopup(PlaylistCreateNewPopupModel playlistCreateNewPopupModel)
         {
             InitializeComponent();
@@ -14,7 +14,7 @@ namespace ICS_Project.App.Views.Playlist
 
             WeakReferenceMessenger.Default.Register<PlaylistNewPlaylistClosed>(this, (r, m) =>
             {
-                Close(); // closes the popup
+                Close();
             });
         }
         private void PlaylistCreateNewPopup_Opened(object sender, EventArgs e)
