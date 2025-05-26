@@ -54,8 +54,10 @@ public partial class ArtistEditViewModel : ObservableObject
             ArtistDetail.ArtistName = ArtistName;
 
             var saveArtist = await _facade.SaveAsync(ArtistDetail);
-            Debug.WriteLine("Music track created:");
+            Debug.WriteLine("Artist created:");
             Debug.WriteLine($"ArtistName: {ArtistDetail.ArtistName}");
+
+            WeakReferenceMessenger.Default.Send(new ArtistCreatedMessage());
 
             WeakReferenceMessenger.Default.Send(new ArtistEditViewClosed());
         }

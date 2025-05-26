@@ -16,6 +16,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     private readonly IMusicTrackFacade _facade;
     private readonly IArtistFacade _artistFacade;
     private readonly IGenreFacade _genreFacade;
+    private readonly IPlaylistFacade _playlistFacade;
 
     [ObservableProperty]
     private MusicTrackDetailModel _musicTrackDetail;
@@ -133,11 +134,13 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     public MusicTrackCreateNewPopupModel(
         IMusicTrackFacade musicTrackFacade,
         IArtistFacade artistFacade,
-        IGenreFacade genreFacade)
+        IGenreFacade genreFacade,
+        IPlaylistFacade playlistFacade)
     {
         _facade = musicTrackFacade;
         _artistFacade = artistFacade;
         _genreFacade = genreFacade;
+        _playlistFacade = playlistFacade;
 
         MinuteOptions = new ObservableCollection<int>(Enumerable.Range(0, 60));
         SecondOptions = new ObservableCollection<int>(Enumerable.Range(0, 60));
@@ -155,6 +158,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         };
 
         WeakReferenceMessenger.Default.UnregisterAll(this);
+        ListenToArtistCreate();
+        ListenToGenreCreate();
         if (!_isPopupContextRegistered) // Using combined flag
         {
             _isPopupContextRegistered = true;
@@ -249,10 +254,17 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             var currentArtistsIds = MusicTrackDetail.Artists.Select(t => t.Id).ToHashSet();
             var artistsToAdd = _selectedArtists.Where(artist => !currentArtistsIds.Contains(artist.Id)).ToList();
             var artistsToRemove = MusicTrackDetail.Artists.Where(artist => !_selectedArtists.Any(t => t.Id == artist.Id)).ToList();
+            MusicTrackDetail.Artists.Clear(); 
+
 
             var currentGenresIds = MusicTrackDetail.Genres.Select(t => t.Id).ToHashSet();
             var genresToAdd = _selectedGenres.Where(genre => !currentGenresIds.Contains(genre.Id)).ToList();
             var genresToRemove = MusicTrackDetail.Genres.Where(genre => !_selectedGenres.Any(t => t.Id == genre.Id)).ToList();
+            MusicTrackDetail.Genres.Clear(); 
+
+            MusicTrackDetail.Playlists.Clear();
+
+            await _facade.SaveAsync(MusicTrackDetail); 
 
             foreach (var artist in artistsToRemove) await _facade.RemoveArtistFromMusicTrackAsync(MusicTrackDetail.Id, artist.Id);
             foreach (var genre in genresToRemove) await _facade.RemoveGenreFromMusicTrackAsync(MusicTrackDetail.Id, genre.Id);
@@ -283,7 +295,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         Debug.WriteLine($"Title: {MusicTrackDetail.Title}, Length: {MusicTrackDetail.Length}, Size: {MusicTrackDetail.Size}MB");
         if (scalarValuesChanged || !_isEditMode) // Simplified condition from git
         {
-            WeakReferenceMessenger.Default.Send(new MusicTrackListViewUpdate());
+            WeakReferenceMessenger.Default.Send(new MusicTrackUpdatedMessage(MusicTrackDetail.Id));
         }
         WeakReferenceMessenger.Default.Send(new MusicTrackSelectedMessage(MusicTrackDetail.Id));
         WeakReferenceMessenger.Default.Send(new MusicTrackNewMusicTrackClosed());
@@ -413,4 +425,22 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         if (FileSizeString != correctedValue) { FileSizeString = correctedValue; }
         FileSizeMB = megabytes;
     }
+    private void ListenToArtistCreate()
+    {
+        WeakReferenceMessenger.Default.Register<ArtistCreatedMessage>(this, async (r, m) => 
+        {
+            Debug.WriteLine($"[MusicTrackCreateNewPopupModel] received Message about creation of Artist. Refreshing list.");
+            await LoadAndPreselectArtistsAndGenres();
+        });
+    }
+
+    private void ListenToGenreCreate()
+    {
+        WeakReferenceMessenger.Default.Register<GenreCreatedMessage>(this, async (r, m) =>
+        {
+            Debug.WriteLine($"[MusicTrackCreateNewPopupModel] received Message about creation of Genre. Refreshing list.");
+            await LoadAndPreselectArtistsAndGenres();
+        });
+    }
+
 }

@@ -112,7 +112,9 @@ namespace ICS_Project.App.ViewModels.Playlist
             ListenToGUIDRequest();
 
             ListenToPlaylistSelect();
-            
+
+            ListenToMusicTracksDelete();
+            ListenToMusicTracksUpdate();
         }
 
         public async Task SetCurrentPlaylistAndLoadAsync(Guid playlistId)
@@ -327,6 +329,15 @@ namespace ICS_Project.App.ViewModels.Playlist
             MessengerService.Messenger.Register<MusicTrackDeletedMessage>(this, async (r, m) =>
             {
                 Debug.WriteLine($"[PlaylistDetailViewModel] received Message about deleting musicTrack with ID: {m.Value}. Refreshing list.");
+                await SetCurrentPlaylistAndLoadAsync(CurrentPlaylistId);
+            });
+        }
+
+        private void ListenToMusicTracksUpdate()
+        {
+            MessengerService.Messenger.Register<MusicTrackUpdatedMessage>(this, async (r, m) =>
+            {
+                Debug.WriteLine($"[PlaylistDetailViewModel] received Message about updating musicTrack with ID: {m.Value}. Refreshing list.");
                 await SetCurrentPlaylistAndLoadAsync(CurrentPlaylistId);
             });
         }

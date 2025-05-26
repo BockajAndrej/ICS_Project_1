@@ -58,6 +58,8 @@ public partial class GenreEditViewModel : ObservableObject
             Debug.WriteLine("Genre created:");
             Debug.WriteLine($"GenreName: {GenreDetail.GenreName}");
 
+            WeakReferenceMessenger.Default.Send(new GenreCreatedMessage());
+
             WeakReferenceMessenger.Default.Send(new GenreEditViewClosed());
         }
     }
