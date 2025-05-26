@@ -18,20 +18,20 @@ public static class ArtistSeeds
     };
 
     public static readonly Artist EmptyArtistName =
-        Clone(Artist, "60E299A2-BDC6-45F3-9391-38CE09CC665B", string.Empty);
+        Clone("60E299A2-BDC6-45F3-9391-38CE09CC665B", string.Empty);
 
     public static readonly Artist ArtistUpdate =
-        Clone(Artist, "C43A05ED-20D0-4E68-B086-B0998A26914F", "Update me");
+        Clone( "C43A05ED-20D0-4E68-B086-B0998A26914F", "Update me");
 
     public static readonly Artist ArtistDelete =
-        Clone(Artist, "58D0C03C-C539-4A16-96B1-9A9527B1BA0F", "Delete me");
+        Clone( "58D0C03C-C539-4A16-96B1-9A9527B1BA0F", "Delete me");
     
     public static readonly Artist ArtistWOutTracks =
-        Clone(Artist, "1c2cb57c-3f7f-485d-8e4e-b78228644581", "I cannot Sing");
+        Clone( "1c2cb57c-3f7f-485d-8e4e-b78228644581", "I cannot Sing");
 
     public static Artist ArtistClone(string id, string artistName)
     {
-        return Clone(Artist, id, artistName);
+        return Clone(id, artistName);
     }
 
 
@@ -59,13 +59,13 @@ public static class ArtistSeeds
     }
 
     // Shallow Clone Method for Artists
-    private static Artist Clone(Artist original, string newId, string newName)
+    private static Artist Clone(string newId, string newName)
     {
         return new Artist
         {
             Id = Guid.Parse(newId),
             ArtistName = newName,
-            MusicTracks = original.MusicTracks?.ToList() ?? new List<MusicTrack>()
+            MusicTracks = new List<MusicTrack>()
         };
     }
 }

@@ -18,21 +18,21 @@ public static class GenreSeeds
     };
 
     public static readonly Genre EmptyGenreName =
-        Clone(NonEmptyGenre, "777A6748-59F0-42DD-8860-567D1A7E49DA", string.Empty);
+        Clone( "777A6748-59F0-42DD-8860-567D1A7E49DA", string.Empty);
 
     public static readonly Genre GenreEmptyMusicTracks =
-        Clone(NonEmptyGenre, "7C00C163-B12F-4DD6-8268-718D4243DAD7", "Rock");
+        Clone( "7C00C163-B12F-4DD6-8268-718D4243DAD7", "Rock");
 
     public static readonly Genre GenreUpdate =
-        Clone(NonEmptyGenre, "68F8EE00-F3AE-4BB3-8D0C-3695BC1B839C", "Rap");
+        Clone( "68F8EE00-F3AE-4BB3-8D0C-3695BC1B839C", "Rap");
 
     public static readonly Genre GenreDelete =
-        Clone(NonEmptyGenre, "0E18CDB4-619B-4835-8602-3321A8A82AFA", "Country");
+        Clone("0E18CDB4-619B-4835-8602-3321A8A82AFA", "Country");
 
     public static Genre GenreClone(string id, string name)
     {
-        return Clone(NonEmptyGenre, id, name);
-    }
+        return Clone(id, name);
+    }   
     
     static GenreSeeds()
     {
@@ -55,13 +55,13 @@ public static class GenreSeeds
     }
 
     // Shallow Clone Method for Genres
-    private static Genre Clone(Genre original, string newId, string newName)
+    private static Genre Clone(string newId, string newName)
     {
         return new Genre
         {
             Id = Guid.Parse(newId),
             GenreName = newName,
-            MusicTracks = original.MusicTracks?.ToList() ?? new List<MusicTrack>()
+            MusicTracks = new List<MusicTrack>()
         };
     }
 }
