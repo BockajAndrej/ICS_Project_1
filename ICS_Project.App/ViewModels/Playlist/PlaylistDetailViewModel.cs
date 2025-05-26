@@ -201,8 +201,6 @@ namespace ICS_Project.App.ViewModels.Playlist
             MessengerService.Send(new PlaylistShowOptions(anchor, this));
         }
 
-
-        // Primary data loading method
         protected override async Task LoadDataAsync()
         {
             Debug.WriteLine($"LoadDataAsync started for CurrentPlaylistId: {CurrentPlaylistId}");

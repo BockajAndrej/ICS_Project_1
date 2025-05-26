@@ -216,12 +216,10 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     [RelayCommand]
     public async void SaveChanges()
     {
-        ParseAndCorrectFileSize(); // Ensure FileSizeMB is current
+        ParseAndCorrectFileSize();
 
-        // +++ MODIFIED VALIDATION FOR PICKER DURATION +++
         if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(URL) || SongDuration == TimeSpan.Zero ||
             string.IsNullOrWhiteSpace(Description) || FileSizeMB == 0.0)
-        // +++ END MODIFIED VALIDATION FOR PICKER DURATION +++
         {
             await Application.Current.MainPage.DisplayAlert("Validační chyba", "Všechna pole musí být vyplněná", "OK");
             return;
@@ -237,22 +235,17 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             return;
         }
 
-        // Prepare model to save - original git approach modified Model directly
         MusicTrackDetail.Title = Title;
         MusicTrackDetail.Description = Description;
         MusicTrackDetail.UrlAddress = URL;
-        // +++ MODIFIED FOR PICKER DURATION +++
         MusicTrackDetail.Length = SongDuration;
-        // +++ END MODIFIED FOR PICKER DURATION +++
         MusicTrackDetail.Size = FileSizeMB;
 
-        // Simplified change detection from git version for brevity.
-        // A robust solution would compare original values if _isEditMode.
-        bool scalarValuesChanged = true; // Assume changes for this simplified merge.
+
+        bool scalarValuesChanged = true;
 
         if (_isEditMode)
         {
-            // Original git logic for edit mode
             var currentArtistsIds = MusicTrackDetail.Artists.Select(t => t.Id).ToHashSet();
             var artistsToAdd = _selectedArtists.Where(artist => !currentArtistsIds.Contains(artist.Id)).ToList();
             var artistsToRemove = MusicTrackDetail.Artists.Where(artist => !_selectedArtists.Any(t => t.Id == artist.Id)).ToList();
@@ -261,11 +254,6 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             var genresToAdd = _selectedGenres.Where(genre => !currentGenresIds.Contains(genre.Id)).ToList();
             var genresToRemove = MusicTrackDetail.Genres.Where(genre => !_selectedGenres.Any(t => t.Id == genre.Id)).ToList();
 
-            // Save scalar properties. The original git logic implies _facade.SaveAsync handles this.
-            // If _facade.SaveAsync *only* updates scalar for existing IDs OR your BL model properties are not init-only, this is fine.
-            // Otherwise, you might need a separate DTO or method for scalar updates.
-            //await _facade.SaveAsync(MusicTrackDetail); // Assumes this updates scalar if ID exists
-
             foreach (var artist in artistsToRemove) await _facade.RemoveArtistFromMusicTrackAsync(MusicTrackDetail.Id, artist.Id);
             foreach (var genre in genresToRemove) await _facade.RemoveGenreFromMusicTrackAsync(MusicTrackDetail.Id, genre.Id);
             foreach (var artist in artistsToAdd) await _facade.AddArtistToMusicTrackAsync(MusicTrackDetail.Id, artist.Id);
@@ -273,12 +261,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
 
             Debug.WriteLine("Music track updated (git logic).");
         }
-        else // Creation mode
+        else
         {
-            // Original git logic for creation mode.
-            // IMPORTANT: If MusicTrackDetailModel.Artists/Genres are init-only AND your facade guard
-            // requires them to be NULL for INSERT, this will fail.
-            // In that case, you'd `new MusicTrackDetailModel { Artists = null, Genres = null, ... }` here.
             MusicTrackDetail.Artists.Clear();
             MusicTrackDetail.Genres.Clear();
             var savedTrack = await _facade.SaveAsync(MusicTrackDetail);
@@ -289,7 +273,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
                 await Application.Current.MainPage.DisplayAlert("Chyba", "Nepodařilo se uložit novou skladbu.", "OK");
                 return;
             }
-            MusicTrackDetail.Id = savedTrack.Id; // Update the main model's ID
+            MusicTrackDetail.Id = savedTrack.Id; // Update the main models ID
 
             foreach (var artist in _selectedArtists) await _facade.AddArtistToMusicTrackAsync(savedTrack.Id, artist.Id);
             foreach (var genre in _selectedGenres) await _facade.AddGenreToMusicTrackAsync(savedTrack.Id, genre.Id);
@@ -350,21 +334,14 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
                 Description = MusicTrackDetail.Description;
                 URL = MusicTrackDetail.UrlAddress;
                 FileSizeMB = MusicTrackDetail.Size;
-                FileSizeString = FileSizeMB.ToString("0.0", CultureInfo.InvariantCulture); // Format consistently
+                FileSizeString = FileSizeMB.ToString("0.0", CultureInfo.InvariantCulture);
                 OnPropertyChanged(nameof(FileSizeString));
 
-                // +++ MODIFIED FOR PICKER DURATION +++
                 SongDuration = MusicTrackDetail.Length;
                 UpdatePickersFromSongDuration();
-                // --- REMOVE OLD STRING ASSIGNMENTS ---
-                // HoursString = TotalDuration.Hours.ToString("D2");
-                // MinutesString = TotalDuration.Minutes.ToString("D2");
-                // SecondsString = TotalDuration.Seconds.ToString("D2");
-                // +++ END MODIFIED FOR PICKER DURATION +++
 
                 await LoadAndPreselectArtistsAndGenres();
             });
-            // _isNotRegistered = false; // This was part of original git's flag logic
         }
     }
 
@@ -398,14 +375,6 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         foreach (var genre in Genres) { genre.IsSelected = _selectedGenresIds.Contains(genre.Id); genre.PropertyChanged += Genre_PropertyChanged; }
     }
 
-    // --- REMOVED OLD DURATION VALIDATION METHODS ---
-    // [RelayCommand] private void ValidateAndCorrectHoursString() { /* ... */ }
-    // [RelayCommand] private void ValidateAndCorrectMinutesString() { /* ... */ }
-    // [RelayCommand] private void ValidateAndCorrectSecondsString() { /* ... */ }
-    // private void UpdateTotalDuration() { /* ... */ }
-    // --- END REMOVED OLD DURATION VALIDATION METHODS ---
-
-    // +++ ADDED PICKER HELPER METHODS +++
     private void UpdatePickersFromSongDuration()
     {
         SelectedMinutes = SongDuration.Minutes;
@@ -414,14 +383,12 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
 
     private void UpdateSongDurationFromPickers()
     {
-        // Assuming hours are not handled by these pickers and remain 0
         SongDuration = new TimeSpan(0, SelectedMinutes, SelectedSeconds);
         Debug.WriteLine($"SongDuration updated from pickers: {SongDuration}");
     }
-    // +++ END ADDED PICKER HELPER METHODS +++
 
     [RelayCommand]
-    private void ParseAndCorrectFileSize() // From git, improved
+    private void ParseAndCorrectFileSize()
     {
         string? newValue = FileSizeString;
         string correctedValue;
@@ -438,7 +405,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             }
             else
             {
-                megabytes = FileSizeMB; // Revert to last valid or default
+                megabytes = FileSizeMB;
                 correctedValue = megabytes.ToString("0.0###############", CultureInfo.InvariantCulture);
                 Debug.WriteLine($"Invalid file size input '{newValue}'. Reverted/kept: {correctedValue}");
             }
