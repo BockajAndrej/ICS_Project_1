@@ -39,16 +39,6 @@
                     FontSize="12"
                     CornerRadius="10"
                     HeightRequest="44"
-                    Text="Edit Track Details"
-                    Command="{Binding EditTrackCommand}"
-                    TextColor="{StaticResource PrimaryDarkText}"
-                    BorderWidth="3"
-                    BorderColor="{StaticResource PrimaryButtonColor}"/>
-
-            <Button Grid.Row="2"
-                    FontSize="12"
-                    CornerRadius="10"
-                    HeightRequest="44"
                     Text="Delete from Device"
                     Command="{Binding DeleteMusicTrackCommand}"
                     Clicked="ClosePopup"
