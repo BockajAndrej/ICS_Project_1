@@ -65,29 +65,46 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         private void Filter()
         {
-            Debug.WriteLine($"Searching for {SearchTracks}");
+            Debug.WriteLine($"Filtering tracks with search text: '{SearchTracks}'");
+
+            if (PlaylistDetail == null || PlaylistDetail.MusicTracks == null)
+            {
+                Debug.WriteLine("Filter: PlaylistDetail or PlaylistDetail.MusicTracks is null. Clearing VMs and exiting.");
+                MusicTrackVMs.Clear();
+                return;
+            }
+
+            MusicTrackVMs.Clear();
+
             if (string.IsNullOrWhiteSpace(SearchTracks))
             {
-                Debug.WriteLine("Searchbar text is empty");
+                Debug.WriteLine("Searchbar text is empty. Reloading all tracks.");
                 foreach (var trackModel in PlaylistDetail.MusicTracks)
                 {
-                    MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
+                    if (trackModel != null)
+                    {
+                        MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
+                    }
                 }
             }
             else
             {
-                Debug.WriteLine("SearchbarText is NOT empty");
+                Debug.WriteLine("SearchbarText is NOT empty. Filtering tracks.");
                 var lower = SearchTracks.ToLowerInvariant();
                 var filtered = PlaylistDetail.MusicTracks
                     .Where(track =>
-                        !string.IsNullOrWhiteSpace(track.Title) && track.Title.ToLowerInvariant().Contains(lower))
+                        track != null &&
+                        !string.IsNullOrWhiteSpace(track.Title) &&
+                        track.Title.ToLowerInvariant().Contains(lower))
                     .ToList();
+
                 foreach (var trackModel in filtered)
                 {
                     MusicTrackVMs.Add(new PlaylistTrackViewModel(trackModel, MessengerService));
                 }
             }
         }
+
 
 
         // Constructor matching the base class

@@ -105,7 +105,7 @@
                     <SearchBar Text="{Binding SearchTracks}"
                                SearchCommand="{Binding SearchSongsCommand}"
                                Placeholder="Enter a track name for searching..."
-                               IsEnabled="True"
+                               IsEnabled="{Binding IsPlaylistAvailable}"
                                BackgroundColor="Transparent" 
                                CancelButtonColor="{StaticResource SecondaryDarkText}"
                                TextColor="{StaticResource SecondaryDarkText}"
