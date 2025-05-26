@@ -19,6 +19,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     private readonly IMusicTrackFacade _facade;
     private readonly IArtistFacade _artistFacade;
     private readonly IGenreFacade _genreFacade;
+    private readonly IPlaylistFacade _playlistFacade;
 
     [ObservableProperty]
     private MusicTrackDetailModel _musicTrackDetail;
@@ -151,11 +152,13 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     public MusicTrackCreateNewPopupModel(
         IMusicTrackFacade musicTrackFacade,
         IArtistFacade artistFacade,
-        IGenreFacade genreFacade)
+        IGenreFacade genreFacade,
+        IPlaylistFacade playlistFacade)
     {
         _facade = musicTrackFacade;
         _artistFacade = artistFacade;
         _genreFacade = genreFacade;
+        _playlistFacade = playlistFacade;
 
         // +++ ADDED PICKER INITIALIZATION +++
         MinuteOptions = new ObservableCollection<int>(Enumerable.Range(0, 60));
@@ -275,19 +278,26 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
 
         if (_isEditMode)
         {
+            
             // Original git logic for edit mode
             var currentArtistsIds = MusicTrackDetail.Artists.Select(t => t.Id).ToHashSet();
             var artistsToAdd = _selectedArtists.Where(artist => !currentArtistsIds.Contains(artist.Id)).ToList();
             var artistsToRemove = MusicTrackDetail.Artists.Where(artist => !_selectedArtists.Any(t => t.Id == artist.Id)).ToList();
+            MusicTrackDetail.Artists.Clear(); // Clear before adding new ones
+
 
             var currentGenresIds = MusicTrackDetail.Genres.Select(t => t.Id).ToHashSet();
             var genresToAdd = _selectedGenres.Where(genre => !currentGenresIds.Contains(genre.Id)).ToList();
             var genresToRemove = MusicTrackDetail.Genres.Where(genre => !_selectedGenres.Any(t => t.Id == genre.Id)).ToList();
+            MusicTrackDetail.Genres.Clear(); // Clear before adding new ones
+
+            var playlistIds = MusicTrackDetail.Playlists.Select(t => t.Id).ToHashSet();
+            MusicTrackDetail.Playlists.Clear();
 
             // Save scalar properties. The original git logic implies _facade.SaveAsync handles this.
             // If _facade.SaveAsync *only* updates scalar for existing IDs OR your BL model properties are not init-only, this is fine.
             // Otherwise, you might need a separate DTO or method for scalar updates.
-            //await _facade.SaveAsync(MusicTrackDetail); // Assumes this updates scalar if ID exists
+            await _facade.SaveAsync(MusicTrackDetail); // Assumes this updates scalar if ID exists
 
             foreach (var artist in artistsToRemove) await _facade.RemoveArtistFromMusicTrackAsync(MusicTrackDetail.Id, artist.Id);
             foreach (var genre in genresToRemove) await _facade.RemoveGenreFromMusicTrackAsync(MusicTrackDetail.Id, genre.Id);

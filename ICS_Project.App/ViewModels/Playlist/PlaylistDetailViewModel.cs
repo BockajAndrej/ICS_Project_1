@@ -127,7 +127,8 @@ namespace ICS_Project.App.ViewModels.Playlist
             ListenToGUIDRequest();
 
             ListenToPlaylistSelect();
-            
+
+            ListenToMusicTracksDelete();            
         }
 
         // Call this when you know which playlist ID to load
