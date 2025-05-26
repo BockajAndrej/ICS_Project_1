@@ -11,7 +11,7 @@ namespace ICS_Project.App.Converters
             {
                 return timeSpan.ToFormattedDuration();
             }
-            return value; // Or string.Empty or a default display if value is not a TimeSpan
+            return value;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -5,7 +5,7 @@ namespace ICS_Project.App.Messages;
 public class PlaylistShowOptions
 {
     public VisualElement? Anchor { get; }
-    public PlaylistDetailViewModel? ViewModel { get; } // ViewModel needed by the popup
+    public PlaylistDetailViewModel? ViewModel { get; }
 
     public PlaylistShowOptions(VisualElement? anchor, PlaylistDetailViewModel? viewModel)
     {

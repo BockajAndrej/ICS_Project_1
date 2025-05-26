@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Messaging;
-using ICS_Project.App.Services.Interfaces; // Use your namespace
+using ICS_Project.App.Services.Interfaces;
 
-namespace ICS_Project.App.Services // Use your namespace
+namespace ICS_Project.App.Services
 {
     public class MessengerService(IMessenger messenger) : IMessengerService
     {

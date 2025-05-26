@@ -19,16 +19,13 @@ namespace ICS_Project.App.Services.Popups
             _serviceProvider = serviceProvider;
         }
 
-        // The generic method to show a popup
         public void ShowPopup(Type popupViewType, object? bindingContext = null, VisualElement? anchor = null)
         {
-            // Ensure UI operations are on the main thread
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Debug.WriteLine($"--- PopupService: Attempting to show popup of type {popupViewType.Name} ---");
 
                 // 1. Get the popup instance from the service provider
-                // Using GetService returns null if not found, safer than GetRequiredService here
                 if (_serviceProvider.GetService(popupViewType) is not Popup popup)
                 {
                     Debug.WriteLine($"--- PopupService: ERROR - Could not resolve popup instance of type {popupViewType.Name}. Is it registered in MauiProgram.cs? ---");
@@ -65,7 +62,6 @@ namespace ICS_Project.App.Services.Popups
 
                 // 4. Find the current Page and show the popup
                 // The PopupService needs access to Shell.Current or the current page somehow.
-                // The simplest way is via Shell.Current if using Shell.
                 Page? currentPage = Shell.Current?.CurrentPage;
 
                 if (currentPage != null)
@@ -79,17 +75,5 @@ namespace ICS_Project.App.Services.Popups
                 }
             });
         }
-
-        // Optional: Implement specific methods as wrappers around the generic one
-        // These make the call site (e.g., the AppShell handler) slightly cleaner
-        // public void ShowPlaylistOptions(object? bindingContext = null, VisualElement? anchor = null, PopupPlacement? placement = null)
-        // {
-        //     ShowPopup(typeof(PlaylistOptionsView), bindingContext, anchor, placement ?? PopupPlacement.Bottom); // Default playlist options to Bottom
-        // }
-
-        // public void ShowConfirmDialog(object? bindingContext = null)
-        // {
-        //      ShowPopup(typeof(ConfirmDialogPopup), bindingContext, null, PopupPlacement.Center); // Default confirm dialog to Center, no anchor
-        // }
     }
 }
