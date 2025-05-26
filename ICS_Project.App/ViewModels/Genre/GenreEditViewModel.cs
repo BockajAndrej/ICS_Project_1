@@ -33,7 +33,6 @@ public partial class GenreEditViewModel : ObservableObject
         };
     }
 
-    // Save genre command
     [RelayCommand]
     public async void SaveChanges()
     {
@@ -44,10 +43,8 @@ public partial class GenreEditViewModel : ObservableObject
         }
         else
         {
-            // Check for changes
             bool scalarValuesChanged = GenreDetail.GenreName != GenreName;
 
-            // No changes -> skip saving 
             if (!scalarValuesChanged)
             {
                 WeakReferenceMessenger.Default.Send(new GenreEditViewClosed());
@@ -55,22 +52,17 @@ public partial class GenreEditViewModel : ObservableObject
                 return;
             }
 
-
-            // Changes detected -> save
             GenreDetail.GenreName = GenreName;
 
             var SaveGenre = await _facade.SaveAsync(GenreDetail);
             Debug.WriteLine("Genre created:");
             Debug.WriteLine($"GenreName: {GenreDetail.GenreName}");
 
-            // TODO: Here is probably the best place to inform about the changes - make the popup refresh
-
             WeakReferenceMessenger.Default.Send(new GenreEditViewClosed());
         }
     }
 
 
-    // Revert changes command
     [RelayCommand]
     public void RevertChanges()
     {

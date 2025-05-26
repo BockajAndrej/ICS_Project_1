@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ICS_Project.BL;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
 using System.Collections.ObjectModel;
@@ -20,7 +19,6 @@ public partial class MusicTrackListViewModel : ObservableObject
 
     private List<MusicTrackListModel> _allMusicTracks;
 
-    //TODO: for now suboptimal solution, allMusicTracks has to reload its memory every time new song is added
     [RelayCommand]
     private void SearchMusicTracks(string inputString)
     {

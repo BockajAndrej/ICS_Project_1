@@ -1,21 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ICS_Project.BL;
+using CommunityToolkit.Mvvm.Messaging;
+using ICS_Project.App.Messages;
+using ICS_Project.App.Services.Interfaces;
+using ICS_Project.App.ViewModels.MusicTrack;
+using ICS_Project.App.Views.MusicTrack.Popups;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using ICS_Project.App.Views.MusicTrack.Popups; // For typeof(MusicTrackEditView)
-using ICS_Project.App.ViewModels.MusicTrack;   // For MusicTrackEditViewModel
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection; // For IServiceProvider (if still needed for VM resolution)
-using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
-using ICS_Project.App.Messages;
-using ICS_Project.App.Services.Interfaces; // Needed for your custom message
 
 
 namespace ICS_Project.App.ViewModels.Playlist
@@ -23,11 +16,11 @@ namespace ICS_Project.App.ViewModels.Playlist
     public partial class PlaylistDetailViewModel : ViewModelBase
     {
         private readonly IPlaylistFacade _playlistFacade;
-        private readonly IPopupService _popupService; // <<-- ADD THIS
-        private readonly IServiceProvider _serviceProvider; // <<-- ADD THIS (to resolve VM for popup)
+        private readonly IPopupService _popupService;
+        private readonly IServiceProvider _serviceProvider;
 
         [ObservableProperty]
-        private PlaylistDetailModel? _playlistDetail; // For playlist name, description etc.
+        private PlaylistDetailModel? _playlistDetail;
 
         [ObservableProperty]
         private string _searchTracks;
@@ -48,11 +41,6 @@ namespace ICS_Project.App.ViewModels.Playlist
         public async Task InitializeAsync(Guid id)
         {
             await SetCurrentPlaylistAndLoadAsync(id);
-
-
-            //CurrentPlaylistId = id;
-            //_playlistDetail = await _playlistFacade.GetAsync(id);
-            //MusicTracks = new ObservableCollection<MusicTrackListModel>(_playlistDetail.MusicTracks);
         }
 
         [RelayCommand]
@@ -107,21 +95,18 @@ namespace ICS_Project.App.ViewModels.Playlist
 
 
 
-        // Constructor matching the base class
         public PlaylistDetailViewModel(
                 IPlaylistFacade playlistFacade,
                 IMessengerService messengerService,
-                IPopupService popupService,          // <<-- ADD THIS
-                IServiceProvider serviceProvider)    // <<-- ADD THIS
+                IPopupService popupService,
+                IServiceProvider serviceProvider)
                 : base(messengerService)
         {
             _playlistFacade = playlistFacade;
-            _popupService = popupService;        // <<-- ADD THIS
-            _serviceProvider = serviceProvider;  // <<-- ADD THIS
+            _popupService = popupService;
+            _serviceProvider = serviceProvider;
 
             // Register message handlers
-            // The base class (ObservableRecipient) handles IsActive,
-            // so messages are received when IsActive is true.
             Messenger.Register<MusicTrackShowOptions>(this, HandleMusicTrackShowOptions);
             Messenger.Register<MusicTrackShowDetail>(this, HandleMusicTrackDetailOptionsAsync);
             ListenToGUIDRequest();
@@ -130,22 +115,20 @@ namespace ICS_Project.App.ViewModels.Playlist
             
         }
 
-        // Call this when you know which playlist ID to load
         public async Task SetCurrentPlaylistAndLoadAsync(Guid playlistId)
         {
             if (playlistId == Guid.Empty)
             {
                 Debug.WriteLine("SetCurrentPlaylistAndLoadAsync: Playlist ID is empty. Clearing data.");
                 CurrentPlaylistId = Guid.Empty;
-                PlaylistDetail = null; // Use the generated public property
-                MusicTrackVMs.Clear();        // Use the generated public property
+                PlaylistDetail = null;
+                MusicTrackVMs.Clear();
                 return;
             }
 
             CurrentPlaylistId = playlistId;
             Debug.WriteLine($"SetCurrentPlaylistAndLoadAsync: Set CurrentPlaylistId to {CurrentPlaylistId}. Forcing data refresh.");
-            // ForceDataRefreshOnNextAppearing(); // Use this if loading happens via OnAppearing
-            await LoadDataAsync(); // Or call LoadDataAsync directly if you want immediate load
+            await LoadDataAsync();
         }
 
 
@@ -173,8 +156,8 @@ namespace ICS_Project.App.ViewModels.Playlist
             Debug.WriteLine($"PlaylistDetailViewModel: Requesting PopupService to show MusicTrackEditView for track: {message.ViewModel.Title}");
             _popupService.ShowPopup(
                 typeof(MusicTrackEditView),
-                musicTrackEditViewModel, // Pass the resolved and initialized ViewModel
-                message.Anchor           // Pass the anchor element (button)
+                musicTrackEditViewModel,
+                message.Anchor
             );
         }        
         private async void HandleMusicTrackDetailOptionsAsync(object recipient, MusicTrackShowDetail message)
@@ -195,28 +178,23 @@ namespace ICS_Project.App.ViewModels.Playlist
                 return;
             }
 
-            // Initialize the ViewModel with data from the track that was clicked
-            //musicTrackDetailViewModel.Initialize(message.ViewModel.ID, message.ViewModel.Title);
-
             Debug.WriteLine($"PlaylistDetailViewModel: Calling LoadTrackAsync on MusicTrackDetailViewModel for ID: {trackIdToShow}");
-            await musicTrackDetailViewModel.LoadTrackAsync(trackIdToShow); // <--- CALL THE LOAD METHOD
+            await musicTrackDetailViewModel.LoadTrackAsync(trackIdToShow);
 
 
             // Now show the popup with the ViewModel that *has* loaded the data
-            Debug.WriteLine($"PlaylistDetailViewModel: Requesting PopupService to show MusicTrackDetailView for track: {message.ViewModel.Title}"); // Using original title for log
+            Debug.WriteLine($"PlaylistDetailViewModel: Requesting PopupService to show MusicTrackDetailView for track: {message.ViewModel.Title}");
             _popupService.ShowPopup(
-                typeof(MusicTrackDetailView), // Use the correct Type
-                musicTrackDetailViewModel, // Pass the resolved and *loaded* ViewModel
-                message.Anchor             // Pass the anchor element
+                typeof(MusicTrackDetailView),
+                musicTrackDetailViewModel,
+                message.Anchor
             );
         }
 
-        // Command now accepts a parameter
         [RelayCommand]
         private void ShowOptions(object? parameter)
         {
-            Debug.WriteLine("--- ShowOptions Command Executed ---"); // Use Debug.WriteLine
-            // Ensure the parameter is a VisualElement (the Button)
+            Debug.WriteLine("--- ShowOptions Command Executed ---");
             var anchor = parameter as VisualElement;
 
             // Send the message with the anchor and this ViewModel instance
@@ -224,7 +202,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         }
 
 
-        // This is your primary data loading method
+        // Primary data loading method
         protected override async Task LoadDataAsync()
         {
             Debug.WriteLine($"LoadDataAsync started for CurrentPlaylistId: {CurrentPlaylistId}");
@@ -261,11 +239,9 @@ namespace ICS_Project.App.ViewModels.Playlist
             catch (Exception ex)
             {
                 Debug.WriteLine($"LoadDataAsync: Exception occurred: {ex.Message}");
-                // Handle error appropriately, maybe clear data or show a message
                 PlaylistDetail = null;
                 MusicTrackVMs.Clear();
             }
-            // await base.LoadDataAsync(); // Call if base class has meaningful implementation
         }
 
         [RelayCommand]
@@ -274,7 +250,7 @@ namespace ICS_Project.App.ViewModels.Playlist
             Debug.WriteLine("ModifyTrack command started.");
             try
             {
-                var playlists = await _playlistFacade.GetAsync(); // This gets ListModels
+                var playlists = await _playlistFacade.GetAsync();
                 if (playlists != null && playlists.Any())
                 {
                     var firstPlaylistId = playlists.First().Id;
@@ -284,7 +260,6 @@ namespace ICS_Project.App.ViewModels.Playlist
                 else
                 {
                     Debug.WriteLine("ModifyTrack: No playlists found to load.");
-                    // Optionally clear the current view if no playlists exist
                     await SetCurrentPlaylistAndLoadAsync(Guid.Empty);
                 }
             }
@@ -318,7 +293,6 @@ namespace ICS_Project.App.ViewModels.Playlist
         private void AddMusicTrackToPlaylist()
         {
             Debug.WriteLine("AddMusicTrackToPlaylistCommand executed.");
-            // Implementácia pridania skladby do playlistu
         }
 
         [RelayCommand]

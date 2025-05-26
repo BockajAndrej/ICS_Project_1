@@ -1,16 +1,10 @@
-using CommunityToolkit.Mvvm.Input;
-using ICS_Project.BL.Facades;
-using System.Diagnostics;
-using System.Linq;
-using ICS_Project.BL.Facades; // Assuming you might need facade
-using ICS_Project.BL.Models;   // Assuming you might need models
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging; // Needed for IMessenger and messages
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ICS_Project.App.Messages;
 using ICS_Project.App.Services.Interfaces;
-using ICS_Project.App.Views.MusicTrack; // Needed for your custom message
+using ICS_Project.BL.Facades;
+using System.Diagnostics;
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
@@ -18,9 +12,9 @@ namespace ICS_Project.App.ViewModels.MusicTrack;
 public partial class MusicTrackEditViewModel : ViewModelBase
 {
     private readonly IMusicTrackFacade _facade;
-    private readonly IMessenger _messenger; // Inject the messenger
-    private readonly IServiceProvider _serviceProvider; // Inject the service provider
-    private readonly IPopupService _popupService; // Inject popup service
+    private readonly IMessenger _messenger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IPopupService _popupService;
 
     [ObservableProperty]
     private Guid _trackId;
@@ -33,14 +27,14 @@ public partial class MusicTrackEditViewModel : ViewModelBase
         IMessengerService messengerService,
         IServiceProvider serviceProvider,
         IPopupService popupService) 
-        : base(messengerService) // Pass messengerService to base
+        : base(messengerService) 
     {
         _facade = musicTrackFacade;
-        _messenger = messengerService.Messenger; // Assign the messenger
+        _messenger = messengerService.Messenger; 
         _serviceProvider = serviceProvider; 
         _popupService = popupService;
 
-        ListenToGUIDRequest(); // Register for GUID requests
+        ListenToGUIDRequest();
     }
 
     public void Initialize(Guid trackId, string trackTitle)
@@ -54,9 +48,7 @@ public partial class MusicTrackEditViewModel : ViewModelBase
     private async Task AddToPlaylistAsync()
     {
         Debug.WriteLine($"Command: Add Track '{_trackTitle}' (ID: {_trackId}) to Playlist");
-        // TODO: Implement logic, possibly show another popup to select playlist
         await Task.CompletedTask;
-        //ClosePopup();
     }
 
     public void ListenToGUIDRequest()
@@ -84,9 +76,7 @@ public partial class MusicTrackEditViewModel : ViewModelBase
         {
             await _facade.DeleteAsync(_trackId);
             Debug.WriteLine($"[DeleteMusicTrackAsync] Track with ID: {_trackId} was successfully removed.");
-            // Send a message to notify other parts of the app
             _messenger.Send(new MusicTrackDeletedMessage(_trackId));
-            // Optionally, you can reset the view model state
             TrackId = Guid.Empty;
             TrackTitle = null;
         }

@@ -1,18 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using ICS_Project.BL;
+using ICS_Project.App.Messages;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ICS_Project.App.Messages;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace ICS_Project.App.ViewModels.Playlist
 {
@@ -30,21 +24,21 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         private List<MusicTrackListModel> _allTracks = [];
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private string _name = "";
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private string _description = "";
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private int _numberOfTracks = 0;
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private TimeSpan _totalTrackTime = TimeSpan.Zero;
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private string _searchbarText = "";
-        
+
         private readonly List<MusicTrackListModel> _selectedTracks = new();
 
         private HashSet<Guid> _originalTrackIds = new();
@@ -60,7 +54,7 @@ namespace ICS_Project.App.ViewModels.Playlist
         public async Task InitializeAsync(Guid id)
         {
             PlaylistDetail = await _facade.GetAsync(id);
-            await LoadSongsAsync();  // Now properly awaited after object creation
+            await LoadSongsAsync();
         }
 
 
@@ -110,17 +104,8 @@ namespace ICS_Project.App.ViewModels.Playlist
 
         public async Task LoadSongsAsync()
         {
-            // Fetch songs asynchronously
             _allTracks = (await _musicTrackFacade.GetAsync()).ToList();
             MusicTracks = new ObservableCollection<MusicTrackListModel>(_allTracks);
-
-            // Print the contents of the Songs collection to the output for debugging
-            // Debug.WriteLine("Loaded Songs:");
-            // foreach (var track in MusicTracks)
-            // {
-            //     // Assuming each song has a 'Title' and 'Artist' or similar properties, you can adjust this to match the actual properties of your 'MusicTrackListModel'
-            //     Debug.WriteLine($"- {track.Title}");
-            // }
 
             foreach (var track in MusicTracks)
             {
@@ -128,14 +113,13 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
         }
 
-        // Command for saving the playlist
         [RelayCommand]
         public async void SaveChanges()
         {
             if (Name != "")
             {
                 // Check if any properties have changed
-                bool nameOrDescriptionChanged = PlaylistDetail.Name != Name || 
+                bool nameOrDescriptionChanged = PlaylistDetail.Name != Name ||
                                                 PlaylistDetail.Description != Description;
                 bool hasChanges = nameOrDescriptionChanged ||
                                   PlaylistDetail.NumberOfMusicTracks != NumberOfTracks ||
@@ -202,7 +186,6 @@ namespace ICS_Project.App.ViewModels.Playlist
 
                 if (_isEdit)
                 {
-                    //toto je ojeb treba spravit lepsie idk
                     WeakReferenceMessenger.Default.Send(new PlaylistSelectedMessage(PlaylistDetail.Id));
                 }
                 if (nameOrDescriptionChanged) WeakReferenceMessenger.Default.Send(new PlaylistListViewUpdate());
@@ -214,11 +197,9 @@ namespace ICS_Project.App.ViewModels.Playlist
             }
         }
 
-        // Command for reverting the changes
         [RelayCommand]
         public void RevertChanges()
         {
-            //TODO: Perhaps proper revert functionality?
             WeakReferenceMessenger.Default.Send(new PlaylistNewPlaylistClosed());
         }
 
@@ -255,10 +236,8 @@ namespace ICS_Project.App.ViewModels.Playlist
                 {
                     Debug.WriteLine($"Received PlaylistEditGUID with ID: {message.ID}");
 
-                    // Fetch the playlist detail using the provided GUID
                     PlaylistDetail = await _facade.GetAsync(message.ID);
 
-                    // Optional: Refresh the music tracks and their selection
                     await LoadSongsAsync();
 
                     // Pre-select tracks already in the playlist

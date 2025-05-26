@@ -26,30 +26,24 @@ public partial class ArtistEditViewModel : ObservableObject
     public ArtistEditViewModel(IArtistFacade artistFacade)
     {
         _facade = artistFacade;
-
-        // there were number of tracks and something in OG. Are we missing something here aswell?
-
         ArtistDetail = new ArtistDetailModel
         {
             ArtistName = "",
         };
     }
 
-    // Save music track command
+
     [RelayCommand]
     public async void SaveChanges()
     {
-        // Constraints
         if (ArtistName == "")
         {
             await Application.Current.MainPage.DisplayAlert("Validační chyba", "Vyplňte název autora", "OK");
         }
         else
         {
-            // Check for changes
             bool scalarValuesChanged = ArtistDetail.ArtistName != ArtistName;
 
-            // No changes -> skip saving 
             if (!scalarValuesChanged)
             {
                 WeakReferenceMessenger.Default.Send(new ArtistEditViewClosed());
@@ -57,22 +51,17 @@ public partial class ArtistEditViewModel : ObservableObject
                 return;
             }
 
-
-            // Changes detected -> save
             ArtistDetail.ArtistName = ArtistName;
 
             var saveArtist = await _facade.SaveAsync(ArtistDetail);
             Debug.WriteLine("Music track created:");
             Debug.WriteLine($"ArtistName: {ArtistDetail.ArtistName}");
 
-            // TODO: Here is probably the best place to inform about the changes - make the popup refresh
-
             WeakReferenceMessenger.Default.Send(new ArtistEditViewClosed());
         }
     }
 
 
-    // Revert changes command
     [RelayCommand]
     public void RevertChanges()
     {

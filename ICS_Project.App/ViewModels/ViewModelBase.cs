@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using ICS_Project.App.Services;
 using ICS_Project.App.Services.Interfaces;
 
 namespace ICS_Project.App.ViewModels;

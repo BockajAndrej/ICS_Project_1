@@ -1,16 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using ICS_Project.App.Messages;
 using ICS_Project.BL.Facades;
 using ICS_Project.BL.Models;
-using ICS_Project.App.Messages;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-// using ICS_Project.DAL.Entities; // Usually present
-// using System.ComponentModel.DataAnnotations; // Usually present
-using Microsoft.IdentityModel.Tokens; // Usually for other parts of app
-using System.Globalization; // For FileSize parsing
+using System.Diagnostics;
+using System.Globalization;
 
 namespace ICS_Project.App.ViewModels.MusicTrack;
 
@@ -42,17 +39,6 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     [ObservableProperty]
     private string _URL = "";
 
-    // --- REMOVED OLD DURATION PROPERTIES ---
-    // [ObservableProperty]
-    // private string _hoursString = "00";
-    // [ObservableProperty]
-    // private string _minutesString = "00";
-    // [ObservableProperty]
-    // private string _secondsString = "00";
-    // private TimeSpan TotalDuration = TimeSpan.Zero;
-    // --- END REMOVED OLD DURATION PROPERTIES ---
-
-    // +++ ADDED PICKER DURATION PROPERTIES +++
     [ObservableProperty]
     private TimeSpan _songDuration = TimeSpan.Zero;
 
@@ -84,7 +70,6 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             }
         }
     }
-    // +++ END ADDED PICKER DURATION PROPERTIES +++
 
     [ObservableProperty]
     private string _fileSizeString = "";
@@ -106,13 +91,12 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
     private HashSet<Guid> _originalGenresIds = new();
     private HashSet<Guid> _selectedGenresIds = new();
 
-    // Using combined flags for clarity from previous iteration
     private bool _isPopupContextRegistered = false;
     private bool _isGuidListenerRegistered = false;
 
     private bool _isEditMode;
 
-    public async Task InitializeAsync(Guid id) // If directly navigating to edit
+    public async Task InitializeAsync(Guid id)
     {
         MusicTrackDetail = await _facade.GetAsync(id);
         if (MusicTrackDetail != null)
@@ -121,10 +105,8 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
             Description = MusicTrackDetail.Description;
             URL = MusicTrackDetail.UrlAddress;
 
-            // +++ MODIFIED FOR PICKER DURATION +++
             SongDuration = MusicTrackDetail.Length;
             UpdatePickersFromSongDuration();
-            // +++ END MODIFIED FOR PICKER DURATION +++
 
             FileSizeMB = MusicTrackDetail.Size;
             FileSizeString = FileSizeMB.ToString(CultureInfo.InvariantCulture);
@@ -157,18 +139,15 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
         _artistFacade = artistFacade;
         _genreFacade = genreFacade;
 
-        // +++ ADDED PICKER INITIALIZATION +++
         MinuteOptions = new ObservableCollection<int>(Enumerable.Range(0, 60));
         SecondOptions = new ObservableCollection<int>(Enumerable.Range(0, 60));
-        // SongDuration is already TimeSpan.Zero by default from its declaration.
-        UpdatePickersFromSongDuration(); // Initialize pickers based on default SongDuration
-        // +++ END ADDED PICKER INITIALIZATION +++
+        UpdatePickersFromSongDuration();
 
         MusicTrackDetail = new MusicTrackDetailModel
         {
             Title = "",
             Description = "",
-            Length = TimeSpan.Zero, // Initial length for the model
+            Length = TimeSpan.Zero,
             Size = 0,
             UrlAddress = "",
             Artists = new ObservableCollection<ArtistListModel>(),
@@ -194,9 +173,7 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
                 if (Artists != null) foreach (var artist in Artists) artist.IsSelected = false;
                 if (Genres != null) foreach (var genre in Genres) genre.IsSelected = false;
 
-                // +++ MODIFIED FOR PICKER DURATION +++
-                SongDuration = TimeSpan.Zero; // This will also update SelectedMinutes/Seconds via its setter chain
-                // +++ END MODIFIED FOR PICKER DURATION +++
+                SongDuration = TimeSpan.Zero;
 
                 if (_isEditMode)
                 {
@@ -206,12 +183,12 @@ public partial class MusicTrackCreateNewPopupModel : ObservableObject
                 else
                 {
                     Debug.WriteLine("Create mode - initializing new music track.");
-                    // Reset MusicTrackDetail for new entry (ensure Length is TimeSpan.Zero)
+                    // Reset MusicTrackDetail for new entry
                     MusicTrackDetail = new MusicTrackDetailModel
                     {
-                        Length = TimeSpan.Zero, // Reset length
-                        Artists = new ObservableCollection<ArtistListModel>(), // Or null if BL requires
-                        Genres = new ObservableCollection<GenreListModel>()   // Or null if BL requires
+                        Length = TimeSpan.Zero,
+                        Artists = new ObservableCollection<ArtistListModel>(),
+                        Genres = new ObservableCollection<GenreListModel>()
                     };
                     await LoadArtistsAsync();
                     await LoadGenresAsync();
